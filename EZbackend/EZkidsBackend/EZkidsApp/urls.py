@@ -165,9 +165,9 @@ urlpatterns = [
 #     path('api/user/customer/update/<str:pk>/',
 #          views.updateCustomer, name="customer-update"),
 
-#     # update vendor by userid
-#     path('api/user/vendor/update/<str:pk>/',
-#          views.updateVendor, name="vendor-update"),
+    # update teacher by userid
+    path('api/user/teacher/update/<str:pk>/',
+         views.updateTeacher, name="teacher-update"),
 
 #     # get helpdesk response by help id
 #     path('api/help/response/<str:pk>/',

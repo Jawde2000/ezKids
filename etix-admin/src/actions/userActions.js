@@ -677,7 +677,7 @@ export const updateCustomer = (user, customer, id) => async (dispatch, getState)
 }
 
 //VENDOR update
-export const updateVendor = (user, vendor, id) => async (dispatch, getState) => {
+export const updateTeacher = (user, teacher, id) => async (dispatch, getState) => {
     try{
         dispatch({
             type:USER_VENDOR_UPDATE_REQUEST
@@ -702,10 +702,10 @@ export const updateVendor = (user, vendor, id) => async (dispatch, getState) => 
             config
         )
 
-        console.log(vendor);
+        console.log(teacher);
         var { data2 } = await axios.put(
-            `http://127.0.0.1:8000/api/user/vendor/update/${id}/`,
-            vendor,
+            `http://127.0.0.1:8000/api/user/teacher/update/${id}/`,
+            teacher,
             config
         )
         

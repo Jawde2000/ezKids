@@ -13,7 +13,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import PropTypes from 'prop-types';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarColumnsButton} from '@mui/x-data-grid';
 import CircularProgress from '@mui/material/CircularProgress';
-import { USER_LIST_SUCCESS, USER_LIST_RESET, USER_LIST_REQUEST } from '../../constants/userConstants';
+import { USER_LIST_SUCCESS, USER_LIST_RESET, USER_LIST_REQUEST, USER_DELETE_RESET } from '../../constants/userConstants';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Dialog from '@mui/material/Dialog';
@@ -287,7 +287,7 @@ function TeacherManagement() {
         dispatch({type: USER_LIST_RESET});
         setOpenDel(false);
         dispatch({type: USER_LIST_REQUEST});
-        history.push(`/menu/teachermanagement`);
+        dispatch({type: USER_DELETE_RESET});
       };
 
       return (
@@ -385,14 +385,14 @@ function TeacherManagement() {
             </Grid>
             <Grid>
               {loading?
-              <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+              <Backdrop style={{ zIndex: 9999, backgroundColor: '#36454F'}}  open={true}>
               <CircularProgress  style={{color: '#F5CB5C'}}/>
               </Backdrop>:null
               }
             </Grid>
             <Grid>
               {loadingDelete?
-              <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+              <Backdrop style={{ zIndex: 9999, backgroundColor: '#36454F'}}  open={true}>
               <CircularProgress  style={{color: '#F5CB5C'}}/>
               </Backdrop>:null
               }

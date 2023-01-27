@@ -17,7 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { USER_UPDATE_RESET, USER_LOGIN_SUCCESS,USER_VENDOR_UPDATE_RESET, USER_DETAIL_RESET } from '../../constants/userConstants';
-import { updateUser, updateVendor, deleteUsers, getIndividualTeacher } from '../../actions/userActions';
+import { updateUser, updateTeacher, deleteUsers, getIndividualTeacher } from '../../actions/userActions';
 import moscow from '../globalAssets/moscow.jpg';
 import S3 from 'react-aws-s3';
 import defaultJpg from '../User/default.jpg'
@@ -104,6 +104,9 @@ const Teacher = ({props}) => {
     const userDetail = useSelector(state => state.userDetail)
     const {userD} = userDetail
 
+    const userDelete = useSelector(state => state.userDelete)
+    const {loading: loadingDelete} = userDelete;
+
     const usr = useSelector(state => state.userUpdate)
     const {success: successUser, error: errorUsr} = usr
 
@@ -120,7 +123,7 @@ const Teacher = ({props}) => {
     
     const [user, setUser] = useState();
     const [uptUser, setUptUser] = useState();
-    const [uptVendor, setUptVendor] = useState();
+    const [uptTeacher, setUptTeacher] = useState();
     const [uptCustomer, setUptCustomer] = useState();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -130,12 +133,13 @@ const Teacher = ({props}) => {
     const [password, setPassword] = useState("");
     const [confirmPass, setConfirmPass] = useState("");
     const [passStatus, setPassStatus] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
     // teacher information declaration
-    const [status, setStatus] = useState(false);
-    const [businessName, setBusinessName] = useState("");
-    const [registrationNo, setRegistrationNo] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [bankName, setBankName] = useState("");
     const [bankAcc, setBankAcc] = useState("");
+    const [holder, setHolder] = useState("");
     const [phone, setPhone] = useState("");
     const [teacherID, setTeacherID] = useState("");
 
@@ -144,11 +148,50 @@ const Teacher = ({props}) => {
     const [address, setAddress] = useState("");
     const [gender, setGender] = useState('');
     // const [user, setUser]
-    const [vendor, setVendor] = useState();
+    const [teacher, setTeacher] = useState();
     const [submit, setSubmit] = useState(false);
     const [editing,setEditing] = useState(false);
     const [found, setFound] = useState(true);
     const [picloading, setPloading] = useState(false);
+
+    const DialogDelete = () => {
+      
+        const handleClose = () => {
+          setOpenDelete(false);
+        };
+      
+        const handleDelete = () => {
+            dispatch(deleteUsers(id));
+            setOpenDelete(false);
+            history.push("/menu/teachermanagement/");
+        }
+      
+        return (
+          <Toolbar>
+            <Dialog
+              open={openDelete}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Delete Teacher " + firstName + " " + lastName}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    All data related with this user will be deleted. Are you sure you want to delete?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button style={{color: "red"}} onClick={handleDelete}>Yes</Button>
+                <Button onClick={handleClose} autoFocus>
+                  No
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Toolbar>
+        );
+      }
 
     
 
@@ -169,31 +212,25 @@ const Teacher = ({props}) => {
                 username: username,
                 email: email,
                 password: password,
-                is_active: isActive,
             }
         )
 
-        if(vendor){
-            setUptVendor({
-                vendorContact_Number: contact,
-                vendorStatus: status,
-                vendorName: username,
-                vendorBankName: bankName,
-                vendorBankAcc: bankAcc,
-                vendorRegistrationNo: registrationNo,
-                vendorEmail: email,
+        if(successTeacher){
+            setUptTeacher({
+                bankName: dataTeacher.teacherBankName,
+                bankAcc: dataTeacher.teacherBankAcc,
+                first: dataTeacher.teacherFirstName,
+                last: dataTeacher.teacherLastName,
+                teacherID: dataTeacher.teacherID, 
+                phone: dataTeacher.teacherContactphone, 
+                holder: dataTeacher.bankAccountHolder,
             })
         }
     }
 
     useEffect(() =>{
-        if(role==="Admin" && uptUser){
-            dispatch(updateUser(uptUser, id));
-        }
-        else if(role === "Vendor" && uptVendor){
-            dispatch(updateVendor(uptUser, uptVendor, id))
-        }
-    }, [uptUser, uptVendor])
+        dispatch(updateTeacher(uptUser, uptTeacher, id))
+    }, [uptUser, uptTeacher])
 
     useEffect(() => {
         if(successUser){
@@ -203,7 +240,7 @@ const Teacher = ({props}) => {
             history.push(`/menu/teachermanagement/teacher/${id}`);
             return;
         }
-        else if(successVendor){
+        else if(successUser){
             alert("Successfully Updated User");
             dispatch({type: USER_VENDOR_UPDATE_RESET});
             setEditing(!editing);
@@ -235,33 +272,30 @@ const Teacher = ({props}) => {
                 console.log(dataTeacher)
                 setTeacherID(dataTeacher.teacherID);
                 console.log(teacherID)
+            }  
+
+            if (userD) {
+                setUsername(userD.username);
+
             }
-        }else{
+        } else{
             setUser(userD)
-            setRole(userD.is_customer? "Customer" : userD.is_vendor? "Vendor" : userD.is_superuser? "Admin" : "");
             setUsername(userD.username);
             setEmail(userD.email);
-            setIsActive(userD.is_active);
-            if(userD.is_vendor && userD.vendorInfo){
-                setVendor(
-                    userD.vendorInfo.data
-                )
-            }
         }
     }, [userD, id, successTeacher])
 
     useEffect(() => {
-        if(vendor){
-            setContact(vendor.vendorContact_Number)
-            setStatus(vendor.vendorStatus)
-            setBusinessName(vendor.vendorName)
-            setBankName(vendor.vendorBankName)
-            setBankAcc(vendor.vendorBankAcc)
-            setRegistrationNo(vendor.vendorRegistrationNo)
-            setTeacherID(vendor.vendorID)
-            setPhone(vendor.vendorContact_Number)
+        if(dataTeacher){
+            setBankName(dataTeacher.teacherBankName);
+            setBankAcc(dataTeacher.teacherBankAcc);
+            setFirstName(dataTeacher.teacherFirstName);
+            setLastName(dataTeacher.teacherLastName)
+            setTeacherID(dataTeacher.teacherID);
+            setPhone(dataTeacher.teacherContactphone);
+            setHolder(dataTeacher.bankAccountHolder);
         }
-    }, [vendor])
+    }, [dataTeacher])
 
     const handleDelete = () => {
 
@@ -356,12 +390,12 @@ const Teacher = ({props}) => {
         setContact(event.target.value);
     }
 
-    const handleChangeBusinessName = (event) => {
-        setBusinessName(event.target.value);
+    const handleChangeLast = (event) => {
+        setLastName(event.target.value);
     }
 
-    const handleChangeRegNo = (event) => {
-        setRegistrationNo(event.target.value);
+    const handleChangeFirst = (event) => {
+        setFirstName(event.target.value);
     }
 
     const handleChangebankName = (event) => {
@@ -374,6 +408,10 @@ const Teacher = ({props}) => {
 
     const hadleChangePassword = (event) => {
         setPassword(event.target.value);
+    }
+
+    const handleChangeHolder = (event) => {
+        setHolder(event.target.value);
     }
     
     const handleChangeConfirmPassword = (event) => {
@@ -406,13 +444,29 @@ const Teacher = ({props}) => {
         setEditing(!editing);
     }
 
+    const handleOpenDeleteDialog = () => {
+        setOpenDelete(!openDelete);
+    }
+
     return (
         <Container className={classes.root} maxWidth="Fixed">
         <Container >
-            {loadingTeacher?<Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+            <Grid>
+                {
+                    <DialogDelete />
+                }
+            </Grid>
+            {loadingTeacher?
+            <Backdrop style={{ zIndex: 9999, backgroundColor: '#36454F'}} 
+             open={true}>
+                <CircularProgress  style={{color: '#F5CB5C'}}/>
+            </Backdrop>:null
+            }
+            {loadingDelete? 
+                <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
                 <CircularProgress  style={{color: '#F5CB5C'}}/>
                 </Backdrop>:null
-            }
+                }
             {!user? 
                 <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
                 <CircularProgress  style={{color: '#F5CB5C'}}/>
@@ -441,7 +495,7 @@ const Teacher = ({props}) => {
                                 <Tooltip title="Delete User">
                                     {/* Set onclick delete here, *create a delete function* */}
                                     <IconButton>
-                                        <DeleteIcon onClick={handleDelete} className={classes.functionicon} fontSize="large" style={{color: 'red'}}/>
+                                        <DeleteIcon onClick={handleOpenDeleteDialog} className={classes.functionicon} fontSize="large" style={{color: 'red'}}/>
                                     </IconButton>
                                 </Tooltip>
                             </Grid>
@@ -551,7 +605,7 @@ const Teacher = ({props}) => {
                                             }
                                             
                                         </Grid>
-                                        {vendor?
+                                        {dataTeacher?
                                             (
                                                 <>
                                                     <Grid item xs={12} style={{fontWeight:'bold', marginTop: 20}}>
@@ -575,7 +629,7 @@ const Teacher = ({props}) => {
                                                                     <TextField 
                                                                         id="regNo" 
                                                                         variant="outlined"
-                                                                        onChange={handleChangeRegNo}
+                                                                        onChange={handleChangeUserPhone}
                                                                         defaultValue={phone}
                                                                         margin="dense"
                                                                         fullWidth
@@ -583,6 +637,35 @@ const Teacher = ({props}) => {
                                                                         InputProps={{
                                                                             style: {fontFamily: ['rubik', 'sans-serif'].join(','),}
                                                                         }                                                            } 
+                                                                    />
+                                                                </Grid>   
+                                                            )
+                                                        }  
+                                                    </Grid>
+                                                    <Grid item xs={12} container style={{marginLeft: 30, marginTop:10}}>
+                                                        <Grid item xs={3} style={!editing ? ({fontWeight: 'bold'}) : ({fontWeight: 'bold', marginTop: 13}) }>
+                                                            Bank Holder: 
+                                                        </Grid>
+                                                        {!editing ?
+                                                            (
+                                                                <Grid item xs={9} textAlign="left">
+                                                                    {holder}
+                                                                </Grid>
+                                                            )
+                                                            :
+                                                            (
+                                                                <Grid item xs={9} textAlign="left">
+                                                                    <TextField 
+                                                                        id="bankName" 
+                                                                        variant="outlined"
+                                                                        onChange={handleChangebankName}
+                                                                        defaultValue={holder}
+                                                                        margin="dense"
+                                                                        fullWidth
+                                                                        size="small"
+                                                                        InputProps={{
+                                                                            style: {fontFamily: ['rubik', 'sans-serif'].join(','),}
+                                                                        }} 
                                                                     />
                                                                 </Grid>   
                                                             )
@@ -635,6 +718,64 @@ const Teacher = ({props}) => {
                                                                         variant="outlined"
                                                                         onChange={handleChangebankAcc}
                                                                         defaultValue={bankAcc}
+                                                                        margin="dense"
+                                                                        fullWidth
+                                                                        size="small"
+                                                                        InputProps={{
+                                                                            style: {fontFamily: ['rubik', 'sans-serif'].join(','),}
+                                                                        }} 
+                                                                    />
+                                                                </Grid>   
+                                                            )
+                                                        }  
+                                                    </Grid>
+                                                    <Grid item xs={12} container style={{marginLeft: 30, marginTop:10, marginBottom: 20}}>
+                                                        <Grid item xs={3} style={!editing ? ({fontWeight: 'bold'}) : ({fontWeight: 'bold', marginTop: 13}) }>
+                                                            First Name: 
+                                                        </Grid>
+                                                        {!editing ?
+                                                            (
+                                                                <Grid item xs={9} textAlign="left">
+                                                                    {firstName}
+                                                                </Grid>
+                                                            )
+                                                            :
+                                                            (
+                                                                <Grid item xs={9} textAlign="left">
+                                                                    <TextField 
+                                                                        id="bankAcc" 
+                                                                        variant="outlined"
+                                                                        onChange={handleChangeFirst}
+                                                                        defaultValue={firstName}
+                                                                        margin="dense"
+                                                                        fullWidth
+                                                                        size="small"
+                                                                        InputProps={{
+                                                                            style: {fontFamily: ['rubik', 'sans-serif'].join(','),}
+                                                                        }} 
+                                                                    />
+                                                                </Grid>   
+                                                            )
+                                                        }  
+                                                    </Grid>
+                                                    <Grid item xs={12} container style={{marginLeft: 30, marginTop:10, marginBottom: 20}}>
+                                                        <Grid item xs={3} style={!editing ? ({fontWeight: 'bold'}) : ({fontWeight: 'bold', marginTop: 13}) }>
+                                                            Last Name: 
+                                                        </Grid>
+                                                        {!editing ?
+                                                            (
+                                                                <Grid item xs={9} textAlign="left">
+                                                                    {lastName}
+                                                                </Grid>
+                                                            )
+                                                            :
+                                                            (
+                                                                <Grid item xs={9} textAlign="left">
+                                                                    <TextField 
+                                                                        id="bankAcc" 
+                                                                        variant="outlined"
+                                                                        onChange={handleChangeLast}
+                                                                        defaultValue={lastName}
                                                                         margin="dense"
                                                                         fullWidth
                                                                         size="small"

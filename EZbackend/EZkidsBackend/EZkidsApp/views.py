@@ -341,31 +341,28 @@ def registerUser(request):
 # update vendor by userid
 
 
-# @api_view(['PUT'])
-# @permission_classes([IsAuthenticated])
-# def updateVendor(request, pk):
-#     vendor = Vendor.objects.get(created_by=pk)
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateTeacher(request, pk):
+    
+    try:
+        teacher = Teacher.objects.get(created_by=pk)
 
-#     data = request.data
-#     vendor.vendorContact_Number = data['vendorContact_Number']
-#     vendor.vendorStatus = data['vendorStatus']
-#     if data['vendorEmail']:
-#         if data['vendorStatus'] == True:
-#             subject = 'Account Status'
-#             message = 'Dear partner, your account has been verified. You may start selling your ticket in our platform. Hope you will have a great experience on our platform.'
-#             recepient = data['vendorEmail']
-#             send_mail(subject, message, EMAIL_HOST_USER,
-#                       [recepient], fail_silently=False)
-#     vendor.vendorName = data['vendorName']
-#     vendor.vendorBankName = data['vendorBankName']
-#     vendor.vendorBankAcc = data['vendorBankAcc']
-#     vendor.vendorRegistrationNo = data['vendorRegistrationNo']
+        data = request.data
+        teacher.teacherContactphone = data['teacherContactphone']
+        teacher.teacherFirstName = data['teacherFirstName']
+        teacher.teacherLastName = data['teacherLastName']
+        teacher.teacherEmail = data['teacherEmail']
+        teacher.bankAccountHolder = data['bankAccountHolder']
+        teacher.teacherBankName = data['teacherBankName']
+        teacher.teacherBankAcc = data['teacherBankAcc']
 
-#     vendor.save()
-
-#     serializer = VendorSerializer(vendor, many=False)
-
-#     return Response(serializer.data)
+        teacher.save()
+        serializer = TeacherSerializer(teacher, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'Teacher failed to update'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 # @api_view(['PUT'])

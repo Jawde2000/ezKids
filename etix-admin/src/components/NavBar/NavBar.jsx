@@ -88,7 +88,7 @@ function NavBar() {
               <Grid xs={12} container justify="center" direction="row" alignItems="center">
               <Grid item>
               <Link to={value} onClick={handleReset}          
-                style={{ textDecorationLine: 'none', display: "flex",}}>        
+                style={{ textDecorationLine: 'none', display: "flex", color: 'black',}}>        
                   <Typography className={defaultStyle.resizeLogo} variant="h2" sx={{ flexGrow: 1 }} style={{fontFamily: ['rubik', 'sans-serif'].join(','), paddingLeft: 50}}>
                     EZkids 
                   </Typography>
@@ -97,7 +97,7 @@ function NavBar() {
               </Grid>
               <Grid xs={12}>
                 <Grid item className={defaultStyle.rightClock}>
-                  <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontWeight: "bold", fontSize: 16, color: "linear-gradient(to right, rgb(65, 41, 90), rgb(47, 7, 67))"}}>
+                  <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontWeight: "bold", fontSize: 16, color: "black"}}>
                   <Clock format={'HH:mm:ss a |  ' + dateAndTime} ticking={true} timezone={'Asia/Kuala_Lumpur'}/>
                   </Typography>
                 </Grid>

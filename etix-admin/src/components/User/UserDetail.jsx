@@ -17,7 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { USER_CUSTOMER_UPDATE_RESET, USER_UPDATE_RESET, USER_LOGIN_SUCCESS,USER_VENDOR_UPDATE_RESET, USER_DETAIL_RESET } from '../../constants/userConstants';
-import { updateUser, updateCustomer, updateVendor, deleteUsers } from '../../actions/userActions';
+import { updateUser, updateCustomer, deleteUsers } from '../../actions/userActions';
 import moscow from '../globalAssets/moscow.jpg';
 import S3 from 'react-aws-s3';
 import defaultJpg from '../User/default.jpg'
@@ -156,7 +156,7 @@ const UserDetail = ({props}) => {
 
     useEffect(() =>{
         if(role === "Vendor" && uptVendor){
-            dispatch(updateVendor(uptUser, uptVendor, id))
+            // dispatch(updateVendor(uptUser, uptVendor, id))
         }
     }, [uptUser, uptVendor])
 

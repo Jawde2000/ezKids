@@ -230,7 +230,7 @@ function EZDashboard() {
         </Grid>
         <Grid>
               {Loading?
-              <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+              <Backdrop style={{ zIndex: 9999, backgroundColor: '#36454F'}}  open={true}>
               <CircularProgress  style={{color: '#F5CB5C'}}/>
               </Backdrop>:null
               }

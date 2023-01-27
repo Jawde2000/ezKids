@@ -174,7 +174,7 @@ function AdminMenu() {
   return (
     <Box sx={{ display: 'flex' }}>
     <CssBaseline />
-    <AppBar position="fixed" open={open}>
+    <AppBar color="inherit" position="fixed" open={open}>
       <Toolbar>
         <IconButton
           color="inherit"
@@ -215,7 +215,7 @@ function AdminMenu() {
             <ListItemText primary={"Announcements"} />
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding component={Link} to={"/menu/teachermanagement"}>
+        <ListItem disablePadding component={Link} to={"/menu/teachermanagement"} style={{ textDecorationLine: 'none', display: "flex", color: "black"}}>
           <ListItemButton >
             <ListItemIcon>
               <TeacherIcon />

@@ -47,7 +47,7 @@ export default function Piechart() {
     // getFemale(childrenDemo[0]);
     // getMale(childrenDemo.male);
     console.log(male);
-  }, [userInfo])
+  }, [userInfo, success])
 
   const data = [
     { name: 'Girl', value: female },
