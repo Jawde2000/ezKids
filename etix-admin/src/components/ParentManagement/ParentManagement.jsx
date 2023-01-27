@@ -7,13 +7,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { listTeachers, deleteUsers } from '../../actions/userActions';
+import { deleteUsers, ListParents } from '../../actions/userActions';
 import {useDispatch, useSelector} from 'react-redux'
 import ClearIcon from '@mui/icons-material/Clear';
 import PropTypes from 'prop-types';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarColumnsButton} from '@mui/x-data-grid';
 import CircularProgress from '@mui/material/CircularProgress';
-import { USER_LIST_SUCCESS, USER_LIST_RESET, USER_LIST_REQUEST, USER_DELETE_RESET } from '../../constants/userConstants';
+import { USER_LIST_RESET, USER_LIST_REQUEST, USER_DELETE_RESET } from '../../constants/userConstants';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Dialog from '@mui/material/Dialog';
@@ -48,7 +48,7 @@ function CustomToolbar() {
     );
 }
 
-function TeacherManagement() {
+function ParentManagement() {
     const defaultStyle = useStyles();
     const userLogin = useSelector(state => state.userLogin);
     const {userInfo} = userLogin;
@@ -60,6 +60,9 @@ function TeacherManagement() {
 
     const userDelete = useSelector(state => state.userDelete)
     const {success: successDelete, loading: loadingDelete} = userDelete
+
+    const parentList = useSelector(state => state.parentList)
+    const {data: listParents, loading: loadingParent, success: successParent} = parentList;
 
     const [search, setSearch] = useState('');
     const [select, setSelection] = useState([]);
@@ -114,7 +117,7 @@ function TeacherManagement() {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete the Teacher(s)?
+                Are you sure you want to delete the Parent(s)?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -130,7 +133,7 @@ function TeacherManagement() {
 
 
     const columns = [
-      { field: 'id', headerName: 'Teacher ID', width: 200 },
+      { field: 'id', headerName: 'Parent ID', width: 200 },
       {
         field: 'username',
         headerName: 'Name',
@@ -162,7 +165,7 @@ function TeacherManagement() {
                 <Grid xs={6} item>
                   <Toolbar>
                   <Tooltip title="Edit">
-                  <IconButton href={`/menu/teachermanagement/teacher/${params.row.userID}`}>
+                  <IconButton href={`/menu/Parentmanagement/parent/${params.row.userID}`}>
                     <EditIcon />
                   </IconButton>
                   </Tooltip>
@@ -180,7 +183,7 @@ function TeacherManagement() {
 
     useEffect(() => {
       if(userInfo) { 
-        dispatch(listTeachers())
+        dispatch(ListParents())
       } else{
         history.push('/')
       }
@@ -193,9 +196,9 @@ function TeacherManagement() {
     }, [successDelete])
 
     useEffect(() => {
-      console.log(users)
-      if (users) {
-          const userS = users?.map(user => {
+      console.log(listParents)
+      if (listParents) {
+          const userS = listParents?.map(parent => {
         //   var s = servicel.serviceStatus === "O"? "Active":"Inactive"
         //   var timeString = servicel.serviceTime // input string
         //   var arr = timeString.split(":"); // splitting the string by colon
@@ -203,16 +206,16 @@ function TeacherManagement() {
         //   var t = arr[0] + ":" + arr[1] + suffix
 
           return {
-            id: user.teacherID,
-            username: user.teacherFirstName+ " " + user.teacherLastName,
-            email: user.teacherEmail,
-            userID: user.created_by
+            id: parent.parentsID,
+            username: parent.parentsFirstName+ " " + parent.parentsLastName,
+            email: parent.parentsEmail,
+            userID: parent.created_by
           }
         })
         // console.log(serviceLoad)
         setRow(userS);
       }
-    }, [users])
+    }, [listParents])
 
     useEffect(()=> {
       if(row){
@@ -268,7 +271,7 @@ function TeacherManagement() {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete the Teacher(s)?
+                Are you sure you want to delete the Parent(s)?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -301,7 +304,7 @@ function TeacherManagement() {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                The Teacher(s) is deleted
+                The Parent(s) is deleted
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -349,7 +352,7 @@ function TeacherManagement() {
                           </Grid>
                           <Grid xs={6} item md={1}>
                           <Tooltip title="Add new teacher">          
-                          <IconButton href="/menu/teachermanagement/addTeacher">
+                          <IconButton href="/menu/teachermanagement/addParent">
                           <AddCircleIcon style={{fontSize: 40, color: "black", }}/>
                           </IconButton> 
                           </Tooltip> 
@@ -384,7 +387,7 @@ function TeacherManagement() {
                 </Paper>
             </Grid>
             <Grid>
-              {loading?
+              {loadingParent?
               <Backdrop style={{ zIndex: 9999, backgroundColor: '#36454F'}}  open={true}>
               <CircularProgress  style={{color: '#F5CB5C'}}/>
               </Backdrop>:null
@@ -406,4 +409,4 @@ function TeacherManagement() {
     );
 }
 
-export default TeacherManagement;
+export default ParentManagement;

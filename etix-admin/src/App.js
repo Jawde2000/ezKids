@@ -12,16 +12,15 @@ import Sales from './components/Sales/Sales'
 import Service from './components/Service/Service';
 import ServiceMan from './components/ServiceMan/Services'
 import Teacher from './components/TeacherManagement/Teacher'
-import User from './components/User/UserDetail'
 import DataGenerationService from './components/DataGeneration/DataGenerationService';
 import {CookiesProvider} from 'react-cookie'
 import Help from './components/HelpMan/Help';
-import UserDetail from './components/User/UserDetail';
 import AddUser from './components/User/AddUser';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AddService from './components/ServiceMan/AddService';
 import Dashboard from './components/adminMenu/Dashboard';
 import TeacherManagement from './components/TeacherManagement/TeacherManagement';
+import ParentManagement from './components/ParentManagement/ParentManagement';
 import AddTeacher from './components/TeacherManagement/addTeacher';
 import EZDashboard from './components/adminMenu/EZDashboard';
 import {useSelector} from 'react-redux'
@@ -69,13 +68,13 @@ function App() {
                   <Route exact path="/service/:id" component={Service} />
                   <Route exact path="/menu/users" component={UserManagement} />
                   <Route exact path="/menu/helpdesk" component={Help} /> 
-                  <Route exact path="/user/:id" component={UserDetail}/>
                   <Route exact path="/addUser" component={AddUser} />
                   <Route exact path="/help/:id" component={Helpdesk} />
                   <Route exact path="/newService" component={AddService}/>
                   <Route exact path="/dashboard" component={Dashboard}/>
                   <Route exact path="/ezdashboard" component={EZDashboard}/>
                   <Route exact path="/menu/teachermanagement" component={TeacherManagement}/>
+                  <Route exact path="/menu/parentmanagement" component={ParentManagement}/>
                   <Route exact path="/menu/teachermanagement/teacher/:id" component={Teacher}/>
                   <Route exact path="/menu/teachermanagement/addTeacher" component={AddTeacher}/>
                 </Switch>

@@ -35,10 +35,10 @@ import {
     USER_VENDOR_REGISTER_FAIL,
     USER_VENDOR_REGISTER_RESET,
 
-    USER_VENDOR_UPDATE_REQUEST, 
-    USER_VENDOR_UPDATE_SUCCESS,
-    USER_VENDOR_UPDATE_FAIL,
-    USER_VENDOR_UPDATE_RESET,
+    USER_TEACHER_UPDATE_REQUEST, 
+    USER_TEACHER_UPDATE_SUCCESS,
+    USER_TEACHER_UPDATE_FAIL,
+    USER_TEACHER_UPDATE_RESET,
 
     USER_CUSTOMER_UPDATE_REQUEST, 
     USER_CUSTOMER_UPDATE_SUCCESS,
@@ -69,6 +69,21 @@ import {
     INDIVIDUAL_TEACHER_SUCCESS,
     INDIVIDUAL_TEACHER_FAIL,
     INDIVIDUAL_TEACHER_RESET,
+
+    NEW_PARENT_REQUEST,
+    NEW_PARENT_SUCCESS,
+    NEW_PARENT_RESET,
+    NEW_PARENT_FAIL,
+
+    PARENT_REQUEST,
+    PARENT_SUCCESS,
+    PARENT_RESET,
+    PARENT_FAIL,
+
+    INDIVIDUAL_PARENT_REQUEST,
+    INDIVIDUAL_PARENT_SUCCESS,
+    INDIVIDUAL_PARENT_RESET,
+    INDIVIDUAL_PARENT_FAIL,
 } from '../constants/userConstants'
 
 export const userLoginReducer = (state = { }, action) => {
@@ -225,16 +240,16 @@ export const userUpdateReducer = (state={}, action) => {
 
 export const vendorUpdateReducer = (state={}, action) => {
     switch(action.type){
-        case USER_VENDOR_UPDATE_REQUEST:
+        case USER_TEACHER_UPDATE_REQUEST:
             return {loading: true}
         
-        case USER_VENDOR_UPDATE_SUCCESS:
+        case USER_TEACHER_UPDATE_SUCCESS:
            return {loading: false, success: true}
         
-        case USER_VENDOR_UPDATE_FAIL:
+        case USER_TEACHER_UPDATE_FAIL:
            return {loading: false, error: action.payload}
 
-        case USER_VENDOR_UPDATE_RESET:
+        case USER_TEACHER_UPDATE_RESET:
             return {}
 
         default:
@@ -267,10 +282,10 @@ export const teacherTotalReducer = (state={}, action) => {
             return {loading: true}
         
         case TEACHER_TOTAL_SUCCESS:
-           return {loading: false, success: action.payload}
+           return {loading: false, data: action.payload, success: true}
         
         case TEACHER_TOTAL_FAIL:
-           return {loading: false, error: action.payload}
+           return {loading: false, error: action.payload, success: false}
 
         case TEACHER_TOTAL_RESET:
             return {}
@@ -330,6 +345,63 @@ export const individualTeacherReducer = (state={}, action) => {
            return {loading: false, success: false, error: action.payload}
 
         case INDIVIDUAL_TEACHER_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const ParentListReducer = (state={}, action) => {
+    switch(action.type){
+        case PARENT_REQUEST:
+            return {loading: true}
+        
+        case PARENT_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case PARENT_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case PARENT_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const addParentReducer = (state={}, action) => {
+    switch(action.type){
+        case NEW_PARENT_REQUEST:
+            return {loading: true}
+        
+        case NEW_PARENT_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case NEW_PARENT_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case NEW_PARENT_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const individualParentReducer = (state={}, action) => {
+    switch(action.type){
+        case INDIVIDUAL_PARENT_REQUEST:
+            return {loading: true}
+        
+        case INDIVIDUAL_PARENT_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case INDIVIDUAL_PARENT_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case INDIVIDUAL_PARENT_RESET:
             return {}
 
         default:

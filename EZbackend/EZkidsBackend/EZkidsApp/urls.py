@@ -119,9 +119,19 @@ urlpatterns = [
     path('api/new/attendance/', 
          views.newAttendance, name='attendance-newAttendance'),
     
+    #create new teacher
     path('api/new/teacher/', 
          views.newTeacher, name='attendance-newTeacher'),
     
+    #create new children
+    path('api/new/children/',
+         views.newChildren, name='children-newChildren'),
+    
+    #create new children
+    path('api/new/parents/',
+         views.newParent, name='parent-newParent'),
+    
+    #get individual teacher
     path('api/individualteacher/<str:pk>/', 
          views.getIndividualTeacher, name='teacher-individualTeacher'),
 

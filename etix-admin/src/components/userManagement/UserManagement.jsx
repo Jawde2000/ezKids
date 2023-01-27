@@ -17,7 +17,7 @@ import {Link} from 'react-router-dom';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { listUsers, deleteUsers } from '../../actions/userActions';
+import { deleteUsers } from '../../actions/userActions';
 import { useHistory } from 'react-router';
 import {USER_DELETE_RESET} from '../../constants/userConstants';
 //a npm package for generating PDF tables 
@@ -246,7 +246,7 @@ const UserManagement = () =>{
 
     useEffect(() => {
         if(userInfo){
-            dispatch(listUsers())
+            // dispatch(listUsers())
             console.log(users)
         }
         else{

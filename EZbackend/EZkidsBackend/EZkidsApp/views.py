@@ -603,6 +603,50 @@ def newTeacher(request):
     except:
         message = {'detail': 'failed to create a new teacher'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def newParent(request):
+    data = request.data
+    try:
+        created_by = User.objects.get(username=data["created_by"])
+        parent = Parent.objects.create(
+            created_by=created_by,
+            parentsType=data['parentsType'],
+            parentsFirstName=data['parentsFirstName'],
+            parentsLastName=data['parentsLastName'],
+            parentsContactphone=data['parentsContactphone'],
+            parentsEmail=data['parentsEmail'],
+            secondParentEmail=data['secondParentEmail'],
+            parentsAddress=data['parentsAddress'],
+            parentsDOB=data['parentsDOB'],
+        )
+        
+        serializer = ParentSerializer(parent, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'New Parent fail to do so'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def newChildren(request):
+    data = request.data
+    try:
+        parent = Parent.objects.get(parentsID=data["parent"])
+        class_belong = Class.objects.get(classID=data["class_belong"])
+        children = Children.objects.create(
+            childFirstName=data["childFirstName"],
+            childLastName=data["childLastName"],
+            childGender=data["childGender"],
+            childDOB=data["childDOB"],
+            parent=parent,
+            class_belong=class_belong,
+        )
+
+        serializer = ChildrenSerializer(children, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'New children fail to do so'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['PUT'])
 def newAttendance(request):

@@ -3,7 +3,8 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { teacherTotalReducer, userLoginReducer, userListReducer, userDeleteReducer, userDetailReducer, customerRegisterReducer, 
     adminRegisterReducer, vendorRegisterReducer, userUpdateReducer, vendorUpdateReducer, customerUpdateReducer, addTeacherReducer,
-    getChildrenGenderReducer, individualTeacherReducer} from './reducers/userReducers'
+    getChildrenGenderReducer, individualTeacherReducer, addParentReducer, individualParentReducer, 
+    ParentListReducer} from './reducers/userReducers'
 import { helpListReducer, helpDeleteReducer, helpDetailReducer, helpSaveReducer, helpSendReducer} from './reducers/helpReducers'
 import { serviceListReducer, serviceDetailReducer, serviceDeleteReducer, serviceSaveReducer, 
     locationDetailReducer, vendorDetailReducer, serviceAddReducer } from './reducers/serviceReducers'
@@ -38,6 +39,9 @@ const reducer = combineReducers({
     newTeacher: addTeacherReducer,
     getChildrenGender: getChildrenGenderReducer,
     individualTeacher: individualTeacherReducer,
+    individualParent: individualParentReducer, 
+    addParent: addParentReducer,
+    parentList: ParentListReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ?

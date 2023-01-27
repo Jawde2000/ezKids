@@ -9,7 +9,7 @@ import { ChildrenGender } from '../../actions/userActions';
 import { CHILDREN_DEMOGRAPHIC_GENDER_REQUEST, CHILDREN_DEMOGRAPHIC_GENDER_SUCCESS, 
   CHILDREN_DEMOGRAPHIC_GENDER_FAIL, CHILDREN_DEMOGRAPHIC_GENDER_RESET } from '../../constants/userConstants';
 
-const COLORS = ['#0088FE', '#FF0000', '#FFBB28', '#FF8042'];
+const COLORS = ['#FF0000','#0088FE','#FFBB28', '#FF8042'];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
@@ -37,17 +37,10 @@ export default function Piechart() {
   useEffect(() => {
     dispatch(ChildrenGender());
     if (success) {
-      console.log(childrenDemo[0]);
-
-      const total = childrenDemo[0] + childrenDemo[1];
-      console.log(total)
       getMale(childrenDemo[0])
       getFemale(childrenDemo[1])
     }
-    // getFemale(childrenDemo[0]);
-    // getMale(childrenDemo.male);
-    console.log(male);
-  }, [userInfo, success])
+  }, [childrenDemo])
 
   const data = [
     { name: 'Girl', value: female },

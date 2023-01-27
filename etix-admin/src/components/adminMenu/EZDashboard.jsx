@@ -78,7 +78,7 @@ function EZDashboard() {
     const {userInfo} = userLogin;
   
     const teacher = useSelector(state => state.teacherTotal);
-    const {success: teacherT, loading: Loading} = teacher;
+    const {success: successT, loading: Loading, data: teacherT} = teacher;
 
     const [user_total, setUserTotal] = useState([]);
     const [open, setOpen] = React.useState(false);
@@ -93,16 +93,10 @@ function EZDashboard() {
 
     useEffect(() => {
         dispatch(user_Total());
-    }, [])
-
-    useEffect(() => {
-        if (teacherT) {
+        if (successT) {
             setUserTotal(teacherT);
         }
-    },)
-
-
-
+    }, [])
 
     return (
         <Box bgcolor="#DADADA" borderBottom="1px solid black" borderTop="1px solid black" sx={{ flexGrow: 1 , p: 5, m: 5, }}>

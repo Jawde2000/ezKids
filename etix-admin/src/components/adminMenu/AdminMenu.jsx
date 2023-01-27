@@ -137,6 +137,8 @@ function AdminMenu() {
 
   const userList = useSelector(state => state.userList);
   const {loading, error, users} = userList
+  const parentList = useSelector(state => state.parentList)
+  const {data: listParents, loading: loadingParent, success: successParent} = parentList;
 
   useEffect(() => {
     if(!userInfo) {
@@ -151,12 +153,12 @@ function AdminMenu() {
   const [parentManagement, setparentManagement] = useState(false);
 
   useEffect(() => {
-    if (loading) {
+    if (loading || loadingParent) {
       setOpen(true);
     } else {
       setOpen(false);
     }
-  }, [loading])
+  }, [loading, loadingParent])
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -223,7 +225,7 @@ function AdminMenu() {
             <ListItemText primary={"Teachers"} />
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding>
+        <ListItem disablePadding component={Link} to={"/menu/parentmanagement"} style={{ textDecorationLine: 'none', display: "flex", color: "black"}}>
           <ListItemButton>
             <ListItemIcon>
               <ParentIcon />
@@ -268,7 +270,7 @@ function AdminMenu() {
           </ListItem>
         </List>
     </Drawer>
-    <Main open={loading? !open:open}>
+    <Main open={open}>
     </Main>
   </Box>
   );

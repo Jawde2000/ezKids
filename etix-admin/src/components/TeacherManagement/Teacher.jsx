@@ -16,7 +16,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import AddIcon from '@mui/icons-material/Add';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import { USER_UPDATE_RESET, USER_LOGIN_SUCCESS,USER_VENDOR_UPDATE_RESET, USER_DETAIL_RESET } from '../../constants/userConstants';
+import { USER_UPDATE_RESET, USER_LOGIN_SUCCESS,USER_TEACHER_UPDATE_RESET, USER_DETAIL_RESET } from '../../constants/userConstants';
 import { updateUser, updateTeacher, deleteUsers, getIndividualTeacher } from '../../actions/userActions';
 import moscow from '../globalAssets/moscow.jpg';
 import S3 from 'react-aws-s3';
@@ -242,14 +242,14 @@ const Teacher = ({props}) => {
         }
         else if(successUser){
             alert("Successfully Updated User");
-            dispatch({type: USER_VENDOR_UPDATE_RESET});
+            dispatch({type: USER_TEACHER_UPDATE_RESET});
             setEditing(!editing);
             return;
         }
         else if(errorUsr || errorVen){
             setPass(true);
             <DialogPass />
-            dispatch({type: USER_VENDOR_UPDATE_RESET});
+            dispatch({type: USER_TEACHER_UPDATE_RESET});
             dispatch({type: USER_UPDATE_RESET});
         }
     }, [successUser, successVendor, errorUsr, errorVen])

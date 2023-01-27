@@ -34,10 +34,10 @@ import {
     USER_VENDOR_REGISTER_FAIL,
     USER_VENDOR_REGISTER_RESET,
 
-    USER_VENDOR_UPDATE_REQUEST, 
-    USER_VENDOR_UPDATE_SUCCESS,
-    USER_VENDOR_UPDATE_FAIL,
-    USER_VENDOR_UPDATE_RESET,
+    USER_TEACHER_UPDATE_REQUEST, 
+    USER_TEACHER_UPDATE_SUCCESS,
+    USER_TEACHER_UPDATE_FAIL,
+    USER_TEACHER_UPDATE_RESET,
 
     USER_CUSTOMER_UPDATE_REQUEST, 
     USER_CUSTOMER_UPDATE_SUCCESS,
@@ -70,6 +70,20 @@ import {
     INDIVIDUAL_TEACHER_FAIL,
     INDIVIDUAL_TEACHER_RESET,
 
+    NEW_PARENT_REQUEST,
+    NEW_PARENT_SUCCESS,
+    NEW_PARENT_RESET,
+    NEW_PARENT_FAIL,
+
+    PARENT_REQUEST,
+    PARENT_SUCCESS,
+    PARENT_RESET,
+    PARENT_FAIL,
+
+    INDIVIDUAL_PARENT_REQUEST,
+    INDIVIDUAL_PARENT_SUCCESS,
+    INDIVIDUAL_PARENT_RESET,
+    INDIVIDUAL_PARENT_FAIL,
 } from '../constants/userConstants'
 
 import { HELP_LIST_RESET } from '../constants/helpConstants'
@@ -194,8 +208,8 @@ export const user_Total = () => async (dispatch, getState) => {
     }
 }
 
-//GET USER LISTS
-export const listUsers = () => async (dispatch, getState) => {
+//GET TEACHER LISTS
+export const listTeachers = () => async (dispatch, getState) => {
     try{
         dispatch({
             type:USER_LIST_REQUEST
@@ -224,67 +238,6 @@ export const listUsers = () => async (dispatch, getState) => {
             'http://127.0.0.1:8000/api/teachers/',
             config
         )
-
-        console.log(listTeacher)
-
-        // let teacherInfo = [];
-
-        // for(let i of data) {
-        //     if (i.is_teacher) {
-        //         let rst = await axios.get(
-        //             `http://127.0.0.1:8000/api/teachers/${i.userID}`,
-        //             config
-        //         );
-        //         console.log(rst)
-        //         teacherInfo.push(rst.data)
-
-        //     }
-        // }
-
-        // console.log(teacherInfo)
-        // let teacherInfo = [];
-
-        // console.log(data);
-
-        // for(let i of data){
-        //     if(i.is_vendor){
-        //         let rst = await axios.get(
-        //             `http://127.0.0.1:8000/api/user/vendor/${i.userID}/`,
-        //             config
-        //         );
-
-        //         rst.data.email = i.email;
-        //         rst.data.userID = i.userID;
-        //         rst.data.username = i.username;
-        //         teacherInfo.push(rst.data);
-        //     }
-        // }
-
-        // let i=0;
-
-        // if(teacherInfo.length != 0){
-        //     data = data.map((item, index) => {
-        //         if(item.is_vendor){
-        //             let vendorIf = teacherInfo[i];
-                    
-        //             console.log(vendorIf)
-                    
-        //             i++;
-
-        //             return ({
-        //                 ...item,
-        //                 teacherInfo: vendorIf,
-        //             })
-        //         }
-        //         else{
-        //             return ({
-        //                 ...item,
-        //             })
-        //         }
-        //     })
-        // }
-
-        // console.log(teacherInfo);
         
         dispatch({
             type: USER_LIST_SUCCESS,
@@ -294,6 +247,54 @@ export const listUsers = () => async (dispatch, getState) => {
     }catch(error){
         dispatch({
             type: USER_LIST_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+//GET TEACHER LISTS
+export const ListParents = () => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type:PARENT_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.get(
+            'http://127.0.0.1:8000/api/users/',
+            config
+        )
+
+        console.log(data)
+
+        var listParents = await axios.get(
+            'http://127.0.0.1:8000/api/parents/',
+            config
+        )
+
+        console.log(listParents)
+        
+        dispatch({
+            type: PARENT_SUCCESS,
+            payload: listParents.data
+        })
+
+    }catch(error){
+        dispatch({
+            type: PARENT_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
@@ -680,7 +681,7 @@ export const updateCustomer = (user, customer, id) => async (dispatch, getState)
 export const updateTeacher = (user, teacher, id) => async (dispatch, getState) => {
     try{
         dispatch({
-            type:USER_VENDOR_UPDATE_REQUEST
+            type:USER_TEACHER_UPDATE_REQUEST
         })
 
         const {
@@ -711,13 +712,13 @@ export const updateTeacher = (user, teacher, id) => async (dispatch, getState) =
         
     
         dispatch({
-            type: USER_VENDOR_UPDATE_SUCCESS,
+            type: USER_TEACHER_UPDATE_SUCCESS,
         })
 
 
     }catch(error){
         dispatch({
-            type: USER_VENDOR_UPDATE_FAIL,
+            type: USER_TEACHER_UPDATE_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,

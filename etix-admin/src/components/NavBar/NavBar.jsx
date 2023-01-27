@@ -64,8 +64,6 @@ function NavBar() {
     dispatch({type: USER_DELETE_RESET});
     dispatch({type: USER_CUSTOMER_REGISTER_RESET});
     dispatch({type: USER_REGISTER_RESET});
-    dispatch({type: USER_VENDOR_REGISTER_RESET});
-    dispatch({type: USER_VENDOR_UPDATE_RESET});
     dispatch({type: USER_CUSTOMER_UPDATE_RESET});
 
     dispatch({type: SERVICE_LIST_RESET})
