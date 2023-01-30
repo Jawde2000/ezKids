@@ -17,7 +17,9 @@ from EZkidsBackend.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
 
 from django.utils.crypto import get_random_string
-
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.core.cache import cache
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -140,7 +142,7 @@ def registerUser(request):
             bankAccountHolder=data["bankAccountHolder"],
             teacherBankName=data["teacherBankName"],
             teacherBankAcc=data["teacherBankAcc"],
-        )
+            )
         serializer = TeacherSerializer(teacher, many=False)
 
         return Response(serializer.data)
@@ -275,28 +277,6 @@ def registerUser(request):
 #         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
-# # update user profile
-
-
-# @api_view(['PUT'])
-# @permission_classes([IsAuthenticated])
-# def updateUserProfile(request):
-#     user = request.user
-#     serializer = UserSerializerWithToken(user, many=False)
-
-#     data = request.data
-#     user.username = data['username']
-#     user.email = data['email']
-#     user.is_active = data['is_active']
-
-#     if data['password'] != '':
-#         user.password = make_password(data['password'])
-
-#     user.save()
-
-#     return Response(serializer.data)
-
-
 # @api_view(['PUT'])
 # @permission_classes([IsAuthenticated])
 # def updateUser(request, pk):
@@ -338,32 +318,6 @@ def registerUser(request):
 #     serializer = CustomerSerializer(customer, many=False)
 
 #     return Response(serializer.data)
-# update vendor by userid
-
-
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def updateTeacher(request, pk):
-    
-    try:
-        teacher = Teacher.objects.get(created_by=pk)
-
-        data = request.data
-        teacher.teacherContactphone = data['teacherContactphone']
-        teacher.teacherFirstName = data['teacherFirstName']
-        teacher.teacherLastName = data['teacherLastName']
-        teacher.teacherEmail = data['teacherEmail']
-        teacher.bankAccountHolder = data['bankAccountHolder']
-        teacher.teacherBankName = data['teacherBankName']
-        teacher.teacherBankAcc = data['teacherBankAcc']
-
-        teacher.save()
-        serializer = TeacherSerializer(teacher, many=False)
-        return Response(serializer.data)
-    except:
-        message = {'detail': 'Teacher failed to update'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
 
 # @api_view(['PUT'])
 # @permission_classes([IsAuthenticated])
@@ -563,6 +517,20 @@ def getSubject(request):
         message = {'detail': 'Children Information failed to fetched'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
+@receiver(post_save, sender=Children)
+def update_children_gender_count(sender, **kwargs):
+    male_children = Children.objects.filter(childGender="M").count()
+    female_children = Children.objects.filter(childGender="F").count()
+    cache.set("male", male_children)
+    cache.set("female", female_children)
+
+@receiver(post_delete, sender=Children)
+def update_children_gender_count_on_delete(sender, **kwargs):
+    male_children = Children.objects.filter(childGender="M").count()
+    female_children = Children.objects.filter(childGender="F").count()
+    cache.set("male", male_children)
+    cache.set("female", female_children)
+
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def getChildrenGender(request):
@@ -572,7 +540,7 @@ def getChildrenGender(request):
         data = {'male': male_children, 'female': female_children}
         return Response(data)
     except:
-        message = {'details': 'Couldnt fetch children demographic'}
+        message = {'detail': 'demographic Information failed to fetched'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['GET'])
@@ -603,12 +571,51 @@ def newTeacher(request):
     except:
         message = {'detail': 'failed to create a new teacher'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['PUT'])
+def updateTeacher(request, pk):
+    try:
+        teacher = Teacher.objects.get(teacherID=pk)
+        data = request.data
+        teacher.teacherFirstName = data.get("teacherFirstName", teacher.teacherFirstName)
+        teacher.teacherLastName = data.get("teacherLastName", teacher.teacherLastName)
+        teacher.teacherEmail = data.get("teacherEmail", teacher.teacherEmail)
+        teacher.teacherContactphone = data.get("teacherContactphone", teacher.teacherContactphone)
+        teacher.bankAccountHolder = data.get("bankAccountHolder", teacher.bankAccountHolder)
+        teacher.teacherBankName = data.get("teacherBankName", teacher.teacherBankName)
+        teacher.teacherBankAcc = data.get("teacherBankAcc", teacher.teacherBankAcc)
+        teacher.save()
+        return Response({'detail': 'Teacher has been updated'}, status=status.HTTP_200_OK)
+    except Teacher.DoesNotExist:
+        return Response({'detail': 'Teacher not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # # update user profile
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateUserProfile(request, pk):
+    try:
+        user = User.objects.get(userID=pk)
+        serializer = UserSerializerWithToken(user, many=False)
+        data = request.data
+        user.username = data['username']
+        user.email = data['email']
+        user.is_active = data['is_active']
+
+        if data['password'] != '':
+            user.password = make_password(data['password'])
+
+        user.save()
+
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'update user fail'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 def newParent(request):
     data = request.data
     try:
-        created_by = User.objects.get(username=data["created_by"])
+        created_by = User.objects.get(userID=data["created_by"])
         parent = Parent.objects.create(
             created_by=created_by,
             parentsType=data['parentsType'],
@@ -625,6 +632,37 @@ def newParent(request):
         return Response(serializer.data)
     except:
         message = {'detail': 'New Parent fail to do so'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['PUT'])
+def updateParent(request, pk):
+    try:
+        data = request.data
+        parent = Parent.objects.get(parentsID=pk)
+        created_by = User.objects.get(userID=data["created_by"])
+        parent.created_by = created_by
+        parent.parentsType = data['parentsType']
+        parent.parentsFirstName = data['parentsFirstName']
+        parent.parentsLastName = data['parentsLastName']
+        parent.parentsContactphone = data['parentsContactphone']
+        parent.parentsEmail = data['parentsEmail']
+        parent.secondParentEmail = data['secondParentEmail']
+        parent.parentsAddress = data['parentsAddress']
+        parent.parentsDOB = data['parentsDOB']
+        parent.save()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': 'Parent fail to update'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['DELETE'])
+def deleteParent(request, pk):
+    try:
+        parent = Parent.objects.get(parentsID=pk)
+        parent.delete()
+        return Response({"message": "Parent with ID {} successfully deleted".format(pk)})
+    except:
+        message = {'detail': 'parent fail to delete'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
@@ -649,6 +687,34 @@ def newChildren(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['PUT'])
+def updateChildren(request, pk):
+
+    data = request.data
+    children = Children.objects.get(childID=pk)
+    parent = Parent.objects.get(parentsID=data["parent"])
+    class_belong = Class.objects.get(classID=data["class_belong"])
+    children.childFirstName = data["childFirstName"]
+    children.childLastName = data["childLastName"]
+    children.childGender = data["childGender"]
+    children.childDOB = data["childDOB"]
+    children.parent = parent
+    children.class_belong = class_belong
+    children.save()
+    serializer = ChildrenSerializer(children, many=False)
+    return Response(serializer.data)
+
+#delete subject
+@api_view(['DELETE'])
+def deleteChildren(request, pk):
+    try:
+        children = Children.objects.get(childID=pk)
+        children.delete()
+        return Response({"message": "Children with ID {} successfully deleted".format(pk)})
+    except Subject.DoesNotExist:
+        message = {'detail': 'subject not found'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['PUT'])
 def newAttendance(request):
     data = request.data
     try:
@@ -671,7 +737,8 @@ def newAttendance(request):
     except:
         message = {'detail': 'New attendance fail to do so'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
+
+#create new subject
 @api_view(['PUT'])
 def newSubject(request):
     data = request.data
@@ -685,40 +752,188 @@ def newSubject(request):
     except:
         message = {'detail': 'Children Information failed to fetched'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        
+    
+#delete subject
+@api_view(['DELETE'])
+def deleteSubject(request, pk):
+    try:
+        subject = Subject.objects.get(subjectID=pk)
+        subject.delete()
+        return Response({"message": "Subject with ID {} successfully deleted".format(pk)})
+    except Subject.DoesNotExist:
+        message = {'detail': 'subject not found'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
+
+#create new annoucement
 @api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def principalPost(request):
+def newAnnouncement(request):
     data = request.data
     try:
         announcement = Announcement.objects.create(
-            announcement=data["announcement"],
+            announcementTitle=data["announcementTitle"],
+            announcementDesc=data["announcementDesc"],
             announcementSchedule=data["announcementSchedule"],
         )
-        
+
         serializer = AnnouncementSerializer(announcement, many=False)
         return Response(serializer.data)
     except:
-        message = {'detail': 'announcement already exist'}
+        message = {'detail': 'announcement fail to create'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def deleteAnnouncement(request, pk):
+    try:
+        announcement = Announcement.objects.get(announcementID=pk)
+        announcement.delete()
+        return Response({"message": "Announcement with ID {} successfully deleted".format(pk)})
+    except Announcement.DoesNotExist:
+        message = {'detail': 'announcement not found'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['PUT'])
+def newSubjectGrade(request):
+    data = request.data
+    try:
+        children = Children.objects.get(childID=data["children"])
+        teacher = Teacher.objects.get(teacherID=data["teacher"])
+        parent = Parent.objects.get(parentsID=data["parent"])
+        subject = Subject.objects.get(subjectID=data["subject"])
+        subject_grade = SubjectGrade.objects.create(
+            children=children,
+            grade=data["grade"],
+            parent=parent,
+            teacher=teacher,
+            subject=subject
+        )
+    except:
+        message = {'detail': 'subject grade failed to create'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['PUT'])
-def uploadHomework(request):
-    data = request.data
+def updateSubjectGrade(request, pk):
     try:
+        data = request.data
+        subject_grade = SubjectGrade.objects.get(subject_gradeID=pk)
+        children = Children.objects.get(childID=data["children"])
+        teacher = Teacher.objects.get(teacherID=data["teacher"])
+        parent = Parent.objects.get(parentsID=data["parent"])
+        subject = Subject.objects.get(subjectID=data["subject"])
+        subject_grade.children = children
+        subject_grade.grade = data["grade"]
+        subject_grade.parent = parent
+        subject_grade.teacher = teacher
+        subject_grade.subject = subject
+        subject_grade.save()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': 'subject fail to update'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['DELETE'])
+def deleteSubjectGrade(request, pk):
+    try:
+        subject_grade = SubjectGrade.objects.get(subject_gradeID=pk)
+        subject_grade.delete()
+        return Response({"message": "subjectGrade with ID {} successfully deleted".format(pk)})
+    except:
+        message = {'detail': 'subject grade fail to delete'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def newHomework(request):
+    try:
+        data = request.data
+
+        teacher = Teacher.objects.get(teacherID=data["teacher"])
+        subject = Subject.objects.get(subjectID=data["subject"])
+        children = Children.objects.get(childID=data["children"])
         homework = Homework.objects.create(
-            homeworkTitle=data["homeworkTitle"],
-            homeworkDesc=data["homeworkDesc"],
-            teacher=data["teacher"],
-            subject=data["subject"],
-            children=data["children"],
+            homeworkTitle=data['homeworkTitle'],
+            homeworkDesc=data['homeworkDesc'],
+            teacher=teacher,
+            subject=subject,
+            children=children,
         )
-        
         serializer = HomeworkSerializer(homework, many=False)
         return Response(serializer.data)
     except:
-        message = {'detail': 'homework fail to post'}
+        message = {'detail': 'New homework fail to do so'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+def updateHomework(request, pk):
+    
+    try:
+        data = request.data
+
+        homework = Homework.objects.get(homeworkID=pk)
+        teacher = Teacher.objects.get(teacherID=data["teacher"])
+        subject = Subject.objects.get(subjectID=data["subject"])
+        children = Children.objects.get(childID=data["children"])
+        homework.homeworkTitle = data['homeworkTitle']
+        homework.homeworkDesc = data['homeworkDesc']
+        homework.teacher = teacher
+        homework.subject = subject
+        homework.children = children
+        homework.save()
+        serializer = HomeworkSerializer(homework, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'homework update fail to do so'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['DELETE'])
+def deleteHomework(request, pk):
+    try:
+        homework = Homework.objects.get(homeworkID=pk)
+        homework.delete()
+        return Response({"message": "Homework with ID {} successfully deleted".format(pk)})
+    except Homework.DoesNotExist:
+        return Response({"error": "Homework with ID {} not found".format(pk)}, status=status.HTTP_404_NOT_FOUND)
+    except:
+        return Response({"error": "Failed to delete homework with ID {}".format(pk)}, status=status.HTTP_400_BAD_REQUEST)
+
+    
+@api_view(['POST'])
+def newClass(request):
+    data = request.data
+    try:
+        teacher = Teacher.objects.get(teacherID=data["teacher"])
+        new_class = Class.objects.create(
+            className=data['className'],
+            teacher=teacher,
+        )
+        serializer = ClassSerializer(new_class, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'New Class fail to do so'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['PUT'])
+def updateClass(request, pk):
+    try:
+        data = request.data
+        the_class = Class.objects.get(classID=pk)
+        teacher = Teacher.objects.get(teacherID=data["teacher"])
+        the_class.className = data["className"]
+        the_class.teacher = teacher
+        the_class.save()
+        return Response(status=status.HTTP_200_OK)
+    except:
+        message = {'detail': 'class fail to update'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['DELETE'])
+def deleteClass(request, pk):
+    try:
+        class_obj = Class.objects.get(classID=pk)
+        class_obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    except:
+        message = {'detail': 'Class does not exist'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
 
 # @api_view(['GET'])
 # def getServiceByVendorID(request, pk):

@@ -32,18 +32,26 @@ AUTH_USER_MODEL = 'EZkidsApp.User'
 
 # Application definition
 
+# CACHES = {
+# "default": {
+# "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+# "LOCATION": "postgresql://postgres:TGETpCHUAjvbgobRZHlM@containers-us-west-190.railway.app:5735/railway",
+# }
+# }
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.core.cache',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
     "corsheaders",
+    "django_redis",
     'rest_framework',
     'EZkidsApp',
-    
 ]
 
 MIDDLEWARE = [

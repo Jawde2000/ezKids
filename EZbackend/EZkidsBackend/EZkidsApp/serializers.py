@@ -76,7 +76,7 @@ class PrincipalSerializer(serializers.ModelSerializer):
 class AnnouncementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
-        fields = ['announcementID', 'announcement', 'announcementTime', 'announcementSchedule']
+        fields = ['announcementID', 'announcementTitle', 'announcementDesc','announcementTime', 'announcementSchedule']
 
 
 class TodoListSerializer(serializers.ModelSerializer):
@@ -94,7 +94,7 @@ class ToDoItemSerializer(serializers.ModelSerializer):
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = '__all__'
+        fields = '__all__' 
 
 
 class HomeworkSerializer(serializers.ModelSerializer):
@@ -106,7 +106,7 @@ class HomeworkSerializer(serializers.ModelSerializer):
 class SubjectGradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubjectGrade
-        fields = ['subjectID', 'subject']
+        fields = ['subject_gradeID', 'subject', "grade", "parent", "teacher"]
 
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:

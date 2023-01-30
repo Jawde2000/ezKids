@@ -232,7 +232,8 @@ class Announcement(models.Model):
     
     announcementID = models.CharField(
         default=generate_announcement_id, primary_key=True, unique=True, editable=False, max_length=8)
-    announcement = models.CharField(max_length=2500, blank=True)
+    announcementTitle = models.CharField(max_length=2500, blank=True)
+    announcementDesc = models.CharField(max_length=5500, blank=True)
     announcementTime = models.DateTimeField(auto_now_add=True)
     announcementSchedule = models.DateTimeField(max_length=2500, blank=True)
     
@@ -278,6 +279,7 @@ class SubjectGrade(models.Model):
     grade = models.CharField(max_length=5, blank=True)
     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
+    subject = models.ForeignKey(Subject,  on_delete=models.SET_NULL, null=True)
     
 class Attendance(models.Model):
     def generate_attendance_id():
