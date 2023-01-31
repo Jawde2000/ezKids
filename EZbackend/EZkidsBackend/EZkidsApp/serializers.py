@@ -106,9 +106,9 @@ class HomeworkSerializer(serializers.ModelSerializer):
 class SubjectGradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubjectGrade
-        fields = ['subject_gradeID', 'subject', "grade", "parent", "teacher"]
+        fields = ['subject_gradeID', 'subject', "grade", "parent", "teacher", "children"]
 
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
-        fields = ['attendanceID', 'subject', 'children', 'attendance', 'parent', 'teacher', 'class_Belong', 'created_date']
+        fields = ['attendanceID', 'subject', 'children', 'attendance', 'parent', 'teacher', 'class_Belong', 'created_date', "created_date_only"]

@@ -7,10 +7,9 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
-
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-
+import json
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from EZkidsBackend.settings import EMAIL_HOST_USER
@@ -41,9 +40,9 @@ class MyTokenObtainPairView(TokenObtainPairView):
 User = get_user_model()
 
 
-# class UserViewSet(viewsets.ModelViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -105,14 +104,6 @@ def resetPassword(request, pk):
         message = {'detail': 'Fail to reset Password'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-
-# @api_view(['GET'])
-# def getUserById(request, pk):
-#     user = User.objects.get(userID=pk)
-#     serializer = UserSerializer(user, many=False)
-#     return Response(serializer.data)
-
-
 @api_view(['POST'])
 def registerUser(request):
     data = request.data
@@ -149,239 +140,6 @@ def registerUser(request):
     except:
         message = {'detail': 'User with this email already exist'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['POST'])
-# def getRoutes(request):
-#     data = request.data
-
-#     try:
-#         locationone = Location.objects.get(locationName=data['locationFrom'])
-#         serializerone = LocationSerializerIDonly(locationone, many=False)
-
-#         locationtwo = Location.objects.get(locationName=data['locationTo'])
-#         serializertwo = LocationSerializerIDonly(locationtwo, many=False)
-
-#         services = Services.objects.all().filter(locationFrom=serializerone.data['locationID']).filter(
-#             locationTo=serializertwo.data['locationID'])
-#         serializer = ServicesSerializer(services, many=True)
-
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'No routes exist'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['POST'])
-# def getLocationByID(request):
-#     data = request.data
-
-#     try:
-#         loc = Location.objects.all().filter(locationID=data['locationID'])
-#         serializer = LocationSerializer(loc, many=True)
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'ID not found'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['POST'])
-# def getAllVendors(reqeust):
-#     vendors = Vendor.objects.all()
-#     serializer = VendorSerializerStripped(vendors, many=True)
-#     return Response(serializer.data)
-
-
-# @api_view(['GET'])
-# def getAllVendorDetails(request):
-#     users = User.objects.all().filter(is_vendor=True)
-#     serializer = UserSerializer(users, many=True)
-#     return Response(serializer.data)
-
-
-# @api_view(['POST'])
-# def getVendorName(request):
-#     data = request.data
-
-#     try:
-#         vendor = Vendor.objects.get(vendorID=data['vendorID'])
-#         serializer = VendorSerializer(vendor, many=False)
-
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'No vendors exist'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['PUT'])
-# @permission_classes([IsAuthenticated])
-# def paymentProcess(request, pk):
-#     data = request.data
-#     try:
-#         cart = Cart.objects.get(cartID=data['cartID'])
-#         cartobj = CartItems.objects.filter(cart=cart)
-#         user = User.objects.get(userID=pk)
-#         em = user.email
-
-#         payment = Payment.objects.create(
-#             cart=cart,
-#             paymentStatus='CP'
-#         )
-#         payment.save()
-
-#         for obj in cartobj:
-#             ticket = Ticket.objects.create(
-#                 service=obj.service,
-#                 ownBy=user,
-#                 vendor=obj.service.vendor,
-#                 payment=payment,
-#                 cart=cart
-#             )
-
-#             if (obj.seat_Type == "F"):
-#                 obj.service.seat.firstQuantity = obj.service.seat.firstQuantity - 1
-#             elif (obj.seat_Type == "B"):
-#                 obj.service.seat.businessQuantity = obj.service.seat.businessQuantity - 1
-#             elif (obj.seat_Type == "E"):
-#                 obj.service.seat.economyQuantity = obj.service.seat.economyQuantity - 1
-
-#             obj.service.seat.save()
-
-#             ticket.save()
-#             subject = 'Thank you for your purchase from ' + obj.service.vendor.vendorName
-#             message = 'Dear ' + user.username + ', your payment for a bus ticket from ' + obj.service.vendor.vendorName + ' has been completed!\n\n' + \
-#                 'Please login in to view your ticket or click this link;\nhttp://localhost:3000/ticket/' + \
-#                 ticket.ticketID + '\n\n From the friendly folks at eTix and ' + \
-#                 obj.service.vendor.vendorName
-#             recepient = str(em)
-#             send_mail(subject, message, EMAIL_HOST_USER,
-#                       [recepient], fail_silently=False)
-
-#         serializer = PaymentSerializer(payment, many=False)
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'Unsuccessful'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def removeCartItem(request, pk):
-#     try:
-#         cartItem = CartItems.objects.get(cartItemsID=pk).delete()
-
-#         message = {'detail': 'Successful'}
-#         return Response(message)
-#     except:
-#         message = {'detail': 'Unsuccessful'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['PUT'])
-# @permission_classes([IsAuthenticated])
-# def updateUser(request, pk):
-#     user = User.objects.get(userID=pk)
-
-#     data = request.data
-
-#     user.username = data['username']
-#     user.email = data['email']
-#     user.is_active = data['is_active']
-
-#     if data['password'] != '':
-#         user.password = make_password(data['password'])
-
-#     user.save()
-
-#     serializer = UserSerializer(user, many=False)
-
-#     return Response(serializer.data)
-
-# update customer by userid
-
-
-# @api_view(['PUT'])
-# @permission_classes([IsAuthenticated])
-# def updateCustomer(request, pk):
-#     customer = Customer.objects.get(created_by=pk)
-
-#     data = request.data
-#     customer.customerFirstName = data['customerFirstName']
-#     customer.customerLastName = data['customerLastName']
-#     customer.customerContact_Number = data['customerContact_Number']
-#     customer.customerAddress = data['customerAddress']
-#     customer.customerBirthday = data['customerBirthday']
-#     customer.customerGender = data['customerGender']
-
-#     customer.save()
-
-#     serializer = CustomerSerializer(customer, many=False)
-
-#     return Response(serializer.data)
-
-# @api_view(['PUT'])
-# @permission_classes([IsAuthenticated])
-# def createHelpDesk(request, pk):
-
-#     data = request.data
-
-#     userreq = User.objects.get(userID=data['userID'])
-
-#     if (pk == 'admin'):
-#         helpreq = HelpDesk.objects.create(
-#             helpdeskTitle=data['title'],
-#             helpdeskMessage=data['message'],
-#             user=userreq,
-#             to_admin=True,
-#             helpdeskStatus='OP'
-#         )
-#     else:
-#         vendor = Vendor.objects.get(vendorID=pk)
-
-#         helpreq = HelpDesk.objects.create(
-#             helpdeskTitle=data['title'],
-#             helpdeskMessage=data['message'],
-#             user=userreq,
-#             receiver=vendor,
-#             to_vendor=True,
-#             helpdeskStatus='OP'
-#         )
-
-#     helpreq.save()
-
-#     serializer = HelpDeskSerializer(helpreq, many=False)
-
-#     return Response(serializer.data)
-
-
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def getItemsbyCart(request, pk):
-#     cartitems = CartItems.objects.filter(cart=pk)
-#     serializer = CartItemsSerializer(cartitems, many=True)
-
-#     return Response(serializer.data)
-
-
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def listHelpDeskbyUser(request, pk):
-#     helpreq = HelpDesk.objects.filter(user=pk)
-#     serializer = HelpDeskSerializer(helpreq, many=True)
-
-#     return Response(serializer.data)
-
-
-# @api_view(['GET'])
-# def getReceiverHelpByID(request, pk):
-#     try:
-#         helps = HelpDesk.objects.all().filter(receiver=pk)
-#         serializer = HelpDeskSerializer(helps, many=True)
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'receiver helplist is empty'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['DELETE'])
 @permission_classes([IsAdminUser])
@@ -536,6 +294,54 @@ def getChildrenByClassID(request, pk):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['GET'])
+def getClassByTeacherID(request, pk):
+    try:
+        teacher = Teacher.objects.get(teacherID=pk)
+        class_ = Class.objects.filter(teacher=teacher)
+        serializer = ClassSerializer(class_, many=True)
+        return Response(serializer.data)
+    except Teacher.DoesNotExist:
+        message = {'detail': 'Teacher with ID {} does not exist'.format(pk)}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    except:
+        message = {'detail': 'Failed to retrieve class information'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def getSubjectGradeByChildID(request, pk):
+    try:
+        children = Children.objects.get(childID=pk)
+        subject_grade = SubjectGrade.objects.filter(children=children)
+        serializer = SubjectGradeSerializer(subject_grade, many=True)
+        return Response(serializer.data)
+    except Children.DoesNotExist:
+        message = {'detail': 'Child with ID {} does not exist'.format(pk)}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    except:
+        message = {'detail': 'Failed to retrieve subject grade information'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def getAttendanceList(request):
+    try:
+        data = request.data
+        teacher = Teacher.objects.get(teacherID=data["teacher"])
+        class_ = Class.objects.filter(teacher=teacher)
+        subject = Subject.objects.get(subjectID=data["subject"])
+        attendance = Attendance.objects.filter(class_Belong=class_)
+        attendance = Attendance.objects.filter(subject=subject)
+        attendance = Attendance.objects.filter(teacher=teacher)
+        attendance = Attendance.objects.filter(created_date_only=data["created_date"]) # YYYY-MM-DD format
+        serializer = AttendanceSerializer(attendance, many=True)
+        return Response(serializer.data)
+    except Teacher.DoesNotExist:
+        message = {'detail': 'Attendance with ID {} does not exist'.format(pk)}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    except:
+        message = {'detail': 'Failed to retrieve Attendance information'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
 def getSubject(request):
     try:
         subject = Subject.objects.all()
@@ -544,6 +350,88 @@ def getSubject(request):
     except:
         message = {'detail': 'Children Information failed to fetched'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['PUT'])
+def createAttendanceList(request):
+    try:
+        data = request.data
+        attendance_list = []
+        subject = Subject.objects.get(subjectID=data["subject"])
+        children = Children.objects.filter(class_belong=data["class_belong"])
+        teacher = Teacher.objects.get(teacherID=data["teacher"])
+        for child in children:
+            attendance = Attendance.objects.create(
+                subject=subject,
+                children=child,
+                attendance=False,
+                teacher=teacher,
+                class_Belong=child.class_belong,
+                parent=child.parent
+            )
+
+        return Response({'detail': 'Attendance list for ' + " " + subject.subjectID + "-" + subject.subject + " has been created"}, status=status.HTTP_200_OK)
+    except:
+        message = {'detail': 'attendance  failed to created'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def getRanking(request):
+    try:
+        children = Children.objects.all()
+        subject_grades = SubjectGrade.objects.all()
+        ranking = []
+        child_ids = []
+        for child in children:
+            subjectChild = subject_grades.filter(children=child)
+            grade_sum = 0
+            if subjectChild.count() > 1:
+                if child.childID not in child_ids: 
+                    child_ids.append(child.childID)
+                    for subject_grade in subjectChild:
+                        grade_sum += float(subject_grade.grade)
+                        grade_average = round((grade_sum / subjectChild.count()), 2)
+                
+                    ranking.append({
+                        'child_name': child.childFirstName + " " + child.childLastName,
+                        'class': child.class_belong.className,
+                        'subject_avg': grade_average,
+                        'childID': child.childID,
+                    })            
+    
+        ranking = sorted(ranking, key=lambda x: x['subject_avg'], reverse=True)    
+        return Response(ranking)
+    except:
+        message = {'detail': 'Global Ranking Information failed to fetched'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getClassRanking(request, pk):
+    try:
+        children = Children.objects.filter(class_belong=pk)
+        subject_grades = SubjectGrade.objects.all()
+        ranking = []
+        child_ids = []
+        for child in children:
+            subjectChild = subject_grades.filter(children=child)
+            grade_sum = 0
+            if subjectChild.count() > 1:
+                if child.childID not in child_ids:
+                    child_ids.append(child.childID)
+                    for subject_grade in subjectChild:
+                        grade_sum += float(subject_grade.grade)
+                        grade_average = round((grade_sum / subjectChild.count()), 2)
+                    ranking.append({
+                        'child_name': child.childFirstName + " " + child.childLastName,
+                        'class': child.class_belong.className,
+                        'subject_avg': grade_average,
+                        'childID': child.childID,
+                    })    
+        ranking = sorted(ranking, key=lambda x: x['subject_avg'], reverse=True)    
+        return Response(ranking)
+    except:
+        message = {'detail': 'Class Ranking Information failed to fetched'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
     
 @receiver(post_save, sender=Children)
 def update_children_gender_count(sender, **kwargs):
@@ -819,6 +707,16 @@ def deleteAnnouncement(request, pk):
         message = {'detail': 'announcement not found'}
         return Response(message, status=status.HTTP_404_NOT_FOUND)
     
+@api_view(['GET'])
+def getGrades(request):
+    try:
+        grades = SubjectGrade.objects.all()
+        serializer = SubjectGradeSerializer(grades, many=True)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'Grades Information failed to fetched'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
 @api_view(['PUT'])
 def newSubjectGrade(request):
     data = request.data
@@ -834,6 +732,8 @@ def newSubjectGrade(request):
             teacher=teacher,
             subject=subject
         )
+        serializer = SubjectSerializer(subject_grade, many=False)
+        return Response(serializer.data)
     except:
         message = {'detail': 'subject grade failed to create'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
@@ -963,60 +863,6 @@ def deleteClass(request, pk):
         message = {'detail': 'Class does not exist'}
         return Response(message, status=status.HTTP_404_NOT_FOUND)
 
-# @api_view(['GET'])
-# def getServiceByVendorID(request, pk):
-#     try:
-#         services = Services.objects.all().filter(vendor=pk)
-#         serializer = ServicesSerializer(services, many=True)
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'service not exist'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['GET'])
-# def getServicebyID(pk):
-#     try:
-#         services = Services.objects.get(serviceID=pk)
-#         serializer = ServicesSerializer(services, many=false)
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'serviceID invalid'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['GET'])
-# def getVendorHelpByID(request, pk):
-#     try:
-#         helps = HelpDesk.objects.all().filter(user=pk)
-#         serializer = HelpDeskSerializer(helps, many=True)
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'vendor helplist is empty'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['GET'])
-# def getVendorDByVID(request, pk):
-#     try:
-#         vendor = Vendor.objects.get(vendorID=pk)
-#         serializer = VendorSerializer(vendor, many=False)
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'vendor not found'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-
-# @api_view(['GET'])
-# def getCartitemByCID(request, pk):
-#     try:
-#         cartItem = CartItems.objects.filter(cart=pk)
-#         serializer = CartItemsSerializer(cartItem, many=True)
-#         return Response(serializer.data)
-#     except:
-#         message = {'detail': 'cart items not found'}
-#         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
 class ParentViewSet(viewsets.ModelViewSet):
     queryset = Parent.objects.all()
     serializer_class = ParentSerializer
@@ -1072,79 +918,3 @@ class SubjectGradeViewSet(viewsets.ModelViewSet):
 class AttendanceViewSet(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
-
-
-# class TicketViewSet(viewsets.ModelViewSet):
-#     queryset = Ticket.objects.all()
-#     serializer_class = TicketSerializer
-#     permission_classes = [IsAuthenticated]
-#     # authentication_classes = (TokenAuthentication, )
-
-
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def getHelpResponseByHelpID(reqeust, pk):
-#     helpresponse = HelpResponse.objects.get(helpdesk=pk)
-#     serializer = HelpResponseSerializer(helpresponse, many=False)
-#     return Response(serializer.data)
-
-
-# class HelpDeskViewSet(viewsets.ModelViewSet):
-#     queryset = HelpDesk.objects.all()
-#     serializer_class = HelpDeskSerializer
-#     permission_classes = [IsAuthenticated]
-#     # authentication_classes = (TokenAuthentication, )
-
-
-# class HelpResponseViewSet(viewsets.ModelViewSet):
-#     queryset = HelpResponse.objects.all()
-#     serializer_class = HelpResponseSerializer
-#     permission_classes = [IsAuthenticated]
-#     # authentication_classes = (TokenAuthentication, )
-
-
-# class CartViewSet(viewsets.ModelViewSet):
-#     queryset = Cart.objects.all()
-#     serializer_class = CartSerializer
-#     permission_classes = [IsAuthenticated]
-#     # authentication_classes = (TokenAuthentication, )
-
-
-# class CartItemsViewSet(viewsets.ModelViewSet):
-#     queryset = CartItems.objects.all()
-#     serializer_class = CartItemsSerializer
-#     permission_classes = [IsAuthenticated]
-#     # authentication_classes = (TokenAuthentication, )
-
-
-# class PaymentViewSet(viewsets.ModelViewSet):
-#     queryset = Payment.objects.all()
-#     serializer_class = PaymentSerializer
-#     permission_classes = [IsAuthenticated]
-#     # authentication_classes = (TokenAuthentication, )
-
-
-# class ServicesViewSet(viewsets.ModelViewSet):
-#     queryset = Services.objects.all()
-#     serializer_class = ServicesSerializer
-#     permission_classes = [IsAuthenticated]
-#     # authentication_classes = (TokenAuthentication, )
-
-
-# @api_view(['GET'])
-# def getSeatByID(reqeust, pk):
-#     seat = Seat.objects.get(seatID=pk)
-#     serializer = SeatSerializer(seat, many=False)
-#     return Response(serializer.data)
-
-
-# class SeatViewSet(viewsets.ModelViewSet):
-#     queryset = Seat.objects.all()
-#     serializer_class = SeatSerializer
-#     permission_classes = [IsAuthenticated]
-#     # authentication_classes = (TokenAuthentication, )
-
-
-# class LocationViewSet(viewsets.ModelViewSet):
-#     queryset = Location.objects.all()
-#     serializer_class = LocationSerializer

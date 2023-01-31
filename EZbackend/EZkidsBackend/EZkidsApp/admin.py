@@ -110,7 +110,7 @@ class SubjectGradeModel(admin.ModelAdmin):
 @admin.register(Attendance)
 class AttendanceModel(admin.ModelAdmin):
     list_filter = ('attendanceID', 'attendance')
-    list_display = ('attendanceID', 'attendance')
+    list_display = ('attendanceID', 'attendance', "created_date_only")
     
 @admin.register(Principal)
 class PrincipalModel(admin.ModelAdmin):
