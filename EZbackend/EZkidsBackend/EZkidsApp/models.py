@@ -298,6 +298,8 @@ class Attendance(models.Model):
     class_Belong = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = (("created_date", "children"), )
     
     
     

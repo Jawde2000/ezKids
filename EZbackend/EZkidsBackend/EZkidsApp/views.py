@@ -508,6 +508,34 @@ def getChildren(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['GET'])
+def getChildrenByParentID(request, pk):
+    try:
+        parent = Parent.objects.get(parentsID=pk)
+        children = Children.objects.filter(parent=parent)
+        serializer = ChildrenSerializer(children, many=True)
+        return Response(serializer.data)
+    except Parent.DoesNotExist:
+        message = {'detail': 'Parent with ID {} does not exist'.format(parent_id)}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    except:
+        message = {'detail': 'Failed to retrieve children information'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def getChildrenByClassID(request, pk):
+    try:
+        class_ = Class.objects.get(classID=pk)
+        children = Children.objects.filter(class_belong=class_)
+        serializer = ChildrenSerializer(children, many=True)
+        return Response(serializer.data)
+    except Class.DoesNotExist:
+        message = {'detail': 'Class with ID {} does not exist'.format(class_id)}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    except:
+        message = {'detail': 'Failed to retrieve children information'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
 def getSubject(request):
     try:
         subject = Subject.objects.all()

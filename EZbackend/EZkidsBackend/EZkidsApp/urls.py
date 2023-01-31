@@ -157,6 +157,14 @@ urlpatterns = [
     path('api/update/children/<str:pk>/',
          views.updateChildren, name='children-updateChildren'),
     
+    #get children by parentID
+    path('api/parent/children/<str:pk>/',
+         views.getChildrenByParentID, name='children|parent-getChildrenByParentsID'),
+    
+    #get children by classID
+    path('api/class/children/<str:pk>/',
+         views.getChildrenByClassID, name='children|parent-getChildrenByParentsID'),
+    
     #delete children
     path('api/delete/children/<str:pk>/',
          views.deleteChildren, name='children-deleteChildren'),
