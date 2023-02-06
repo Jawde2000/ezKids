@@ -24,7 +24,9 @@ import ParentManagement from './components/ParentManagement/ParentManagement';
 import AddTeacher from './components/TeacherManagement/addTeacher';
 import EZDashboard from './components/adminMenu/EZDashboard';
 import {useSelector} from 'react-redux'
-import {  Grid, Box,  Link, Typography, } from '@mui/material';
+import {  Grid } from '@mui/material';
+import AddParent from './components/ParentManagement/AddParent';
+import Parent from './components/ParentManagement/Parent';
 
 const theme = createTheme({
     palette: {
@@ -75,8 +77,11 @@ function App() {
                   <Route exact path="/ezdashboard" component={EZDashboard}/>
                   <Route exact path="/menu/teachermanagement" component={TeacherManagement}/>
                   <Route exact path="/menu/parentmanagement" component={ParentManagement}/>
+                  <Route exact path="/menu/parentmanagement/addParent" component={AddParent} />
                   <Route exact path="/menu/teachermanagement/teacher/:id" component={Teacher}/>
                   <Route exact path="/menu/teachermanagement/addTeacher" component={AddTeacher}/>
+                  <Route exact path="/menu/Parentmanagement/parent/:id" component={Parent}/>
+
                 </Switch>
               <Footer />    
             </BrowserRouter>

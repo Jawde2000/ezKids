@@ -48,7 +48,11 @@ import {
     USER_UPDATE_SUCCESS,
     USER_UPDATE_FAIL,
     USER_UPDATE_RESET,
-    
+
+    USER_PARENT_UPDATE_REQUEST, 
+    USER_PARENT_UPDATE_SUCCESS,
+    USER_PARENT_UPDATE_FAIL,
+    USER_PARENT_UPDATE_RESET,
     
     TEACHER_TOTAL_REQUEST,
     TEACHER_TOTAL_SUCCESS, 
@@ -84,6 +88,18 @@ import {
     INDIVIDUAL_PARENT_SUCCESS,
     INDIVIDUAL_PARENT_RESET,
     INDIVIDUAL_PARENT_FAIL,
+
+    
+    CHILDREN_DETAILS_REQUEST,
+    CHILDREN_DETAILS_SUCCESS,
+    CHILDREN_DETAILS_RESET,
+    CHILDREN_DETAILS_FAIL,
+
+    CHILDREN_ADD_REQUEST,
+    CHILDREN_ADD_SUCCESS,
+    CHILDREN_ADD_RESET,
+    CHILDREN_ADD_FAIL,
+
 } from '../constants/userConstants'
 
 import { HELP_LIST_RESET } from '../constants/helpConstants'
@@ -332,24 +348,24 @@ export const getUser = (id) => async (dispatch, getState) => {
                 Authorization: `Bearer ${userInfo.token}`
             }
         }
-        if(data.is_customer){
-            data = {
-                ...data,
-                customerInfo: await axios.get(
-                    `http://127.0.0.1:8000/api/user/customer/${id}/`,
-                    config2
-                )
-            }
-        }
-        else if(data.is_vendor){
-            data = {
-                ...data,
-                vendorInfo: await axios.get(
-                    `http://127.0.0.1:8000/api/user/vendor/${id}/`,
-                    config2
-                )
-            }
-        }
+        // if(data.is_customer){
+        //     data = {
+        //         ...data,
+        //         customerInfo: await axios.get(
+        //             `http://127.0.0.1:8000/api/user/customer/${id}/`,
+        //             config2
+        //         )
+        //     }
+        // }
+        // else if(data.is_vendor){
+        //     data = {
+        //         ...data,
+        //         vendorInfo: await axios.get(
+        //             `http://127.0.0.1:8000/api/user/vendor/${id}/`,
+        //             config2
+        //         )
+        //     }
+        // }
         
         
 
@@ -440,6 +456,67 @@ export const teacherRegister = (teacher) => async (dispatch, getState) => {
     }catch(error){
         dispatch({
             type: NEW_TEACHER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const parentRegister = (user, parent) => async (dispatch, getState) => {
+    try{
+        
+        //create a new user first
+        console.log(user)
+        console.log(parent)
+        dispatch({
+            type:NEW_PARENT_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.post(
+            `http://127.0.0.1:8000/api/users/register/`,
+            user,
+            config
+        )
+        
+        console.log(data)
+
+        parent = {
+            ...parent,
+            created_by: data.userID,
+        }
+
+        console.log(parent)
+
+        console.log("testing3")
+
+        const {data2} = await axios.put(
+            `http://127.0.0.1:8000/api/new/parents/`,
+            parent,
+            config
+        )
+
+        console.log("testing2")
+
+        dispatch({
+            type: NEW_PARENT_SUCCESS,
+        })
+
+    }catch(error){
+        dispatch({
+            type: NEW_PARENT_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
@@ -677,6 +754,54 @@ export const updateCustomer = (user, customer, id) => async (dispatch, getState)
     }
 }
 
+//parent update
+export const updateParent = (user, parent, id) => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type:USER_PARENT_UPDATE_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.put(
+            `http://127.0.0.1:8000/api/user/update/${id}/`,
+            user,
+            config
+        )
+
+        id = parent['parentsID']
+        var { data2 } = await axios.put(
+            `http://127.0.0.1:8000/api/update/parents/${id}/`,
+            parent,
+            config
+        )
+        
+    
+        dispatch({
+            type: USER_PARENT_UPDATE_SUCCESS,
+        })
+
+
+    }catch(error){
+        dispatch({
+            type: USER_PARENT_UPDATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
 //VENDOR update
 export const updateTeacher = (user, teacher, id) => async (dispatch, getState) => {
     try{
@@ -800,6 +925,119 @@ export const getIndividualTeacher = (id) => async (dispatch, getState) => {
     }catch(error){
         dispatch({
             type: INDIVIDUAL_TEACHER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const getIndividualParent = (id) => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type:INDIVIDUAL_PARENT_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.get(
+            `http://127.0.0.1:8000/api/individualParent/${id}/`,
+            config
+        )
+
+        console.log(data)
+    
+        dispatch({
+            type: INDIVIDUAL_PARENT_SUCCESS,
+            payload: data
+        })
+
+
+    }catch(error){
+        dispatch({
+            type: INDIVIDUAL_PARENT_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+
+
+export const getChildrenDetailsByParent = (id) => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type:CHILDREN_DETAILS_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.get(
+            `http://127.0.0.1:8000/api/parent/children/${id}/`,
+            config
+        )
+
+        dispatch({
+            type: CHILDREN_DETAILS_SUCCESS,
+            payload: data
+        })
+
+
+    }catch(error){
+        dispatch({
+            type: CHILDREN_DETAILS_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const createNewChild = (child) => async (dispatch) => {
+    try{
+        
+        dispatch({
+            type:CHILDREN_ADD_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+            }
+        }
+
+        const { data } = await axios.put(
+            `http://127.0.0.1:8000/api/new/children/`,
+            child,
+            config
+        )
+
+        dispatch({
+            type: CHILDREN_ADD_SUCCESS,
+        })
+
+    }catch(error){
+        dispatch({
+            type: CHILDREN_ADD_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,

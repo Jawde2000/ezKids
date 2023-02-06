@@ -352,7 +352,7 @@ function ParentManagement() {
                           </Grid>
                           <Grid xs={6} item md={1}>
                           <Tooltip title="Add new teacher">          
-                          <IconButton href="/menu/teachermanagement/addParent">
+                          <IconButton href="/menu/parentmanagement/addParent">
                           <AddCircleIcon style={{fontSize: 40, color: "black", }}/>
                           </IconButton> 
                           </Tooltip> 

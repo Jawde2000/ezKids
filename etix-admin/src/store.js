@@ -4,11 +4,12 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { teacherTotalReducer, userLoginReducer, userListReducer, userDeleteReducer, userDetailReducer, customerRegisterReducer, 
     adminRegisterReducer, vendorRegisterReducer, userUpdateReducer, vendorUpdateReducer, customerUpdateReducer, addTeacherReducer,
     getChildrenGenderReducer, individualTeacherReducer, addParentReducer, individualParentReducer, 
-    ParentListReducer} from './reducers/userReducers'
+    ParentListReducer, getChildrenDetailsByParentReducer, addNewChildReducer} from './reducers/userReducers'
 import { helpListReducer, helpDeleteReducer, helpDetailReducer, helpSaveReducer, helpSendReducer} from './reducers/helpReducers'
 import { serviceListReducer, serviceDetailReducer, serviceDeleteReducer, serviceSaveReducer, 
     locationDetailReducer, vendorDetailReducer, serviceAddReducer } from './reducers/serviceReducers'
 import { paymentListReducer, serviceListDataReducer } from './reducers/salesReducer'
+import { parentUpdateReducer } from './reducers/userReducers'
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -42,6 +43,9 @@ const reducer = combineReducers({
     individualParent: individualParentReducer, 
     addParent: addParentReducer,
     parentList: ParentListReducer,
+    updateParent: parentUpdateReducer,
+    getChildrenP: getChildrenDetailsByParentReducer,
+    childAdd: addNewChildReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ?

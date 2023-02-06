@@ -84,6 +84,23 @@ import {
     INDIVIDUAL_PARENT_SUCCESS,
     INDIVIDUAL_PARENT_RESET,
     INDIVIDUAL_PARENT_FAIL,
+
+    USER_PARENT_UPDATE_REQUEST,
+    USER_PARENT_UPDATE_SUCCESS,
+    USER_PARENT_UPDATE_RESET,
+    USER_PARENT_UPDATE_FAIL,
+
+
+    CHILDREN_DETAILS_REQUEST,
+    CHILDREN_DETAILS_SUCCESS,
+    CHILDREN_DETAILS_RESET,
+    CHILDREN_DETAILS_FAIL,
+
+    CHILDREN_ADD_REQUEST,
+    CHILDREN_ADD_SUCCESS,
+    CHILDREN_ADD_RESET,
+    CHILDREN_ADD_FAIL,
+
 } from '../constants/userConstants'
 
 export const userLoginReducer = (state = { }, action) => {
@@ -238,6 +255,25 @@ export const userUpdateReducer = (state={}, action) => {
     }
 }
 
+export const parentUpdateReducer = (state={}, action) => {
+    switch(action.type){
+        case USER_PARENT_UPDATE_REQUEST:
+            return {loading: true}
+        
+        case USER_PARENT_UPDATE_SUCCESS:
+            return {loading: false, success:true}
+        
+        case USER_PARENT_UPDATE_FAIL: 
+            return {loading: false, error: action.payload}
+        
+        case USER_PARENT_UPDATE_RESET:
+            return {}
+        
+        default:
+            return state
+    }
+}
+
 export const vendorUpdateReducer = (state={}, action) => {
     switch(action.type){
         case USER_TEACHER_UPDATE_REQUEST:
@@ -307,6 +343,25 @@ export const getChildrenGenderReducer = (state={}, action) => {
            return {loading: false, success: false, error: action.payload}
 
         case CHILDREN_DEMOGRAPHIC_GENDER_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const getChildrenDetailsByParentReducer = (state={}, action) => {
+    switch(action.type){
+        case CHILDREN_DETAILS_REQUEST:
+            return {loading: true}
+        
+        case CHILDREN_DETAILS_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case CHILDREN_DETAILS_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case CHILDREN_DETAILS_RESET:
             return {}
 
         default:
@@ -396,9 +451,28 @@ export const individualParentReducer = (state={}, action) => {
             return {loading: true}
         
         case INDIVIDUAL_PARENT_SUCCESS:
-           return {loading: false, success: true, data: action.payload}
+           return {loading: false, success: true, parentD: action.payload}
         
         case INDIVIDUAL_PARENT_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case INDIVIDUAL_PARENT_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const addNewChildReducer = (state={}, action) => {
+    switch(action.type){
+        case CHILDREN_ADD_REQUEST:
+            return {loading: true}
+        
+        case CHILDREN_ADD_SUCCESS:
+           return {loading: false, success: true}
+        
+        case CHILDREN_ADD_FAIL:
            return {loading: false, success: false, error: action.payload}
 
         case INDIVIDUAL_PARENT_RESET:

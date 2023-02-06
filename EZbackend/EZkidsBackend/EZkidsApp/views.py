@@ -106,9 +106,9 @@ def resetPassword(request, pk):
 
 @api_view(['POST'])
 def registerUser(request):
-    data = request.data
+        data = request.data
 
-    try:
+    # try:
         user = User.objects.create(
             username=data['username'],
             email=data['email'],
@@ -120,6 +120,7 @@ def registerUser(request):
         user.is_superuser = data['is_superuser']
         user.is_active = data['is_active']
         user.is_teacher = data['is_teacher']
+        user.is_parent = data['is_parent']
 
         user.save()
 
@@ -134,12 +135,12 @@ def registerUser(request):
             teacherBankName=data["teacherBankName"],
             teacherBankAcc=data["teacherBankAcc"],
             )
-        serializer = TeacherSerializer(teacher, many=False)
+            serializer = TeacherSerializer(teacher, many=False)
 
         return Response(serializer.data)
-    except:
-        message = {'detail': 'User with this email already exist'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    # except:
+    #     message = {'detail': 'User with this email already exist'}
+    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 @permission_classes([IsAdminUser])
@@ -224,7 +225,7 @@ def getIndividualTeacher(reqeust, pk):
 
     
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+# @permission_classes([IsAdminUser])
 def getParent(request):
     try:
         parents = Parent.objects.all()
@@ -233,6 +234,16 @@ def getParent(request):
     except:
         message = {'detail': 'Parent Information failed to fetched'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getIndividualParent(reqeust, pk):
+   
+    parent = Parent.objects.get(created_by = pk)
+    serializer = ParentSerializer(parent, many=False)
+    return Response(serializer.data)
+ 
+        # message = {'detail': 'Teacher Information failed to fetched'}
+        # return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def getHomework(request):
@@ -249,6 +260,16 @@ def getClass(reqeust):
     try:
         classes = Class.objects.all()
         serializer = ClassSerializer(classes, many=True)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'Class Information failed to fetched'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getClassByID(reqeust, pk):
+    try:
+        classe = Class.objects.get(classID = pk)
+        serializer = ClassSerializer(classe, many=False)
         return Response(serializer.data)
     except:
         message = {'detail': 'Class Information failed to fetched'}
@@ -555,7 +576,7 @@ def updateParent(request, pk):
     try:
         data = request.data
         parent = Parent.objects.get(parentsID=pk)
-        created_by = User.objects.get(userID=data["created_by"])
+        created_by = User.objects.get(userID=data['created_by'])
         parent.created_by = created_by
         parent.parentsType = data['parentsType']
         parent.parentsFirstName = data['parentsFirstName']
@@ -566,7 +587,9 @@ def updateParent(request, pk):
         parent.parentsAddress = data['parentsAddress']
         parent.parentsDOB = data['parentsDOB']
         parent.save()
-        return Response(status=status.HTTP_200_OK)
+
+        serializer = ParentSerializer(parent, many=False)
+        return Response(serializer.data)
     except:
         message = {'detail': 'Parent fail to update'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)

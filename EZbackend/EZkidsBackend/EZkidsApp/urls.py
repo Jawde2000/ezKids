@@ -68,6 +68,9 @@ urlpatterns = [
     # get class information list
     path('api/classes/', 
          views.getClass, name='class-classlist'),
+     
+    path('api/class/<str:pk>/',
+          views.getClassByID, name='class-classDetails'),
     
     # new class 
     path('api/new/class/', 
@@ -216,6 +219,10 @@ urlpatterns = [
     #get individual teacher
     path('api/individualteacher/<str:pk>/', 
          views.getIndividualTeacher, name='teacher-individualTeacher'),
+
+     #get individual parent
+    path('api/individualParent/<str:pk>/', 
+         views.getIndividualParent, name='parent-individualParent'),
 
 
     # update teacher by userid
