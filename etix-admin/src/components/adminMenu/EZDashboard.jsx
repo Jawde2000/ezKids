@@ -61,13 +61,13 @@ const useStyles = makeStyles((theme) => ({
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
     textAlign: 'center',
     color: theme.palette.text.secondary,
     maxWidth: '300px',
-    maxHeight: '350px',
-    minWidth: '200px', 
-    minHeight: '200px'
+    maxHeight: '200px',
+    minWidth: '150px', 
+    minHeight: '100px'
   }));
 
 function EZDashboard() {
@@ -80,8 +80,12 @@ function EZDashboard() {
     const teacher = useSelector(state => state.teacherTotal);
     const {success: successT, loading: Loading, data: teacherT} = teacher;
 
+    const teacherR = useSelector(state => state.newTeacher)
+    const {success: teacherSuccess, error: teacherError, loading: teacherLoading} = teacherR
+
     const [user_total, setUserTotal] = useState([]);
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [hover, setHover] = useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -93,52 +97,56 @@ function EZDashboard() {
 
     useEffect(() => {
         dispatch(user_Total());
-        if (successT) {
+        if (teacherT) {
             setUserTotal(teacherT);
         }
-    }, [])
+    }, [teacherSuccess, successT])
 
     return (
-        <Box bgcolor="#DADADA" borderBottom="1px solid black" borderTop="1px solid black" sx={{ flexGrow: 1 , p: 5, m: 5, }}>
-        <Grid xs={12} direction="column" container justify="center" alignItems="center" alignContent="center" spacing={2}>
-        <Grid p={2} xs={12} container direction="row" display="flex" spacing={5}>
+        <Box>
+        <Grid bgcolor="#36454F" sx={{ flexGrow: 2 , p: 5, m: 5}} xs={12} direction="column" container justify="center" alignItems="center" alignContent="center" spacing={2}>
+        <Grid p={6} xs={12} container direction="row" display="flex" spacing={5}>
             <Grid item xs={3}>
-                <Item>
+                <Grid to="/menu/teachermanagement" component={Link} style={{ textDecorationLine: 'none'}}>
+                <Item >
                     <Grid p={5}>
-                    <TeacherIcon style={{fontSize: 35, color: ""}}/>
-                    <Divider />
-                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 20 , color: "#D3D3D3"}}>
+                    <TeacherIcon style={{fontSize: 35, color:"black"}}/>
+                    <Divider/>
+                    <Typography style={{fontFamily: ['Rubik', 'sans-serif'].join(','), fontSize: 15 , color: "#D3D3D3"}}>
                         Teacher
                     </Typography>
-                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 20 , color: "black"}}>
+                    <Typography style={{fontFamily: ['Rubik', 'sans-serif'].join(','), fontSize: 15 , color: "black"}}>
                         {user_total[0]}
                     </Typography>
                     </Grid>
                 </Item>
+                </Grid>
             </Grid>
             <Grid item xs={3}>
+                <Grid to="/menu/parentmanagement" component={Link} style={{ textDecorationLine: 'none'}}>
                 <Item>
                     <Grid p={5}>
                     <ParentIcon style={{fontSize: 35, color: "#ADD8E6"}}/>
                     <Divider />
-                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 20 , color: "#D3D3D3"}}>
+                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 15 , color: "#D3D3D3"}}>
                         Guardians
                     </Typography>
-                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 20 , color: "black"}}>
+                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 15 , color: "black"}}>
                         {user_total[1]}
                     </Typography>
                     </Grid>
                 </Item>
+                </Grid>
             </Grid>
             <Grid item xs={3}>
                 <Item>
                     <Grid p={5}>
                     <ChildrenIcon style={{fontSize: 35, color: "#98FB98"}}/>
                     <Divider />
-                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 20 , color: "#D3D3D3"}}>
+                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 15 , color: "#D3D3D3"}}>
                         Children
                     </Typography>
-                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 20 , color: "black"}}>
+                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 15 , color: "black"}}>
                         {user_total[2]}
                     </Typography>
                     </Grid>
@@ -150,34 +158,32 @@ function EZDashboard() {
                     <Grid p={5}>
                     <ClassIcon style={{fontSize: 35, color: "#00008B"}}/>
                     <Divider />
-                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 20 , color: "#D3D3D3"}}>
+                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 15 , color: "#D3D3D3"}}>
                         Classes
                     </Typography>
-                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 20 , color: "black"}}>
+                    <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontSize: 15 , color: "black"}}>
                         {user_total[3]}
                     </Typography>
                     </Grid>
                 </Item>
             </Grid>
         </Grid>
-        <Grid p={2} xs={12} container direction="row" display="flex" spacing={2}>
+        <Grid p={3} xs={12} container direction="row" display="flex" spacing={5}>
             <Grid item xs={4}>
                 <Paper>
                     <Piechart />
                 </Paper>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={4}>
                 <Paper>
                     <ResultChart />
                 </Paper>
             </Grid>
-            <Grid item xs={3}>
-                <Paper>
-                    <RankingBoard />
-                </Paper>
+            <Grid item xs={4}>
+                <RankingBoard />
             </Grid>
         </Grid>
-        <Grid p={2} xs={12} container direction="row" spacing={2}>
+        <Grid p={3} xs={12} container direction="row" spacing={5}>
             <Grid item xs={8}>
             <Card sx={{ display: 'flex' }}>
             <Box align="center" sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -223,38 +229,54 @@ function EZDashboard() {
         </Grid>
         </Grid>
         <Grid>
-              {Loading?
+              {teacherT?
               <Backdrop style={{ zIndex: 9999, backgroundColor: '#36454F'}}  open={true}>
               <CircularProgress  style={{color: '#F5CB5C'}}/>
               </Backdrop>:null
               }
         </Grid>
         <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Create Announcement</DialogTitle>
-        
-        <DialogContent justifyContent='center' alignItems={"center"}>
-          <DialogContentText  margin="0 auto" textAlign={"center"}>
-            Create any announcement on your mind, {userInfo.username}
-          </DialogContentText>
-          <TextField
-            InputProps={{
-            classes: {
-               input: styles.TextFieldInputProps
-            }
-            }}
-            margin="dense"
-            id="post"
-            multiline={true}
-            rows={10}
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Post</Button>
-        </DialogActions>
-        </Dialog>
+  <DialogTitle>Create Announcement</DialogTitle>
+  <DialogContent>
+    <DialogContentText align="center" margin="0 auto">
+      Share your thoughts and ideas with the community, {userInfo.username}
+    </DialogContentText>
+    <TextField
+      InputProps={{
+        classes: {
+          input: styles.TextFieldInputProps
+        }
+      }}
+      margin="dense"
+      id="post"
+      multiline={true}
+      rows={10}
+      fullWidth
+      variant="outlined"
+      placeholder="What's on your mind?"
+    />
+    <Grid container spacing={2}>
+      <Grid item xs={4} align="center">
+        <AttachFileIcon style={{ fontSize: "small" }} />
+        <Typography variant="body2">Add files</Typography>
+      </Grid>
+      <Grid item xs={4} align="center">
+        <AddAPhotoIcon style={{ fontSize: "small" }} />
+        <Typography variant="body2">Add photos</Typography>
+      </Grid>
+      <Grid item xs={4} align="center">
+        <LocalActivityTwoToneIcon style={{ fontSize: "3rem" }} />
+        <Typography variant="body2">Add location</Typography>
+      </Grid>
+    </Grid>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleClose}>Cancel</Button>
+    <Button onClick={handleClose} variant="contained" color="primary">
+      Post
+    </Button>
+  </DialogActions>
+</Dialog>
         </Box>
     );
 }
