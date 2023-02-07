@@ -8,7 +8,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    height: '500px',
+    height: '350px',
   },
 }));
 
@@ -26,10 +26,10 @@ export default function ResultChart() {
   return (
     <Grid>
       <BarChart
-        width={700}
-        height={400}
+        width={550}
+        height={383}
         data={data}
-        margin={{ top: 5, right: 200, left: 20, bottom: 5 }}
+        margin={{ top: 5, right: 150, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
