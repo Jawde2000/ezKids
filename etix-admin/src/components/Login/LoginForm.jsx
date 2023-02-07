@@ -1,4 +1,7 @@
 import { Grid, Container, IconButton,  Typography, Button,} from '@mui/material';
+import CloseIcon from '@material-ui/icons/Close';
+import { LinearProgress } from '@material-ui/core';
+import Fade from '@mui/material/Fade';
 import { makeStyles} from '@mui/styles';
 import React, {useState, useEffect} from 'react';
 import FilledInput from '@mui/material/FilledInput';
@@ -15,6 +18,16 @@ import {useDispatch, useSelector} from 'react-redux'
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
+import { createStyles  } from '@material-ui/core/styles';
+import { USER_LOGOUT  } from '../../constants/userConstants';
+
+const theme = createStyles({
+  palette: {
+    primary: {
+      main: '#36454F',
+    },
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
   inputbackground: {
@@ -47,7 +60,39 @@ const useStyles = makeStyles((theme) => ({
   loginButton: {
     display: "flex",
     justifyContent: "flex-end"
-  }
+  },
+  button: {
+    backgroundColor: '#FDB813',
+    color: theme.palette.getContrastText(theme.palette.primary.main),
+    fontFamily: ['Rubik', 'impact'].join(','),
+    fontSize: 20,
+    color: 'black',
+    margin: theme.spacing(1),
+  },
+  startIcon: {
+    fontSize: 25,
+    color: 'black',
+  },
+  errorMessage: {
+    marginTop: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+  slideIn: {
+    animation: `$slideIn 0.5s ease-out`,
+  },
+  '@keyframes slideIn': {
+    '0%': {
+      transform: 'translateY(-100%)',
+    },
+    '100%': {
+      transform: 'translateY(0)',
+    },
+  },
 }));
 
 function LoginForm() {
@@ -55,10 +100,12 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [open, setOpen] = useState(true);
   const [values, setValues] = useState({
     password: '',
     showPassword: false,
   });
+  const [hovered, setHovered] = useState(false);
 
   const userLogin = useSelector(state => state.userLogin)
   const userRegister = useSelector(state => state.userRegister)
@@ -73,6 +120,13 @@ function LoginForm() {
         history.push('/ezdashboard')
     }
   },[userInfo])
+
+  useEffect(() => {
+    if (error) {
+      setOpen(false);
+      dispatch({type: USER_LOGOUT})
+    }
+  }, [userInfo])
 
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
@@ -101,55 +155,77 @@ function LoginForm() {
 
   return (
       <Container>
-        {error && <Grid direction="column" xs={12}><Alert severity="error">No active account found with the give credentials.</Alert></Grid>}
-        <Grid container  xs={12} direction="column">   
+        {error && open &&(
+        <Grid direction="column" xs={12} className={defaultStyle.errorMessage}>
+        <Alert
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              className={defaultStyle.closeButton}
+              onClick={open}
+            >
+              <CloseIcon />
+            </IconButton>
+          }
+        >
+          No active account found with the given credentials.
+        </Alert>
+        </Grid>
+        )}
+        <Grid xs={12} direction="column">   
         <Grid item>
-          <TextField sx={{ m: 1, width: '35ch' }} className={defaultStyle.inputbackground} type="email"
-          label={'Email'} variant="filled" InputProps={{ disableUnderline: true }}
-          value={email} onChange={handleChangeEmail}
+          <TextField sx={{ m: 1, width: '40ch' }} className={defaultStyle.inputbackground} type="email"
+            label={'Email'} variant="filled" InputProps={{ disableUnderline: true }}
+            value={email} onChange={handleChangeEmail}
           ></TextField>
         </Grid>
         <Grid item>     
-        <FormControl sx={{ m: 1, width: '35ch' }} variant="filled" className={defaultStyle.inputbackground}>
+        <FormControl sx={{ m: 1, width: '40ch' }} variant="filled" className={defaultStyle.inputbackground}>
           <InputLabel htmlFor="filled-adornment-password">Password</InputLabel>
-          <FilledInput         
-            disableUnderline="true"
-            variant="filled"
-            id="filled-adornment-password"
-            type={values.showPassword ? 'text' : 'password'}
-            value={values.password}
-            onChange={handleChange('password')}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
+        <FilledInput         
+          disableUnderline="true"
+          variant="filled"
+          id="filled-adornment-password"
+          type={values.showPassword ? 'text' : 'password'}
+          value={values.password}
+          onChange={handleChange('password')}
+          endAdornment={
+        <InputAdornment position="end">
+          <IconButton
+            aria-label="toggle password visibility"
+            onClick={handleClickShowPassword}
+            onMouseDown={handleMouseDownPassword}
+            edge="end"
+          >
+            {values.showPassword ? <VisibilityOff /> : <Visibility />}
+          </IconButton>
+        </InputAdornment>
+         }
+        />
         </FormControl>
         </Grid>
         <Grid item xs={12} className={defaultStyle.loginButton}>
-          <Button 
-           sx={{ m: 1 }}
-           id="new-sumbit"
-           type="submit"
-           color='primary'
-           variant="contained"
-           autoFocus
-           onClick={handleLogin}
-           style={{fontFamily: ['rubik', 'sans-serif'].join(','), backgroundColor: '#F5CB5C'}}
-           startIcon={<ArrowForwardIosIcon style={{fontSize: 25, color: "black"}}/>}
-           >
-            <Typography style={{fontSize: 20, fontFamily: ['rubik', 'sans-serif'].join(','), color: "black"}}>
-              Login
-            </Typography>
-          </Button>
+        <Button
+          variant="contained"
+          className={defaultStyle.button}
+          onClick={handleLogin}
+          startIcon={<ArrowForwardIosIcon 
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            style={{
+              color: hovered ? "white" : "black"
+            }}
+            className={defaultStyle.startIcon} />}
+        >
+          <Typography 
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          style={{
+             color: hovered ? "white" : "black"
+          }}
+          >Login</Typography>
+        </Button>
         </Grid>
         </Grid>
         <Grid>
