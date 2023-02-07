@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const useStyles = makeStyles((theme) => ({
   customizeAppbar: {
     minHeight: 130,
-    background: 'linear-gradient(0deg, rgba(245,245,220,1) 23%, rgba(253,187,45,1) 100%)',
+    background: 'linear-gradient(to right, #FDB813, #F9A01B)',
     position: 'relative',
     paddingRight: 150,
     fontFamily: ['rubik', 'sans-serif'].join(','),
@@ -87,15 +87,16 @@ function NavBar() {
               <Grid item>
               <Link to={value} onClick={handleReset}          
                 style={{ textDecorationLine: 'none', display: "flex", color: 'black',}}>        
-                  <Typography className={defaultStyle.resizeLogo} variant="h2" sx={{ flexGrow: 1 }} style={{fontFamily: ['rubik', 'sans-serif'].join(','), paddingLeft: 50}}>
+                  <Typography className={defaultStyle.resizeLogo} variant="h2" sx={{ flexGrow: 1 }} style={{fontFamily: ['rubik', 'impact'].join(','), paddingLeft: 50, fontWeight: 'bold'}}>
                     EZkids 
+                    <span style={{fontSize: 'small', paddingLeft: 10}}>For Principal</span>
                   </Typography>
               </Link>
               </Grid>
               </Grid>
               <Grid xs={12}>
                 <Grid item className={defaultStyle.rightClock}>
-                  <Typography style={{fontFamily: ['rubik', 'sans-serif'].join(','), fontWeight: "bold", fontSize: 16, color: "black"}}>
+                  <Typography style={{fontFamily: ['rubik', 'impact'].join(','), fontWeight: "bold", fontSize: 20, color: "black"}}>
                   <Clock format={'HH:mm:ss a |  ' + dateAndTime} ticking={true} timezone={'Asia/Kuala_Lumpur'}/>
                   </Typography>
                 </Grid>
