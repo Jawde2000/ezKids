@@ -14,6 +14,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import AddIcon from '@mui/icons-material/Add';
+import SaveIcon from '@mui/icons-material/Save';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { USER_UPDATE_RESET, USER_LOGIN_SUCCESS,USER_TEACHER_UPDATE_RESET, USER_DETAIL_RESET } from '../../constants/userConstants';
@@ -217,13 +218,14 @@ const Teacher = ({props}) => {
 
         if(successTeacher){
             setUptTeacher({
-                bankName: dataTeacher.teacherBankName,
-                bankAcc: dataTeacher.teacherBankAcc,
-                first: dataTeacher.teacherFirstName,
-                last: dataTeacher.teacherLastName,
+                teacherBankName: dataTeacher.teacherBankName,
+                teacherBankAcc: dataTeacher.teacherBankAcc,
+                teacherFirstName: dataTeacher.teacherFirstName,
+                teacherLastName: dataTeacher.teacherLastName,
                 teacherID: dataTeacher.teacherID, 
-                phone: dataTeacher.teacherContactphone, 
-                holder: dataTeacher.bankAccountHolder,
+                teacherContactphone: dataTeacher.teacherContactphone, 
+                bankAccountHolder: dataTeacher.bankAccountHolder,
+                teacherEmail: email,
             })
         }
     }
@@ -853,13 +855,14 @@ const Teacher = ({props}) => {
                                                             :
                                                             (
                                                                 <Button 
-                                                                    variant="outlined"
-                                                                    startIcon={<AddIcon />}
-                                                                    style={{cursor: 'pointer', backgroundColor: 'green', color: 'black', fontWeight: 'bold', fontFamily: ['rubik', 'sans-serif'].join(',') , marginTop: 20, marginBottom: 20}}
-                                                                    onClick={handleSubmit.bind(this)}
-                                                                >
-                                                                    Save
-                                                                </Button>
+    variant="contained"
+    color="primary"
+    startIcon={<SaveIcon />}
+    style={{cursor: 'pointer', fontWeight: 'bold', fontFamily: 'Rubik, sans-serif', marginTop: 20, marginBottom: 20}}
+    onClick={handleSubmit}
+>
+    Save
+</Button>
                                                             )
                                                         }
                                                         
