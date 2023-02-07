@@ -13,7 +13,8 @@ import ClearIcon from '@mui/icons-material/Clear';
 import PropTypes from 'prop-types';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarColumnsButton} from '@mui/x-data-grid';
 import CircularProgress from '@mui/material/CircularProgress';
-import { USER_LIST_SUCCESS, USER_LIST_RESET, USER_LIST_REQUEST, USER_DELETE_RESET } from '../../constants/userConstants';
+import { USER_LIST_SUCCESS, USER_LIST_RESET, USER_LIST_REQUEST, USER_DELETE_RESET, TEACHER_TOTAL_RESET, 
+  CHILDREN_DEMOGRAPHIC_GENDER_RESET } from '../../constants/userConstants';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Dialog from '@mui/material/Dialog';
@@ -26,10 +27,35 @@ import Backdrop from '@mui/material/Backdrop';
 
 const useStyles = makeStyles((theme) => ({
     whole: {
-      backgroundImage: `url(${moscow})`,
+      backgroundColor: "#36454F",
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       minHeight: 700
+    },
+    addIcon: {
+      fontSize: 40,
+      color: "#FDB813",
+      '&:hover': {
+        color: "black",
+        cursor: 'pointer',
+      },
+    },
+    editIcon: {
+      '&:hover': {
+        color: "black",
+        cursor: 'pointer',
+      },
+    },
+    deleteIcon: {
+      '&:hover': {
+        color: 'red',
+      },
+    },
+    bigDeleteIcon: {
+      fontSize: 40,
+      '&:hover': {
+        color: 'red',
+      },
     },
 }));
 
@@ -95,11 +121,11 @@ function TeacherManagement() {
           <Tooltip onClick={handleClickOpen} title="delete">
               {select.length <= 0?
                 <IconButton disabled={true}>
-                  <DeleteIcon style={{fontSize: 40}}/>
+                  <DeleteIcon style={{fontSize: 40}} className={defaultStyle.deleteIcon}/>
                 </IconButton>
                 :
                 <IconButton >
-                {select.length < 2? (<DeleteIcon style={{fontSize: 40, color: "black"}}/>):(<DeleteIcon style={{fontSize: 40, color: "red"}}/>)}
+                {select.length < 2? (<DeleteIcon className={defaultStyle.bigDeleteIcon}/>):(<DeleteIcon style={{fontSize: 40, color: "red"}}/>)}
                 </IconButton>            
               }
           </Tooltip>
@@ -163,7 +189,7 @@ function TeacherManagement() {
                   <Toolbar>
                   <Tooltip title="Edit">
                   <IconButton href={`/menu/teachermanagement/teacher/${params.row.userID}`}>
-                    <EditIcon />
+                    <EditIcon className={defaultStyle.editIcon}/>
                   </IconButton>
                   </Tooltip>
                   </Toolbar>
@@ -181,6 +207,9 @@ function TeacherManagement() {
     useEffect(() => {
       if(userInfo) { 
         dispatch(listTeachers())
+        dispatch({type: TEACHER_TOTAL_RESET});
+        dispatch({type: CHILDREN_DEMOGRAPHIC_GENDER_RESET});
+        dispatch({type: TEACHER_TOTAL_RESET});
       } else{
         history.push('/')
       }
@@ -254,7 +283,7 @@ function TeacherManagement() {
         <Toolbar>
           <Tooltip title="Delete" onClick={handleClickOpen}>
               <IconButton >
-              <DeleteIcon />
+              <DeleteIcon className={defaultStyle.deleteIcon}/>
             </IconButton>
           </Tooltip>
           <Dialog
@@ -350,7 +379,7 @@ function TeacherManagement() {
                           <Grid xs={6} item md={1}>
                           <Tooltip title="Add new teacher">          
                           <IconButton href="/menu/teachermanagement/addTeacher">
-                          <AddCircleIcon style={{fontSize: 40, color: "black", }}/>
+                          <AddCircleIcon className={defaultStyle.addIcon}/>
                           </IconButton> 
                           </Tooltip> 
                           </Grid>
@@ -360,11 +389,11 @@ function TeacherManagement() {
                 <Paper>
                 <Grid xs={12}>             
                     <Grid style={{ height: 450, width: '100%' }} >
-                        <DataGrid
+                        <DataGrid              
                         rows={rows}
                         columns={columns}
                         pageSize={5}
-                        rowsPerPageOptions={[5]}
+                        rowsPerPageOptions={[4]}
                         checkboxSelection
                         disableSelectionOnClick
                         onSelectionModelChange={(ids) => {
@@ -376,7 +405,8 @@ function TeacherManagement() {
                           setSelection(selectedRowData);
                         }}
                         components={{
-                            Toolbar: CustomToolbar
+                            Toolbar: CustomToolbar,
+                            tableHeight: 'comfortable'
                         }}
                         />
                     </Grid>
