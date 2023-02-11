@@ -4,7 +4,9 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { teacherTotalReducer, userLoginReducer, userListReducer, userDeleteReducer, userDetailReducer, customerRegisterReducer, 
     adminRegisterReducer, vendorRegisterReducer, userUpdateReducer, vendorUpdateReducer, customerUpdateReducer, addTeacherReducer,
     getChildrenGenderReducer, individualTeacherReducer, addParentReducer, individualParentReducer, 
-    ParentListReducer, getChildrenDetailsByParentReducer, addNewChildReducer} from './reducers/userReducers'
+    ParentListReducer, getChildrenDetailsByParentReducer, addNewChildReducer, globalRankingReducer, classRankingReducer, classComparisonReducer,
+    notificationReducer, newNotificationReducer, deleteChildrenReducer, individualChildReducer, individualChildResultReducer, updateChildReducer
+} from './reducers/userReducers'
 import { helpListReducer, helpDeleteReducer, helpDetailReducer, helpSaveReducer, helpSendReducer} from './reducers/helpReducers'
 import { serviceListReducer, serviceDetailReducer, serviceDeleteReducer, serviceSaveReducer, 
     locationDetailReducer, vendorDetailReducer, serviceAddReducer } from './reducers/serviceReducers'
@@ -41,11 +43,20 @@ const reducer = combineReducers({
     getChildrenGender: getChildrenGenderReducer,
     individualTeacher: individualTeacherReducer,
     individualParent: individualParentReducer, 
+    individualChild: individualChildReducer,
     addParent: addParentReducer,
     parentList: ParentListReducer,
     updateParent: parentUpdateReducer,
     getChildrenP: getChildrenDetailsByParentReducer,
     childAdd: addNewChildReducer,
+    globalRanking: globalRankingReducer,
+    classRanking: classRankingReducer,
+    classComparison: classComparisonReducer,
+    notification: notificationReducer,
+    newNotification: newNotificationReducer, 
+    deleteChildren: deleteChildrenReducer,
+    individualChildResult: individualChildResultReducer,
+    updateChild: updateChildReducer,
 })
 
 const userInfoFromStorage = localStorage.getItem('userInfo') ?

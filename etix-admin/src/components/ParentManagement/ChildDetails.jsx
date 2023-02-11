@@ -1215,4 +1215,4 @@ const Parent = ({props}) => {
     )
 }
 
-export default Parent
+export default ChildDetails

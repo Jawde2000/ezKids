@@ -37,197 +37,216 @@ urlpatterns = [
     path('api/users/', views.getUsers, name="users-profile"),
     # api path to get user profile (must be logged in first)
     path('api/users/profile/', views.getUserProfile, name="user-profile"),
-    
-     # update user by id
+
+    # update user by id
     path('api/user/update/<str:pk>/', views.updateUserProfile,
          name="user-update"),
 
     # get teacher total number
     path('api/user/teacher/',
          views.getTeacherTotal, name='teacher-userid'),
-    
+
     # get parent total number
     path('api/user/parent/',
          views.getParentTotal, name='parent-userid'),
-    
+
     # get children total number
     path('api/user/children/',
          views.getChildrenTotal, name='parent-userid'),
-    
+
     # get children total number
     path('api/user/classes/',
          views.getClassesTotal, name='class-userid'),
-    
+
     # get all teacher
     path('api/teachers/',
          views.getTeacher, name='teacher-teacherlist'),
-    
-    path('api/kids/', 
+
+    path('api/kids/',
          views.getChildren, name='children-childrenlist'),
-    
+
     # get class information list
-    path('api/classes/', 
+    path('api/classes/',
          views.getClass, name='class-classlist'),
-     
+
     path('api/class/<str:pk>/',
-          views.getClassByID, name='class-classDetails'),
-    
-    # new class 
-    path('api/new/class/', 
+         views.getClassByID, name='class-classDetails'),
+
+    # new class
+    path('api/new/class/',
          views.newClass, name='class-newClass'),
-    
-    # update class 
-    path('api/update/class/<str:pk>/', 
+
+    # update class
+    path('api/update/class/<str:pk>/',
          views.updateClass, name='class-updateClass'),
-    
-    # delete class 
-    path('api/delete/class/<str:pk>/', 
+
+    # delete class
+    path('api/delete/class/<str:pk>/',
          views.deleteClass, name='class-deleteClass'),
-    
+
     # get homework information list
-    path('api/homework/', 
+    path('api/homework/',
          views.getHomework, name='homework-homeworkList'),
-    
-    # create homework 
-    path('api/new/homework/', 
+
+    # create homework
+    path('api/new/homework/',
          views.newHomework, name='homework-newHomework'),
-    
-    # create homework 
-    path('api/update/homework/<str:pk>/', 
+
+    # create homework
+    path('api/update/homework/<str:pk>/',
          views.updateHomework, name='homework-updateHomework'),
-    
-    # delete homework 
-    path('api/delete/homework/<str:pk>/', 
+
+    # delete homework
+    path('api/delete/homework/<str:pk>/',
          views.deleteHomework, name='homework-deleteHomework'),
-    
+
     # get subject information list
-    path('api/subjects/', 
+    path('api/subjects/',
          views.getSubject, name='subject-subjectlist'),
-    
-     #get children gender demographic
-     path('api/childrengenderdemo/', 
+
+    # get children gender demographic
+    path('api/childrengenderdemo/',
          views.getChildrenGender, name='children-genderdemographic'),
-    
+
     # create new subject
-    path('api/new/subjects/', 
+    path('api/new/subjects/',
          views.newSubject, name='subject-newSubject'),
-    
+
     # delete subject
-    path('api/delete/subjects/<str:pk>/', 
+    path('api/delete/subjects/<str:pk>/',
          views.deleteSubject, name='subject-deleteSubject'),
-    
+
     # get attendance information list
-    path('api/attendance/', 
+    path('api/attendance/',
          views.getAttendance, name='attendance-attendancelist'),
-    
+
     # create attendance information list
-    path('api/attendancelist/attendance/', 
+    path('api/attendancelist/attendance/',
          views.createAttendanceList, name='attendance-createAttendancelist'),
-    
+
     # get attendance information list
-    path('api/attendancelist/', 
+    path('api/attendancelist/',
          views.getAttendanceList, name='attendance-getAttendancelist'),
-    
+
     # create new attendance
-    path('api/new/attendance/', 
+    path('api/new/attendance/',
          views.newAttendance, name='attendance-newAttendance'),
-    
+
     # create new subject grade
-    path('api/new/grade/', 
+    path('api/new/grade/',
          views.newSubjectGrade, name='grade-newGrade'),
-    
+
     # update subject grade
-    path('api/update/grade/<str:pk>/', 
+    path('api/update/grade/<str:pk>/',
          views.updateSubjectGrade, name='grade-updateGrade'),
-    
+
     # get subject grade
-    path('api/grades/', 
+    path('api/grades/',
          views.getGrades, name='grade-getGrade'),
-    
+
     # delete subject grade
-    path('api/delete/grade/<str:pk>/', 
+    path('api/delete/grade/<str:pk>/',
          views.deleteSubjectGrade, name='grade-deleteGrade'),
-    
+
     # create new annoucement
-    path('api/new/announcement/', 
+    path('api/new/announcement/',
          views.newAnnouncement, name='announcement-newAnnouncement'),
-    
-     # delete annoucement
-    path('api/delete/announcement/<str:pk>/', 
+
+    # create new annoucement
+    path('api/announcement/',
+         views.getAnnouncement, name='announcement-getAnnouncement'),
+
+    # delete annoucement
+    path('api/delete/announcement/<str:pk>/',
          views.deleteAnnouncement, name='announcement-deleteAnnouncement'),
-    
-    #create new teacher
-    path('api/new/teacher/', 
+
+    # create new teacher
+    path('api/new/teacher/',
          views.newTeacher, name='teacher-newTeacher'),
-    
-    #update teacher
+
+    # update teacher
     path('api/update/teacher/<str:pk>/',
          views.updateTeacher, name="teacher-updateTeacher"),
-    
-    #create new children
+
+    # create new children
     path('api/new/children/',
          views.newChildren, name='children-newChildren'),
-    
-    #create new children
+
+    # update children
     path('api/update/children/<str:pk>/',
          views.updateChildren, name='children-updateChildren'),
-    
-    #get children grade by childID
+
+    # get children grade by childID
     path('api/grade/children/<str:pk>/',
          views.getSubjectGradeByChildID, name='children|grade -getSubjectGradeByChildID'),
-    
-    #get children by parentID
+
+    # get children by parentID
     path('api/parent/children/<str:pk>/',
          views.getChildrenByParentID, name='children|parent-getChildrenByParentsID'),
-    
-    #get children by classID
+
+    # get children by classID
     path('api/class/children/<str:pk>/',
          views.getChildrenByClassID, name='children|classes-getChildrenByclassID'),
-    
-     #get class by teacherID
+
+    # get class by teacherID
     path('api/class/teacher/<str:pk>/',
          views.getClassByTeacherID, name='class|teacher-getClassByTeacherID'),
-    
-    #get children ranking 
+
+    # get children ranking
     path('api/global/ranking/',
          views.getRanking, name='globalAll|children|ranking-getRanking'),
-    
-    #get children ranking 
+
+    # get class average ranking
+    path('api/classaverage/ranking/',
+         views.getClassAverageComparison, name='globalAll|children|ranking-getRanking'),
+
+    # get children in same class ranking
     path('api/class/ranking/<str:pk>/',
          views.getClassRanking, name='class|children|ranking-getRanking'),
-    
-    #delete children
+
+    # delete children
     path('api/delete/children/<str:pk>/',
          views.deleteChildren, name='children-deleteChildren'),
-    
-    #get parent list
-     path('api/parents/', 
-     views.getParent, name='parent-parentlist'),
-        
-    #create new parents
+
+    # get parent list
+    path('api/parents/',
+         views.getParent, name='parent-parentlist'),
+
+    # create new parents
     path('api/new/parents/',
          views.newParent, name='parent-newParent'),
-    
-    #update parents
+
+    # update parents
     path('api/update/parents/<str:pk>/',
          views.updateParent, name='parent-updateParent'),
-    
-    #delete parents
+
+    # delete parents
     path('api/delete/parents/<str:pk>/',
          views.deleteParent, name='parent-deleteParent'),
-    
-    #get individual teacher
-    path('api/individualteacher/<str:pk>/', 
+
+    # get individual teacher
+    path('api/individualteacher/<str:pk>/',
          views.getIndividualTeacher, name='teacher-individualTeacher'),
 
-     #get individual parent
-    path('api/individualParent/<str:pk>/', 
+    # get individual parent
+    path('api/individualParent/<str:pk>/',
          views.getIndividualParent, name='parent-individualParent'),
-
+    
+        # get individual parent
+    path('api/individualParentID/<str:pk>/',
+         views.getIndividualParentID, name='parent-individualParentID'),
+    
+    # get individual children
+    path('api/individualChildren/<str:pk>/',
+         views.getIndividualChildren, name='children-individualChildren'),
 
     # update teacher by userid
     path('api/user/teacher/update/<str:pk>/',
          views.updateTeacher, name="teacher-update"),
+    
+     # update teacher by userid
+    path('api/classname/<str:pk>/',
+         views.getClassName, name="class-name"),
 
     # api path to delete users
     path('api/user/delete/<str:pk>/', views.deleteUser, name='user-delete'),
@@ -236,9 +255,9 @@ urlpatterns = [
     path('api/user/<str:pk>/',
          views.getUserByID, name='user-detail-email'),
 
-#     # api path to reset password and send email to user
-#     path('api/user/resetpass/<str:pk>/',
-#          views.resetPassword, name='user-reset-pass'),
+    #     # api path to reset password and send email to user
+    #     path('api/user/resetpass/<str:pk>/',
+    #          views.resetPassword, name='user-reset-pass'),
 
 
 ]

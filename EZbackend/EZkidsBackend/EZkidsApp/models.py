@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import random
@@ -10,6 +11,8 @@ def one_week_hence():
     return timezone.now() + timezone.timedelta(days=7)
 
 # Create your models here.
+
+
 class ToDoList(models.Model):
     title = models.CharField(max_length=100, unique=True)
 
@@ -18,6 +21,7 @@ class ToDoList(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class ToDoItem(models.Model):
     def generate_todo_id():
@@ -44,6 +48,7 @@ class ToDoItem(models.Model):
 
     class Meta:
         ordering = ["due_date"]
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **other_fields):
@@ -116,7 +121,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         # "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
         return True
-    
+
+
 class Teacher(models.Model):
     def generate_teacher_id():
         while True:
@@ -125,7 +131,7 @@ class Teacher(models.Model):
             if Teacher.objects.filter(teacherID=code).count() == 0:
                 break
         return code
-    
+
     teacherID = models.CharField(
         default=generate_teacher_id, primary_key=True, unique=True, editable=False, max_length=8)
     created_by = models.OneToOneField(
@@ -137,23 +143,25 @@ class Teacher(models.Model):
     bankAccountHolder = models.CharField(max_length=100)
     teacherBankName = models.CharField(max_length=100)
     teacherBankAcc = models.CharField(max_length=16)
-    
+
     class Meta:
         ordering = ['teacherID']
 
     def __str__(self):
         return self.teacherID
-    
+
+
 class Principal(models.Model):
     principalID = models.CharField(
         default=1, primary_key=True, unique=True, editable=False, max_length=8)
-    
+
     class Meta:
         ordering = ['principalID']
 
     def __str__(self):
         return self.principalID
-    
+
+
 class Parent(models.Model):
     def generate_parent_id():
         while True:
@@ -186,7 +194,8 @@ class Parent(models.Model):
 
     def __str__(self):
         return self.parentsID
-    
+
+
 class Class(models.Model):
     def generate_class_id():
         while True:
@@ -194,12 +203,13 @@ class Class(models.Model):
             if Class.objects.filter(classID=code).count() == 0:
                 break
         return code
-    
+
     classID = models.CharField(
         default=generate_class_id, primary_key=True, unique=True, editable=False, max_length=8)
     className = models.CharField(max_length=16, blank=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
-    
+
+
 class Children(models.Model):
     def generate_child_id():
         while True:
@@ -207,7 +217,7 @@ class Children(models.Model):
             if Children.objects.filter(childID=code).count() == 0:
                 break
         return code
-    
+
     childFirstName = models.CharField(max_length=128, blank=True)
     childLastName = models.CharField(max_length=128, blank=True)
     childGenderChoices = [
@@ -220,8 +230,10 @@ class Children(models.Model):
         default=generate_child_id, primary_key=True, unique=True, editable=False, max_length=8)
     childDOB = models.DateField(blank=True, null=True)
     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True,)
-    class_belong = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
-    
+    class_belong = models.ForeignKey(
+        Class, on_delete=models.SET_NULL, null=True)
+
+
 class Announcement(models.Model):
     def generate_announcement_id():
         while True:
@@ -229,14 +241,16 @@ class Announcement(models.Model):
             if Announcement.objects.filter(announcementID=code).count() == 0:
                 break
         return code
-    
+
     announcementID = models.CharField(
         default=generate_announcement_id, primary_key=True, unique=True, editable=False, max_length=8)
     announcementTitle = models.CharField(max_length=2500, blank=True)
     announcementDesc = models.CharField(max_length=5500, blank=True)
-    announcementTime = models.DateTimeField(auto_now_add=True)
-    announcementSchedule = models.DateTimeField(max_length=2500, blank=True)
-    
+    announcementTime = models.DateTimeField()
+    announcementSchedule = models.DateTimeField(
+        max_length=2500, default=timezone.now)
+
+
 class Subject(models.Model):
     def generate_subject_id():
         while True:
@@ -246,8 +260,9 @@ class Subject(models.Model):
         return code
 
     subjectID = models.CharField(
-        default=generate_subject_id, primary_key=True, unique=True, editable=False, max_length=8) 
-    subject = models.CharField(max_length=128, blank=True)   
+        default=generate_subject_id, primary_key=True, unique=True, editable=False, max_length=8)
+    subject = models.CharField(max_length=128, blank=True)
+
 
 class Homework(models.Model):
     def generate_homework_id():
@@ -262,9 +277,11 @@ class Homework(models.Model):
     homeworkDesc = models.CharField(max_length=550, blank=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True)
-    children = models.ForeignKey(Children, on_delete=models.SET_NULL, null=True)
+    children = models.ForeignKey(
+        Children, on_delete=models.SET_NULL, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
-    
+
+
 class SubjectGrade(models.Model):
     def generate_grade_id():
         while True:
@@ -275,12 +292,14 @@ class SubjectGrade(models.Model):
 
     subject_gradeID = models.CharField(
         default=generate_grade_id, primary_key=True, unique=True, editable=False, max_length=8)
-    children = models.ForeignKey(Children, on_delete=models.SET_NULL, null=True)
+    children = models.ForeignKey(
+        Children, on_delete=models.SET_NULL, null=True)
     grade = models.CharField(max_length=5, blank=True)
     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
     subject = models.ForeignKey(Subject,  on_delete=models.SET_NULL, null=True)
-    
+
+
 class Attendance(models.Model):
     def generate_attendance_id():
         while True:
@@ -288,22 +307,20 @@ class Attendance(models.Model):
             if Attendance.objects.filter(attendanceID=code).count() == 0:
                 break
         return code
-    
+
     attendanceID = models.CharField(
         default=generate_attendance_id, primary_key=True, unique=True, editable=False, max_length=8)
     subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True)
-    children = models.ForeignKey(Children, on_delete=models.SET_NULL, null=True)
+    children = models.ForeignKey(
+        Children, on_delete=models.SET_NULL, null=True)
     attendance = models.BooleanField(default=False)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
-    class_Belong = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
+    class_Belong = models.ForeignKey(
+        Class, on_delete=models.SET_NULL, null=True)
     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     created_date_only = models.DateField(auto_now_add=True)
-    
-    class Meta:
-        unique_together = (("created_date_only", "children", "subject", "teacher", "class_Belong"), )
-        
 
-    
-    
-    
+    class Meta:
+        unique_together = (("created_date_only", "children",
+                           "subject", "teacher", "class_Belong"), )

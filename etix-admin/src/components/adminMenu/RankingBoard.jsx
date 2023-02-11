@@ -2,6 +2,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@material-ui/core';
 import { Typography, } from '@mui/material';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import {useDispatch, useSelector} from 'react-redux'
+import { getGlobalRanking } from '../../actions/userActions';
+import {useEffect, useState} from 'react';
+import Skeleton from '@mui/material/Skeleton';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -15,68 +19,119 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const data = [
-  {
-    rank: 1,
-    name: 'Lim Lam Pa',
-    score: 1000,
-  },
-  {
-    rank: 2,
-    name: 'Pu Mian Bo',
-    score: 900,
-  },
-  {
-    rank: 3,
-    name: 'Nee Lam Bo',
-    score: 890,
-  },
-  {
-    rank: 4,
-    name: 'Lou Shi Lim',
-    score: 890,
-  },
-  {
-    rank: 5,
-    name: 'Wa Tha Huat',
-    score: 885,
-  },
-  {
-    rank: 6,
-    name: 'Him Seng Jon',
-    score: 882,
-  },
-];
-
 export default function RankingBoard() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const GlobalRanking = useSelector(state => state.globalRanking);
+  const {data: rankingList, success: successRanking, loading: loadingRanking} = GlobalRanking;
+  const [childrenRanking, getChildrenRanking] = useState([]);
+
+  useEffect(() => {
+    dispatch(getGlobalRanking());
+  }, []);
+
+  useEffect(() => {
+    if (successRanking) {
+      getChildrenRanking(rankingList);
+    }
+    const intervalId = setInterval(() => {
+      dispatch(getGlobalRanking());
+    }, 180 * 1000); // 3 minutes in milliseconds
+    
+    return () => {
+      setInterval(intervalId);
+    };
+  }, [rankingList, dispatch]);
 
   return (
     <Paper className={classes.root}>
-      <Table className={classes.table}>
-        <TableHead>
+        {successRanking?
+        <Table>
+        <TableHead style={{ position: "sticky", top: 0 }}>
           <TableRow  display="flex">
             <TableCell align="center" style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-              <Typography variant="h6" style={{fontWeight: "bold"}}>Rank</Typography> {<MilitaryTechIcon style={{ fontSize: '25px', color: 'gold'}}/>}
+              <Typography variant="h6" style={{fontFamily: ['rubik', 'impact'].join(','),}}>Rank</Typography> {<MilitaryTechIcon style={{ fontSize: '25px', color: 'gold'}}/>}
             </TableCell>
             <TableCell>
-              <Typography variant="h6" style={{fontWeight: "bold"}}>Name</Typography>
+              <Typography variant="h6" style={{fontFamily: ['rubik', 'impact'].join(','),}}>Name</Typography>
             </TableCell>
             <TableCell>
-              <Typography variant="h6" style={{fontWeight: "bold"}}>Score</Typography>
+              <Typography variant="h6" style={{fontFamily: ['rubik', 'impact'].join(','),}}>Class</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="h6" style={{fontFamily: ['rubik', 'impact'].join(','),}}>Score</Typography>
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
-            <TableRow key={row.rank}>
-              <TableCell align="center">{row.rank}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.score}</TableCell>
+          {childrenRanking.slice(0, 6).map((row, index) => (
+            <TableRow key={row.rank} style={index % 2 === 0 ? { backgroundColor: 'lightgrey' } : { backgroundColor: 'white' }}>
+              <TableCell style={{fontFamily: ['rubik', 'impact'].join(','),}} align="center">{index + 1}</TableCell>
+              <TableCell>{row.child_name}</TableCell>
+              <TableCell>{row.class}</TableCell>
+              <TableCell>{row.subject_avg.toFixed(2)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      :
+      <Table>
+        <TableHead style={{ position: "sticky", top: 0 }}>
+          <TableRow  display="flex">
+          <TableCell align="center" style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+              <Typography variant="h6" style={{fontFamily: ['rubik', 'impact'].join(','),}}>Rank</Typography> {<MilitaryTechIcon style={{ fontSize: '25px', color: 'gold'}}/>}
+            </TableCell>
+            <TableCell>
+              <Typography variant="h6" style={{fontFamily: ['rubik', 'impact'].join(','),}}>Name</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="h6" style={{fontFamily: ['rubik', 'impact'].join(','),}}>Class</Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="h6" style={{fontFamily: ['rubik', 'impact'].join(','),}}>Score</Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        <TableRow>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+        </TableRow>
+        <TableRow>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+        </TableRow>
+        <TableRow>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+        </TableRow>
+        <TableRow>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+        </TableRow>
+        <TableRow>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+        </TableRow>
+        <TableRow>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+              <TableCell><Skeleton variant="rounded"/></TableCell>
+        </TableRow>
+        </TableBody>
+      </Table>
+      }
     </Paper>
   );
 }

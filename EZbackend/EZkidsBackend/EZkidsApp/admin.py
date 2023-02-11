@@ -54,8 +54,8 @@ class TeacherModel(admin.ModelAdmin):
 
 @admin.register(Children)
 class ChildrenModel(admin.ModelAdmin):
-    list_filter = ('childID',)
-    list_display = ('childID',)
+    list_filter = ('childID', 'class_belong')
+    list_display = ('childID', 'class_belong')
 
 
 @admin.register(Class)
@@ -74,7 +74,7 @@ class ParentModel(admin.ModelAdmin):
 @admin.register(Announcement)
 class AnnouncementModel(admin.ModelAdmin):
     list_filter = ('announcementID', 'announcementTime')
-    list_display = ('announcementID', 'announcementTime')
+    list_display = ('announcementID', 'announcementTime', 'announcementSchedule')
 
 
 @admin.register(ToDoList)

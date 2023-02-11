@@ -32,19 +32,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        backgroundImage: `url(${moscow})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
-        backgroundColor: "rgba(255,255,255,0.5)",
+        backgroundColor: "#36454F",
         backgroundBlendMode: "lighten",
         minHeight: 700,
         fontFamily: ['rubik', 'sans-serif'].join(','),
         padding: 20
     },
     box: {
-        backgroundColor: "#DADADA",
+        backgroundColor: "white",
         marginBottom: 20,
-        borderRadius: 5,
+        borderRadius: 2,
         minHeight: 450,
         marginTop: 15,
         margin: 'auto',

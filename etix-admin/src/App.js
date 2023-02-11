@@ -27,6 +27,8 @@ import {useSelector} from 'react-redux'
 import {  Grid } from '@mui/material';
 import AddParent from './components/ParentManagement/AddParent';
 import Parent from './components/ParentManagement/Parent';
+import Children from './components/ParentManagement/Children'
+import ChildrenDetails from './components/ParentManagement/ChildrenDetails';
 
 const theme = createTheme({
     palette: {
@@ -81,7 +83,8 @@ function App() {
                   <Route exact path="/menu/teachermanagement/teacher/:id" component={Teacher}/>
                   <Route exact path="/menu/teachermanagement/addTeacher" component={AddTeacher}/>
                   <Route exact path="/menu/Parentmanagement/parent/:id" component={Parent}/>
-
+                  <Route exact path="/menu/Parentmanagement/children/:id" component={Children}/>
+                  <Route exact path="/menu/Parentmanagement/individualChildren/:id" component={ChildrenDetails}/>
                 </Switch>
               <Footer />    
             </BrowserRouter>

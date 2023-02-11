@@ -101,6 +101,50 @@ import {
     CHILDREN_ADD_RESET,
     CHILDREN_ADD_FAIL,
 
+    GLOBAL_RANKING_REQUEST,
+    GLOBAL_RANKING_SUCCESS,
+    GLOBAL_RANKING_RESET,
+    GLOBAL_RANKING_FAIL,
+
+    CLASS_RANKING_REQUEST,
+    CLASS_RANKING_SUCCESS,
+    CLASS_RANKING_FAIL,
+    CLASS_RANKING_RESET,
+
+    CLASS_COMPARISION_REQUEST,
+    CLASS_COMPARISION_SUCCESS,
+    CLASS_COMPARISION_FAIL,
+    CLASS_COMPARISION_RESET,
+
+    NOTICATION_REQUEST, 
+    NOTICATION_SUCCESS, 
+    NOTICATION_FAIL,
+    NOTICATION_RESET,
+
+    NEW_NOTICATION_REQUEST,
+    NEW_NOTICATION_SUCCESS,
+    NEW_NOTICATION_FAIL,
+    NEW_NOTICATION_RESET,
+
+    CHILDREN_DELETE_REQUEST,
+    CHILDREN_DELETE_SUCCESS,
+    CHILDREN_DELETE_FAIL,
+    CHILDREN_DELETE_RESET,
+
+    INDIVIDUAL_CHILDREN_REQUEST,
+    INDIVIDUAL_CHILDREN_SUCCESS,
+    INDIVIDUAL_CHILDREN_FAIL,
+    INDIVIDUAL_CHILDREN_RESET,
+
+    INDIVIDUAL_RESULT_REQUEST,
+    INDIVIDUAL_RESULT_SUCCESS,
+    INDIVIDUAL_RESULT_FAIL,
+    INDIVIDUAL_RESULT_RESET,
+
+    CHILDREN_UPDATE_REQUEST,
+    CHILDREN_UPDATE_SUCCESS,
+    CHILDREN_UPDATE_FAIL,
+    CHILDREN_UPDATE_RESET,
 } from '../constants/userConstants'
 
 export const userLoginReducer = (state = { }, action) => {
@@ -350,6 +394,25 @@ export const getChildrenGenderReducer = (state={}, action) => {
     }
 }
 
+export const deleteChildrenReducer = (state={}, action) => {
+    switch(action.type){
+        case CHILDREN_DELETE_REQUEST:
+            return {loading: true}
+        
+        case CHILDREN_DELETE_SUCCESS:
+           return {loading: false, success: true}
+        
+        case CHILDREN_DELETE_FAIL:
+           return {loading: false, success: false}
+
+        case CHILDREN_DELETE_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
 export const getChildrenDetailsByParentReducer = (state={}, action) => {
     switch(action.type){
         case CHILDREN_DETAILS_REQUEST:
@@ -445,6 +508,44 @@ export const addParentReducer = (state={}, action) => {
     }
 }
 
+export const individualChildResultReducer = (state={}, action) => {
+    switch(action.type){
+        case INDIVIDUAL_RESULT_REQUEST:
+            return {loading: true}
+        
+        case INDIVIDUAL_RESULT_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case INDIVIDUAL_RESULT_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case INDIVIDUAL_RESULT_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const individualChildReducer = (state={}, action) => {
+    switch(action.type){
+        case INDIVIDUAL_CHILDREN_REQUEST:
+            return {loading: true}
+        
+        case INDIVIDUAL_CHILDREN_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case INDIVIDUAL_CHILDREN_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case INDIVIDUAL_CHILDREN_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
 export const individualParentReducer = (state={}, action) => {
     switch(action.type){
         case INDIVIDUAL_PARENT_REQUEST:
@@ -457,6 +558,82 @@ export const individualParentReducer = (state={}, action) => {
            return {loading: false, success: false, error: action.payload}
 
         case INDIVIDUAL_PARENT_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const globalRankingReducer = (state={}, action) => {
+    switch(action.type){
+        case GLOBAL_RANKING_REQUEST:
+            return {loading: true}
+        
+        case GLOBAL_RANKING_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case GLOBAL_RANKING_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case GLOBAL_RANKING_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const classRankingReducer = (state={}, action) => {
+    switch(action.type){
+        case CLASS_RANKING_REQUEST:
+            return {loading: true}
+        
+        case CLASS_RANKING_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case CLASS_RANKING_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case CLASS_RANKING_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const classComparisonReducer = (state={}, action) => {
+    switch(action.type){
+        case CLASS_COMPARISION_REQUEST:
+            return {loading: true}
+        
+        case CLASS_COMPARISION_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case CLASS_COMPARISION_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case CLASS_COMPARISION_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const notificationReducer = (state={}, action) => {
+    switch(action.type){
+        case NOTICATION_REQUEST:
+            return {loading: true}
+        
+        case NOTICATION_SUCCESS:
+           return {loading: false, success: true, data: action.payload}
+        
+        case NOTICATION_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case NOTICATION_RESET:
             return {}
 
         default:
@@ -482,6 +659,45 @@ export const addNewChildReducer = (state={}, action) => {
             return state
     }
 }
+
+export const updateChildReducer = (state={}, action) => {
+    switch(action.type){
+        case CHILDREN_UPDATE_REQUEST:
+            return {loading: true}
+        
+        case CHILDREN_UPDATE_SUCCESS:
+           return {loading: false, success: true}
+        
+        case CHILDREN_UPDATE_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case CHILDREN_UPDATE_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
+export const newNotificationReducer = (state={}, action) => {
+    switch(action.type){
+        case NEW_NOTICATION_REQUEST:
+            return {loading: true}
+        
+        case NEW_NOTICATION_SUCCESS:
+           return {loading: false, success: true}
+        
+        case NEW_NOTICATION_FAIL:
+           return {loading: false, success: false, error: action.payload}
+
+        case NEW_NOTICATION_RESET:
+            return {}
+
+        default:
+            return state
+    }
+}
+
 
 
 

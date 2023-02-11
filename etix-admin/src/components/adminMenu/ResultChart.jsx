@@ -1,9 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Grid} from '@mui/material';
+import {Grid, Box} from '@mui/material';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell,
 } from 'recharts';
+import {useDispatch, useSelector} from 'react-redux'
+import { getClassComparison } from '../../actions/userActions';
+import {useEffect, useState} from 'react';
+import Skeleton from '@mui/material/Skeleton';
+import { Backdrop } from '@material-ui/core';
+import CircularProgress from '@mui/material/CircularProgress';
+
+const COLORS = ['#87CEEB','#1E90FF','#191970', '#FF8042'];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,32 +20,57 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const data = [
-  { name: 'Student 1', score: 90 },
-  { name: 'Student 2', score: 85 },
-  { name: 'Student 3', score: 80 },
-  { name: 'Student 4', score: 75 },
-  { name: 'Student 5', score: 70 },
-];
-
 export default function ResultChart() {
-  const classes = useStyles();
+  const dispatch = useDispatch();
+  const classComparison = useSelector(state => state.classComparison);
+  const {data: comparisonList, success: successComparison, loading: loadingComparison} = classComparison;
+  const [classComparisonList, getClassComparisonList] = useState([]);
+
+  useEffect(() => {
+    dispatch(getClassComparison());
+  }, []);
+
+  useEffect(() => {
+    if (successComparison) {
+      getClassComparisonList(comparisonList);
+    }
+    const intervalId = setInterval(() => {
+      dispatch(getClassComparisonList());
+    }, 180 * 1000); // 3 minutes in milliseconds
+    
+    return () => {
+      setInterval(intervalId);
+    };
+  }, [comparisonList, dispatch]);
+
+  const data = [
+    { name: 'Loading', score: 90 },
+    { name: 'Loading', score: 85 },
+    { name: 'Loading', score: 80 },
+  ];
 
   return (
     <Grid>
+      {
       <BarChart
         width={550}
         height={383}
-        data={data}
+        data={classComparisonList}
         margin={{ top: 5, right: 150, left: 20, bottom: 5 }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis label={{ value: 'Score (out of 100)', angle: -90, position: 'insideLeft' }} />
+        <CartesianGrid strokeDasharray="2 2" />
+        <XAxis dataKey="Class" />
+        <YAxis style={{fontFamily: ['rubik', 'impact'].join(','),}} label={{ value: 'Class Score Average', angle: -90, position: 'insideLeft', }}/>
         <Tooltip />
         <Legend />
-        <Bar dataKey="score" fill="#8884d8" />
+        <Bar dataKey={"Average"}>
+        {classComparisonList.map((data, index) => (         
+            <Cell key={index} fill={COLORS[index % COLORS.length]}/>
+        ))}
+        </Bar>
       </BarChart>
+      }
+
     </Grid>
   );
 }

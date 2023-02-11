@@ -1,4 +1,4 @@
-import { AppBar, Grid, Box, Container, IconButton, Link, Typography, Button, Icon, Paper, TextField, Tooltip, Toolbar} from '@mui/material';
+import { AppBar, Grid, Box, Container, IconButton, Typography, Button, Icon, Paper, TextField, Tooltip, Toolbar} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, {useEffect, props, useState} from 'react';
 import moscow from '../globalAssets/moscow.jpg'
@@ -7,13 +7,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { deleteUsers, ListParents } from '../../actions/userActions';
+import { getChildrenDetailsByParent, deleteChilds, getIndividualChild } from '../../actions/userActions';
 import {useDispatch, useSelector} from 'react-redux'
 import ClearIcon from '@mui/icons-material/Clear';
 import PropTypes from 'prop-types';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridToolbarDensitySelector, GridToolbarColumnsButton} from '@mui/x-data-grid';
 import CircularProgress from '@mui/material/CircularProgress';
-import { USER_LIST_RESET, USER_LIST_REQUEST, USER_DELETE_RESET } from '../../constants/userConstants';
+import { CHILDREN_DELETE_RESET, CHILDREN_DETAILS_REQUEST, CHILDREN_DETAILS_RESET } from '../../constants/userConstants';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Dialog from '@mui/material/Dialog';
@@ -23,6 +23,20 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useHistory } from 'react-router';
 import Backdrop from '@mui/material/Backdrop';
+import { Link, useParams } from 'react-router-dom';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles((theme) => ({
   whole: {
@@ -73,31 +87,35 @@ function CustomToolbar() {
     );
 }
 
-function ParentManagement() {
+function ChildrenManagement({props}) {
     const defaultStyle = useStyles();
     const userLogin = useSelector(state => state.userLogin);
     const {userInfo} = userLogin;
     const dispatch = useDispatch();
     let history = useHistory();
+    const { id } = useParams();
 
     const userList = useSelector(state => state.userList);
     const {loading, error, users} = userList
 
-    const userDelete = useSelector(state => state.userDelete)
-    const {success: successDelete, loading: loadingDelete} = userDelete
+    const deleteChildren = useSelector(state => state.deleteChildren)
+    const {success: successDelete, loading: loadingDelete} = deleteChildren
 
-    const parentList = useSelector(state => state.parentList)
-    const {data: listParents, loading: loadingParent, success: successParent} = parentList;
+    const getChildrenP = useSelector(state => state.getChildrenP)
+    const {data: listChildren, loading: loadingChildren, success: successChildren} = getChildrenP;
 
     const [search, setSearch] = useState('');
     const [select, setSelection] = useState([]);
     const [row, setRow] = useState([]);
     const [rows, setRows] = useState([]);
     const [openDel, setOpenDel] = useState(false);
+    const [classList, setClassList] = useState([]);
+    const [className, setClassName] = useState([]);
     // const serviceList = useSelector(state => state.serviceList)
     // const {services} = serviceList
 
     const DialogDelete2 = () => {
+        console.log(select)
       const [open, setOpen] = useState(false);
     
       const handleClickOpen = () => {
@@ -110,8 +128,8 @@ function ParentManagement() {
     
       const handleDelete = () => {
         select.map((ids) => {
-          console.log(ids.userID)
-          dispatch(deleteUsers(ids.userID));
+          console.log(ids)
+          dispatch(deleteChilds(ids.id));
         })
         
         setOpen(false);
@@ -138,11 +156,11 @@ function ParentManagement() {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Delete Teacher(s)"}
+              {"Delete Children(s)"}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete the Parent(s)?
+                Are you sure you want to delete the Children(s)?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -158,7 +176,7 @@ function ParentManagement() {
 
 
     const columns = [
-      { field: 'id', headerName: 'Parent ID', width: 200 },
+      { field: 'id', headerName: 'Children ID', width: 200 },
       {
         field: 'username',
         headerName: 'Name',
@@ -167,10 +185,9 @@ function ParentManagement() {
         editable: false,
       },
       {
-        field: 'email',
-        headerName: 'Email',
+        field: 'gender',
+        headerName: 'Gender',
         headerAlign: 'center',
-        type: 'email',
         width: 250,
         editable: false,
       },
@@ -190,14 +207,14 @@ function ParentManagement() {
                 <Grid xs={6} item>
                   <Toolbar>
                   <Tooltip title="Edit">
-                  <IconButton href={`/menu/Parentmanagement/parent/${params.row.userID}`}>
+                  <IconButton href={`/menu/Parentmanagement/individualChildren/${params.row.id}`}>
                     <EditIcon className={defaultStyle.editIcon}/>
                   </IconButton>
                   </Tooltip>
                   </Toolbar>
                 </Grid>
                 <Grid xs={6} item>
-                  {select.length >= 2? null:<DialogDelete ids={params.row.userID}/>}
+                  {select.length >= 2? null:<DialogDelete ids={params.row.id}/>}
                 </Grid>
               </Grid>
             </Container>
@@ -208,7 +225,7 @@ function ParentManagement() {
 
     useEffect(() => {
       if(userInfo) { 
-        dispatch(ListParents())
+        dispatch(getChildrenDetailsByParent(id))
       } else{
         history.push('/')
       }
@@ -216,31 +233,30 @@ function ParentManagement() {
 
     useEffect(() => {
       if(successDelete){
-        setOpenDel(true);
+        dispatch({type: CHILDREN_DETAILS_RESET});
+        dispatch({type: CHILDREN_DETAILS_REQUEST});
+        dispatch({type: CHILDREN_DELETE_RESET});
       }
     }, [successDelete])
 
     useEffect(() => {
-      console.log(listParents)
-      if (listParents) {
-          const userS = listParents?.map(parent => {
+      if (listChildren) {
+          const userS = listChildren?.map(children => {
         //   var s = servicel.serviceStatus === "O"? "Active":"Inactive"
         //   var timeString = servicel.serviceTime // input string
         //   var arr = timeString.split(":"); // splitting the string by colon
         //   var suffix = arr[0] >= 12 ? " PM":" AM"
         //   var t = arr[0] + ":" + arr[1] + suffix
-
-          return {
-            id: parent.parentsID,
-            username: parent.parentsFirstName+ " " + parent.parentsLastName,
-            email: parent.parentsEmail,
-            userID: parent.created_by
-          }
+            return {
+                id: children.childID,
+                username: children.childFirstName+ " " + children.childLastName,
+                gender: children.childGender === "F"?"Female":"Male"
+            }
         })
         // console.log(serviceLoad)
         setRow(userS);
       }
-    }, [listParents])
+    }, [listChildren])
 
     useEffect(()=> {
       if(row){
@@ -261,7 +277,7 @@ function ParentManagement() {
 
     const DialogDelete = (ids) => {
       const [open, setOpen] = useState(false);
-      console.log(ids.ids);
+      console.log(ids);
     
       const handleClickOpen = () => {
         setOpen(true);
@@ -273,7 +289,7 @@ function ParentManagement() {
       };
     
       const handleDelete = () => {
-        dispatch(deleteUsers(ids.ids));
+        dispatch(deleteChilds(ids.ids));
         ids = null;
         setSelection([]);
       }
@@ -292,11 +308,11 @@ function ParentManagement() {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Delete Teacher(s)"}
+              {"Delete Children(s)"}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete the Parent(s)?
+                Are you sure you want to delete the Children(s)?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -312,10 +328,10 @@ function ParentManagement() {
 
     const DialogDel = () => {
       const handleClose = () => {
-        dispatch({type: USER_LIST_RESET});
+        dispatch({type: CHILDREN_DETAILS_RESET});
         setOpenDel(false);
-        dispatch({type: USER_LIST_REQUEST});
-        dispatch({type: USER_DELETE_RESET});
+        dispatch({type: CHILDREN_DETAILS_REQUEST});
+        dispatch({type: CHILDREN_DELETE_RESET});
       };
 
       return (
@@ -329,7 +345,7 @@ function ParentManagement() {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                The Parent(s) is deleted
+                The Children is deleted
               </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -372,15 +388,8 @@ function ParentManagement() {
                     </Grid>
                     <Grid xs={4} alignItems="flex-end" alignContent="flex-end" flexWrap="wrap" justifyContent="flex-end" container spacing={0.5}>
                     <Grid xs={12} item display="flex" alignItems="center" alignContent="center" flexWrap="wrap" justifyContent="center">
-                          <Grid xs={6} item md={1} paddingRight={15}>
+                          <Grid xs={12} item md={1} paddingLeft={15}>
                           <DialogDelete2 />
-                          </Grid>
-                          <Grid xs={6} item md={1}>
-                          <Tooltip title="Add new parent">          
-                          <IconButton href="/menu/parentmanagement/addParent">
-                          <AddCircleIcon className={defaultStyle.addIcon}/>
-                          </IconButton> 
-                          </Tooltip> 
                           </Grid>
                       </Grid>             
                     </Grid>
@@ -412,7 +421,7 @@ function ParentManagement() {
                 </Paper>
             </Grid>
             <Grid>
-              {loadingParent?
+              {loadingChildren?
               <Backdrop style={{ zIndex: 9999, backgroundColor: '#36454F'}}  open={true}>
               <CircularProgress  style={{color: '#F5CB5C'}}/>
               </Backdrop>:null
@@ -434,4 +443,4 @@ function ParentManagement() {
     );
 }
 
-export default ParentManagement;
+export default ChildrenManagement;

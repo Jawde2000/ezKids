@@ -9,6 +9,8 @@ import {useDispatch, useSelector} from 'react-redux'
 import { ChildrenGender } from '../../actions/userActions';
 import { CHILDREN_DEMOGRAPHIC_GENDER_REQUEST, CHILDREN_DEMOGRAPHIC_GENDER_SUCCESS, 
   CHILDREN_DEMOGRAPHIC_GENDER_FAIL, CHILDREN_DEMOGRAPHIC_GENDER_RESET } from '../../constants/userConstants';
+import Skeleton from '@mui/material/Skeleton';
+import { Divider } from '@mui/material';
 
 const COLORS = ['#FF0000','#0088FE','#FFBB28', '#FF8042'];
 
@@ -16,11 +18,11 @@ const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({
     cx, cy, midAngle, innerRadius, outerRadius, percent, index,
 }) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const radius = innerRadius + (outerRadius - innerRadius) * 1.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     return (
-        <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        <text x={x} y={y} fill="black" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
             {`${(percent * 100).toFixed(0)}%`}
         </text>
     );
@@ -37,12 +39,23 @@ export default function Piechart() {
 
   useEffect(() => {
     dispatch(ChildrenGender());
+  }, []);
+
+  useEffect(() => {
     if (success) {
       console.log(childrenDemo)
       getMale(childrenDemo[0])
       getFemale(childrenDemo[1])
     }
-  }, [])
+    let intervalId = setInterval(() => {
+      dispatch(ChildrenGender());
+    }, 180 * 1000);
+
+    return () => {
+        clearInterval(intervalId);
+    };
+  }, [childrenDemo, dispatch]);
+
 
   const data = [
     { name: 'Girl', value:female},
@@ -51,12 +64,14 @@ export default function Piechart() {
  
   return (
     <Grid item>
-    <Box display="flex" justifyContent="center" alignItems="center">
-      <Typography variant="h5" gutterBottom style={{color: "#3f51b5"}}>
+    <Box>
+      <Typography variant="h5" align="left" gutterBottom style={{color: "#3f51b5", marginLeft: '20px', fontFamily: ['rubik', 'impact'].join(',')}}>
         Children Demographic
       </Typography>
     </Box>
-      <PieChart width={400} height={343}>
+    <Divider></Divider>
+      {
+      <PieChart width={400} height={343} display="flex" justifyContent="center" alignItems="center">
         <Pie
           data={data}
           innerRadius={60}
@@ -71,7 +86,7 @@ export default function Piechart() {
               key={`cell-${index}`}
               fill={COLORS[index % COLORS.length]}
               stroke={COLORS[index % COLORS.length]}
-              strokeWidth={2}
+              strokeWidth={6}
             />
           ))}
         </Pie>
@@ -82,6 +97,7 @@ export default function Piechart() {
           wrapperStyle={{ fontWeight: "bold", fontSize: "1.2rem", color: "#3f51b5" }}
         />
       </PieChart>
+      }
   </Grid>
   );
 }

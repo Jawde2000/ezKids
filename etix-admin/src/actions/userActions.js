@@ -100,6 +100,50 @@ import {
     CHILDREN_ADD_RESET,
     CHILDREN_ADD_FAIL,
 
+    GLOBAL_RANKING_REQUEST,
+    GLOBAL_RANKING_SUCCESS,
+    GLOBAL_RANKING_RESET,
+    GLOBAL_RANKING_FAIL,
+
+    CLASS_RANKING_REQUEST,
+    CLASS_RANKING_SUCCESS,
+    CLASS_RANKING_FAIL,
+    CLASS_RANKING_RESET,
+
+    CLASS_COMPARISION_REQUEST,
+    CLASS_COMPARISION_SUCCESS,
+    CLASS_COMPARISION_FAIL,
+    CLASS_COMPARISION_RESET,
+
+    NOTICATION_REQUEST, 
+    NOTICATION_SUCCESS, 
+    NOTICATION_FAIL, 
+    NOTICATION_RESET,
+
+    NEW_NOTICATION_REQUEST,
+    NEW_NOTICATION_SUCCESS,
+    NEW_NOTICATION_FAIL,
+    NEW_NOTICATION_RESET,
+
+    CHILDREN_DELETE_REQUEST,
+    CHILDREN_DELETE_SUCCESS,
+    CHILDREN_DELETE_FAIL,
+    CHILDREN_DELETE_RESET,
+
+    INDIVIDUAL_CHILDREN_REQUEST,
+    INDIVIDUAL_CHILDREN_SUCCESS,
+    INDIVIDUAL_CHILDREN_FAIL,
+    INDIVIDUAL_CHILDREN_RESET,
+
+    INDIVIDUAL_RESULT_REQUEST,
+    INDIVIDUAL_RESULT_SUCCESS,
+    INDIVIDUAL_RESULT_FAIL,
+    INDIVIDUAL_RESULT_RESET,
+
+    CHILDREN_UPDATE_REQUEST,
+    CHILDREN_UPDATE_SUCCESS,
+    CHILDREN_UPDATE_FAIL,
+    CHILDREN_UPDATE_RESET,
 } from '../constants/userConstants'
 
 import { HELP_LIST_RESET } from '../constants/helpConstants'
@@ -223,6 +267,8 @@ export const user_Total = () => async (dispatch, getState) => {
         })
     }
 }
+
+
 
 //GET TEACHER LISTS
 export const listTeachers = () => async (dispatch, getState) => {
@@ -385,6 +431,46 @@ export const getUser = (id) => async (dispatch, getState) => {
     }
 }
 
+
+//GET USER delete
+export const deleteChilds = (id) => async (dispatch, getState) => {
+    try{
+        
+        dispatch({
+            type:CHILDREN_DELETE_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.delete(
+            `http://127.0.0.1:8000/api/delete/children/${id}/`,
+            config
+        )
+        
+        dispatch({
+            type: CHILDREN_DELETE_SUCCESS,
+        })
+
+    }catch(error){
+        dispatch({
+            type: CHILDREN_DELETE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
 //GET USER delete
 export const deleteUsers = (id) => async (dispatch, getState) => {
     try{
@@ -456,6 +542,56 @@ export const teacherRegister = (teacher) => async (dispatch, getState) => {
     }catch(error){
         dispatch({
             type: NEW_TEACHER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const newNotificationPost = (notification) => async (dispatch, getState) => {
+    try{
+        console.log("new notification")
+        dispatch({
+            type:NEW_NOTICATION_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        notification = {
+            ...notification,
+        }
+
+        const {data2} = await axios.put(
+            `http://127.0.0.1:8000/api/new/announcement/`,
+            notification,
+            config
+        )
+
+        dispatch({
+            type: NEW_NOTICATION_SUCCESS,
+        })
+
+        dispatch({
+            type: NEW_NOTICATION_SUCCESS,
+        })
+
+        dispatch({
+            type: NOTICATION_REQUEST
+        })
+    }catch(error){
+        dispatch({
+            type: NEW_NOTICATION_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
@@ -704,56 +840,6 @@ export const updateUser = (user, id) => async (dispatch, getState) => {
     }
 }
 
-//customer update
-export const updateCustomer = (user, customer, id) => async (dispatch, getState) => {
-    try{
-        dispatch({
-            type:USER_CUSTOMER_UPDATE_REQUEST
-        })
-
-        const {
-            userLogin: {userInfo},
-        } = getState()
-
-
-        const config = {
-            headers: {
-                'Content-type' : 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            }
-        }
-
-        console.log(user);
-        console.log(customer);
-
-        var { data } = await axios.put(
-            `http://127.0.0.1:8000/api/user/update/${id}/`,
-            user,
-            config
-        )
-
-        var { data2 } = await axios.put(
-            `http://127.0.0.1:8000/api/user/customer/update/${id}/`,
-            customer,
-            config
-        )
-        
-    
-        dispatch({
-            type: USER_CUSTOMER_UPDATE_SUCCESS,
-        })
-
-
-    }catch(error){
-        dispatch({
-            type: USER_CUSTOMER_UPDATE_FAIL,
-            payload: error.response && error.response.data.detail
-                ? error.response.data.detail
-                : error.message,
-        })
-    }
-}
-
 //parent update
 export const updateParent = (user, parent, id) => async (dispatch, getState) => {
     try{
@@ -791,7 +877,9 @@ export const updateParent = (user, parent, id) => async (dispatch, getState) => 
             type: USER_PARENT_UPDATE_SUCCESS,
         })
 
-
+        dispatch({
+            type: TEACHER_TOTAL_REQUEST,
+        })
     }catch(error){
         dispatch({
             type: USER_PARENT_UPDATE_FAIL,
@@ -802,7 +890,7 @@ export const updateParent = (user, parent, id) => async (dispatch, getState) => 
     }
 }
 
-//VENDOR update
+//TEACHER update
 export const updateTeacher = (user, teacher, id) => async (dispatch, getState) => {
     try{
         dispatch({
@@ -844,6 +932,45 @@ export const updateTeacher = (user, teacher, id) => async (dispatch, getState) =
     }catch(error){
         dispatch({
             type: USER_TEACHER_UPDATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+//TEACHER update
+export const updateChildren = (child, id) => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type:CHILDREN_UPDATE_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.put(
+            `http://127.0.0.1:8000/api/update/children/${id}/`,
+            child,
+            config
+        )
+    
+        dispatch({
+            type: CHILDREN_UPDATE_SUCCESS,
+        })
+
+
+    }catch(error){
+        dispatch({
+            type: CHILDREN_UPDATE_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,
@@ -932,6 +1059,82 @@ export const getIndividualTeacher = (id) => async (dispatch, getState) => {
     }
 }
 
+export const getIndividualChild = (id) => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type:INDIVIDUAL_CHILDREN_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.get(
+            `http://127.0.0.1:8000/api/individualChildren/${id}/`,
+            config
+        )
+
+        console.log(data)
+    
+        dispatch({
+            type: INDIVIDUAL_CHILDREN_SUCCESS,
+            payload: data[0]
+        })
+    }catch(error){
+        dispatch({
+            type: INDIVIDUAL_CHILDREN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const getIndividualChildResult = (id) => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type:INDIVIDUAL_RESULT_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.get(
+            `http://127.0.0.1:8000/api/grade/children/${id}/`,
+            config
+        )
+
+        console.log(data)
+    
+        dispatch({
+            type: INDIVIDUAL_RESULT_SUCCESS,
+            payload: data
+        })
+    }catch(error){
+        dispatch({
+            type: INDIVIDUAL_RESULT_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
 export const getIndividualParent = (id) => async (dispatch, getState) => {
     try{
         dispatch({
@@ -949,12 +1152,25 @@ export const getIndividualParent = (id) => async (dispatch, getState) => {
             }
         }
 
-        var { data } = await axios.get(
-            `http://127.0.0.1:8000/api/individualParent/${id}/`,
-            config
-        )
+        console.log(id)
 
-        console.log(data)
+        var data;
+
+        if (id.startsWith("U")) {
+            console.log("U")
+            data  = await axios.get(
+                `http://127.0.0.1:8000/api/individualParent/${id}/`,
+                config
+            )
+
+            data = data.data;
+        } else if (id.startsWith("P")) {
+            console.log("P")
+            data  = await axios.get(
+                `http://127.0.0.1:8000/api/individualParentID/${id}/`,
+                config
+            )
+        }
     
         dispatch({
             type: INDIVIDUAL_PARENT_SUCCESS,
@@ -972,13 +1188,124 @@ export const getIndividualParent = (id) => async (dispatch, getState) => {
     }
 }
 
+export const getGlobalRanking = () => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type: GLOBAL_RANKING_REQUEST
+        })
 
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.get(
+            `http://127.0.0.1:8000/api/global/ranking/`,
+            config
+        )
+
+        dispatch({
+            type: GLOBAL_RANKING_SUCCESS,
+            payload: data
+        })
+
+    }catch(error){
+        dispatch({
+            type: GLOBAL_RANKING_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const getClassComparison = () => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type: CLASS_COMPARISION_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.get(
+            `http://127.0.0.1:8000/api/classaverage/ranking/`,
+            config
+        )
+
+        dispatch({
+            type: CLASS_COMPARISION_SUCCESS,
+            payload: data
+        })
+
+    }catch(error){
+        dispatch({
+            type: CLASS_COMPARISION_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+export const getNotification = () => async (dispatch, getState) => {
+    try{
+        dispatch({
+            type: NOTICATION_REQUEST
+        })
+
+        const {
+            userLogin: {userInfo},
+        } = getState()
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        var { data } = await axios.get(
+            `http://127.0.0.1:8000/api/announcement/`,
+            config
+        )
+
+        dispatch({
+            type: NOTICATION_SUCCESS,
+            payload: data
+        })
+
+    }catch(error){
+        dispatch({
+            type: NOTICATION_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
 
 export const getChildrenDetailsByParent = (id) => async (dispatch, getState) => {
     try{
         dispatch({
             type:CHILDREN_DETAILS_REQUEST
         })
+
+        console.log(id);
 
         const {
             userLogin: {userInfo},
@@ -995,6 +1322,8 @@ export const getChildrenDetailsByParent = (id) => async (dispatch, getState) => 
             `http://127.0.0.1:8000/api/parent/children/${id}/`,
             config
         )
+
+        console.log(data)
 
         dispatch({
             type: CHILDREN_DETAILS_SUCCESS,
