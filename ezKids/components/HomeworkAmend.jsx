@@ -1,43 +1,55 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, Card, Modal, Portal } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 
-function Register() {
+const HomeworkAmend = (props) => {
+    const [visible, setVisible] = React.useState(false);
+
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+
+    // If add, homeworkID is undefined
+    // If edit, homeworkID has data
+    const [editorID, setEditorID] = React.useState(props.eID)
+    const [homeworkID, setHomeworkID] = React.useState(props.hID)
+    const [classes, setClasses] = React.useState([
+        { value: "k1", label: "Kindergarten A" },
+        { value: "k2", label: "Kindergarten B" },
+        { value: "k3", label: "Kindergarten C" },
+        { value: "k4", label: "Kindergarten D" },
+        { value: "k5", label: "Kindergarten E" }
+    ])
+
+    // If homeworkID exists, it means that the user is editing/deleting
     const {control, setFocus, handleSubmit} = useForm({
         defaultValues: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            contactNumber: '',
-            type: '',
-            dobYear: '',
-            dobMonth: '',
-            dobDay: '',
-            userName: '',
-            userPassword: ''
+            title: homeworkID? 'something is in here' : '',
+            desc: homeworkID? 'is': '',
+            subject: homeworkID? '': '',
+            class: homeworkID? '': '',
         }
     })
 
     return (
-        <View>
+        <View style={{flex: 1}}>
             <FormBuilder 
                 control={control} 
                 setFocus={setFocus}
                 formConfigArray={[
                     {
                         type: 'text',
-                        name: 'firstName',
+                        name: 'title',
 
                         rules: {
                             required: {
                                 value: true,
-                                message: 'Please enter your first name'
+                                message: "Please enter the homework title"
                             }
                         },
                         textInputProps: {
-                            label: 'First Name'
+                            label: 'Title'
                         }
                     },
                     {
@@ -47,7 +59,7 @@ function Register() {
                         rules: {
                             required: {
                                 value: true,
-                                message: 'Please enter your last name'
+                                message: "Please enter the child's last name"
                             }
                         },
                         textInputProps: {
@@ -55,60 +67,43 @@ function Register() {
                         }
                     },
                     {
-                        type: 'email',
-                        name: 'Email',
-
-                        rules: {
-                            required: {
-                                value: true,
-                                message: 'Please enter your email'
-                            }
-                        },
-                        textInputProps: {
-                            label: 'Email'
-                        }
-                    },
-                    {
-                        type: 'text',
-                        name: 'contactNumber',
-
-                        rules: {
-                            required: {
-                                value: true,
-                                message: 'Please enter your contact number'
-                            }
-                        },
-                        textInputProps: {
-                            label: 'Contact Number'
-                        }
-                    },
-                    {
                         type: 'select',
-                        name: 'type',
+                        name: 'gender',
 
                         rules: {
                             required: {
                                 value: true,
-                                message: 'Please enter the guardian type'
+                                message: "Please enter child's gender"
                             }
                         },
                         textInputProps: {
-                            label: 'Guardian Type'
+                            label: 'Gender'
                         },
                         options: [
                             {
-                                value: 'mother',
-                                label: 'Mother'
+                                value: 'male',
+                                label: 'Male'
                             },
                             {
-                                value: 'father',
-                                label: 'Father'
-                            },
-                            {
-                                value: 'guardian',
-                                label: 'Guardian'
+                                value: 'female',
+                                label: 'Female'
                             },
                         ]
+                    },
+                    {
+                        type: 'select',
+                        name: 'class',
+
+                        rules: {
+                            required: {
+                                value: true,
+                                message: "Please enter the child's class"
+                            }
+                        },
+                        textInputProps: {
+                            label: 'Class'
+                        },
+                        options: classes
                     },
                     {
                         type: 'text',
@@ -117,7 +112,7 @@ function Register() {
                         rules: {
                             required: {
                                 value: true,
-                                message: 'Please enter the day of your birth'
+                                message: "Please enter the day of the child's birth"
                             }
                         },
                         textInputProps: {
@@ -131,7 +126,7 @@ function Register() {
                         rules: {
                             required: {
                                 value: true,
-                                message: 'Please enter the month of your birth'
+                                message: "Please enter the month of the child's birth"
                             }
                         },
                         textInputProps: {
@@ -195,52 +190,60 @@ function Register() {
                         rules: {
                             required: {
                                 value: true,
-                                message: 'Please enter the year of your birth'
+                                message: "Please enter the year of the child's birth"
                             }
                         },
                         textInputProps: {
                             label: 'Year'
                         }
                     },
-                    {
-                        type: 'text',
-                        name: 'userName',
-
-                        rules: {
-                            required: {
-                                value: true,
-                                message: 'Please enter a username'
-                            }
-                        },
-                        textInputProps: {
-                            label: 'Username'
-                        }
-                    },
-                    {
-                        type: 'password',
-                        name: 'userPassword',
-
-                        rules: {
-                            required: {
-                                value: true,
-                                message: 'Please enter a strong password'
-                            }
-                        },
-                        textInputProps: {
-                            label: 'Password'
-                        }
-                    },
                 ]} 
-                />
+            />
+            {homeworkID?
+                <View>
+                    <Button
+                    mode={'contained'}
+                    onPress={handleSubmit((data) => {
+                        console.log("Edit Button Pushed");
+                        console.log(data);
+                    })}>
+                        Edit
+                    </Button>
+                    <Button
+                    mode={'contained'}
+                    onPress={() => {
+                        console.log("Delete Button Pushed");
+                        showModal()
+                    }}>
+                        Delete
+                    </Button>
+                </View>
+            
+            :
                 <Button
                     mode={'contained'}
                     onPress={handleSubmit((data) => {
+                        console.log("Submit Button Pushed");
                         console.log(data);
                 })}>
                     Submit
                 </Button>
+            }
+            <Portal>
+                <Modal visible={visible} onDismiss={hideModal}>
+                    <Card>
+                        <Card.Title title="Are you sure you want to delete this child?" subtitle="This action is irreversible" />
+                        <Card.Actions>
+                            <Button onPress={hideModal}>Cancel</Button>
+                            <Button onPress={() => {
+                                console.log("Confirm Delete!")
+                            }}>Delete</Button>
+                        </Card.Actions>
+                    </Card>
+                </Modal>
+            </Portal>
         </View>
     )
 }
 
-export default Register;
+export default HomeworkAmend;

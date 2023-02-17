@@ -8,7 +8,7 @@ import Announcements from './widgets/Announcements';
 function DEBUGWidget() {
     return (
         <View>
-            <Announcements />
+            <MenuChips />
         </View>
     )
 }

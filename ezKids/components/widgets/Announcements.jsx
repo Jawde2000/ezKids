@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
-import { View, Card, Text, Modal } from 'react-native-paper';
+import { Portal, Card, Text, Modal } from 'react-native-paper';
 
 const announcements = [
     {
@@ -86,16 +86,18 @@ const Announcements = () => {
                     </Card>
                 )
             })}
-            <Modal visible={visible} onDismiss={hideModal}>
-                <Card>
-                    <Card.Content>
-                        <Text variant="titleLarge" style={{marginBottom: 15}}>{title}</Text>
-                        <Text variant="bodyLarge" style={{marginBottom: 10}}>{content}</Text>
-                        <Text variant="labelMedium" >ID: {id} | Posted: {datetime}</Text>
-                        <Text variant="labelMedium" >Tap on the shadowed area to dismiss</Text>
-                    </Card.Content>
-                </Card>
-            </Modal>
+            <Portal>
+                <Modal visible={visible} onDismiss={hideModal}>
+                    <Card>
+                        <Card.Content>
+                            <Text variant="titleLarge" style={{marginBottom: 15}}>{title}</Text>
+                            <Text variant="bodyLarge" style={{marginBottom: 10}}>{content}</Text>
+                            <Text variant="labelMedium" >ID: {id} | Posted: {datetime}</Text>
+                            <Text variant="labelMedium" >Tap on the shadowed area to dismiss</Text>
+                        </Card.Content>
+                    </Card>
+                </Modal>
+            </Portal>
         </ScrollView>
     );
 };
