@@ -204,6 +204,14 @@ urlpatterns = [
     path('api/class/ranking/<str:pk>/',
          views.getClassRanking, name='class|children|ranking-getRanking'),
 
+    # get bank name
+    path('api/bankname/',
+         views.getBankName, name='bankname|bank-getbankname'),
+
+    # create bank name
+    path('api/new/bankname/',
+         views.newBankName, name='bankname|bank-newbankname'),
+
     # delete children
     path('api/delete/children/<str:pk>/',
          views.deleteChildren, name='children-deleteChildren'),
@@ -231,11 +239,11 @@ urlpatterns = [
     # get individual parent
     path('api/individualParent/<str:pk>/',
          views.getIndividualParent, name='parent-individualParent'),
-    
-        # get individual parent
+
+    # get individual parent
     path('api/individualParentID/<str:pk>/',
          views.getIndividualParentID, name='parent-individualParentID'),
-    
+
     # get individual children
     path('api/individualChildren/<str:pk>/',
          views.getIndividualChildren, name='children-individualChildren'),
@@ -243,8 +251,8 @@ urlpatterns = [
     # update teacher by userid
     path('api/user/teacher/update/<str:pk>/',
          views.updateTeacher, name="teacher-update"),
-    
-     # update teacher by userid
+
+    # update teacher by userid
     path('api/classname/<str:pk>/',
          views.getClassName, name="class-name"),
 
@@ -255,9 +263,9 @@ urlpatterns = [
     path('api/user/<str:pk>/',
          views.getUserByID, name='user-detail-email'),
 
-    #     # api path to reset password and send email to user
-    #     path('api/user/resetpass/<str:pk>/',
-    #          views.resetPassword, name='user-reset-pass'),
+    # api path to reset password and send email to user
+    path('api/user/resetpass/<str:pk>/',
+         views.resetPassword, name='user-reset-pass'),
 
 
 ]

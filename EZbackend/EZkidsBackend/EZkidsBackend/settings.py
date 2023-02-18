@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-duh90tql#@5)qfwo4_c_8hlu0zw#51j20=ri47o6b(@+tzs9sp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1',
+                 'ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com']
 
 AUTH_USER_MODEL = 'EZkidsApp.User'
 
@@ -222,5 +223,3 @@ EMAIL_HOST_PASSWORD = '54cba321'  # your password
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-
-
