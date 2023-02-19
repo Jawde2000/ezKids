@@ -11,6 +11,11 @@ import {
     USER_FORGET_RESET,
     USER_FORGET_FAIL,
 
+    USER_REGISTER_REQUEST, 
+    USER_REGISTER_SUCCESS,
+    USER_REGISTER_RESET,
+    USER_REGISTER_FAIL,
+
 } from '../constants/userConstants'
 import { AsyncStorage } from 'react-native';
 
@@ -37,7 +42,12 @@ export const login = (email, password) => async (dispatch) => {
             config
         )
 
-        console.log("hello");
+        if(!data.is_active){
+            dispatch({
+                type: USER_LOGIN_FAIL,
+                payload: "User Is Inactive",
+            })
+        }
 
 
         // console.log(data)
@@ -57,16 +67,23 @@ export const login = (email, password) => async (dispatch) => {
             
             console.log(data2);
 
-            data = {
+            const data3 = {
                 ...data,
                 ...data2
             }
+
+            dispatch({
+                type: USER_LOGIN_SUCCESS,
+                payload: data
+            })
+        } else {
+            dispatch({
+                type: USER_LOGIN_FAIL,
+                payload: "Wrong User Type"
+            })
         }
 
-        dispatch({
-            type: USER_LOGIN_SUCCESS,
-            payload: data
-        })
+       
         
         //set user info in local storage
         AsyncStorage.setItem('userInfo', JSON.stringify(data));
@@ -127,4 +144,68 @@ export const forgot = (email) => async (dispatch) => {
         })
     }    
 
+}
+
+
+//new user register
+export const register = (userData, parentData) => async (dispatch) => {
+    try{
+        dispatch({
+            type:USER_REGISTER_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+
+        // 1) adding new user 
+        const { data } = await axios.post(
+            'http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/users/register/',
+            userData,
+            config
+        )
+        console.log(data);
+
+        parentData = {
+            ...parentData,
+            'created_by' : data.userID
+        }
+
+        // 2) adding new parent
+        const { data2 } = await axios.put(
+            'http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/new/parents/',
+            parentData,
+            config
+        )
+
+        console.log(data2);
+
+
+        const data3 = {
+            ...data,
+            ...data2,
+        }
+        // data = {
+        //     ...data,
+        //     ...data2
+        // }
+
+        console.log(data3);
+
+        dispatch({
+            type: USER_REGISTER_SUCCESS,
+            payload: data
+        })
+
+    }catch(error){
+        dispatch({
+            type: USER_REGISTER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
 }

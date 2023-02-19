@@ -6,6 +6,7 @@ import { FormBuilder } from 'react-native-paper-form-builder';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forgot } from '../redux/actions/userActions';
+import { USER_FORGET_RESET } from '../redux/constants/userConstants';
 
 function Register() {
     const {control, setFocus, handleSubmit} = useForm({
@@ -27,6 +28,8 @@ function Register() {
         console.log(error);
         if(data){
             Alert.alert("An Email have sent to your email containing the new password!");
+            dispatch({type: USER_FORGET_RESET});
+            
         } else if(error && e){
             Alert.alert("No such user found! Please Try again");
         }  
