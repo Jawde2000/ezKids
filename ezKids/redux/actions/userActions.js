@@ -17,6 +17,8 @@ import {
     USER_REGISTER_FAIL,
 
 } from '../constants/userConstants'
+
+import { ANNOUNCEMENT_RESET } from '../constants/announcementConstants';
 import { AsyncStorage } from 'react-native';
 
 export const login = (email, password) => async (dispatch) => {
@@ -48,45 +50,30 @@ export const login = (email, password) => async (dispatch) => {
                 payload: "User Is Inactive",
             })
         }
-
-
-        // console.log(data)
         
-        // if(!data.is_teacher || !data.is_parent){
-        //     dispatch({
-        //         type: USER_LOGIN_FAIL,
-        //         payload: "Invalid User / Super admin need to goes to another portal"
-        //     })
-        // }
+        const { data2 } = await axios.get(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/individualteacher/${data.userID}/`,
+            config
+        )
 
-        if(data.is_teacher){
-            const { data2 } = await axios.get(
-                `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/individualteacher/${data.userID}/`,
-                config
-            )
-            
-            console.log(data2);
+        console.log(data);    
+        console.log(data2);
 
-            const data3 = {
-                ...data,
-                ...data2
-            }
+        const data3 = {
+            ...data,
+            ...data2
+        }
 
             dispatch({
                 type: USER_LOGIN_SUCCESS,
-                payload: data
+                payload: data3
             })
-        } else {
-            dispatch({
-                type: USER_LOGIN_FAIL,
-                payload: "Wrong User Type"
-            })
-        }
+        
 
        
         
         //set user info in local storage
-        AsyncStorage.setItem('userInfo', JSON.stringify(data));
+        AsyncStorage.setItem('userInfo', JSON.stringify(data3));
 
        
 
@@ -104,8 +91,10 @@ export const login = (email, password) => async (dispatch) => {
 }
 
 export const logout = () => (dispatch) => {
-    AsyncStorage.removeItem('userInfo')
+    console.log("hello");
+    AsyncStorage.clear()
     dispatch({type: USER_LOGOUT})
+    dispatch({type: ANNOUNCEMENT_RESET})
     // dispatch({type: USER_LIST_RESET})
     // dispatch({type: USER_DETAIL_RESET})
     // dispatch({type: HELP_LIST_RESET})
@@ -125,6 +114,7 @@ export const forgot = (email) => async (dispatch) => {
             }
         }
 
+        console.log(data);
         const { data } = await axios.get(
             `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/user/resetpass/${email}/`,
             config

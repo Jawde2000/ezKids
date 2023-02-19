@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { forgot } from '../redux/actions/userActions';
 import { USER_FORGET_RESET } from '../redux/constants/userConstants';
 
-function Register() {
+function Register({ navigation }) {
     const {control, setFocus, handleSubmit} = useForm({
         defaultValues: {
             email: '',
@@ -29,6 +29,7 @@ function Register() {
         if(data){
             Alert.alert("An Email have sent to your email containing the new password!");
             dispatch({type: USER_FORGET_RESET});
+            navigation.goBack();
             
         } else if(error && e){
             Alert.alert("No such user found! Please Try again");
@@ -64,7 +65,7 @@ function Register() {
                     onPress={handleSubmit((data) => {
                         console.log("Submit Button Pressed");
                         console.log(data);
-                        handleForgot(data);
+                        handleForgot(data.email);
                 })}>
                     Submit
                 </Button>

@@ -4,12 +4,17 @@ import { View, Alert, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import {useDispatch, useSelector} from 'react-redux';
-import { login } from '../redux/actions/userActions';
+import { login, logout } from '../redux/actions/userActions';
 import { useEffect } from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Image } from 'react-native';
+
+import { NavigationContainer } from '@react-navigation/native';
+
+import { DevSettings } from 'react-native';
 
 
-function LogIn() {
+function LogIn({ navigation }) {
+
     const {control, setFocus, handleSubmit} = useForm({
         defaultValues: {
             email: '',
@@ -27,6 +32,21 @@ function LogIn() {
         dispatch(login(data.email, data.userPassword));
     }
 
+    console.log("hello");
+
+    useEffect(() => {
+        if(userLogin){
+            const focusHandler = navigation.addListener('focus', () => {
+                Alert.alert('Logged Out');
+    
+                dispatch(logout());
+                // DevSettings.reload();
+    
+            });
+            return focusHandler;
+        }
+        
+    }, [navigation]);
     
 
     useEffect(() => {
@@ -35,7 +55,9 @@ function LogIn() {
            
 
             Alert.alert("Successfully Logged In, " + userInfo.username + "!");
-            
+            navigation.push('Menu')
+
+
         } else if (error){
             Alert.alert("Authentication Failed", "Invalid User / Password"); 
         }
@@ -97,7 +119,7 @@ function LogIn() {
                 <Button
                     mode={'contained'}
                     onPress={() => {
-                        console.log("Forgot Password Button Pressed");
+                        navigation.navigate('Forget')
                 }}>
                     Forgot Password
                 </Button>
