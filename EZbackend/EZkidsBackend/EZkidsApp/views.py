@@ -226,7 +226,7 @@ def getTeacher(reqeust):
 
 @api_view(['GET'])
 def getIndividualTeacher(reqeust, pk):
-    teachers = Teacher.objects.filter(created_by=pk)
+    teachers = Teacher.objects.get(created_by=pk)
     serializer = TeacherSerializer(teachers, many=False)
 
     return Response(serializer.data)
