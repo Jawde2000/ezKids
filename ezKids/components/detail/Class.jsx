@@ -25,7 +25,10 @@ const ResultsRoute = () =>
 </View>
 
 // session is Class
-const ClassDetail = (session) => {
+const ClassDetail = ({route, navigation}) => {
+
+
+    const { session } = route.params;
 
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([

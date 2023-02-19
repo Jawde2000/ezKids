@@ -16,6 +16,11 @@ import {
     USER_REGISTER_RESET,
     USER_REGISTER_FAIL,
 
+    USER_UPDATE_REQUEST, 
+    USER_UPDATE_SUCCESS,
+    USER_UPDATE_RESET,
+    USER_UPDATE_FAIL,
+
 } from '../constants/userConstants'
 
 import { ANNOUNCEMENT_RESET } from '../constants/announcementConstants';
@@ -44,25 +49,40 @@ export const login = (email, password) => async (dispatch) => {
             config
         )
 
+        console.log(data.userID);
+
         if(!data.is_active){
             dispatch({
                 type: USER_LOGIN_FAIL,
                 payload: "User Is Inactive",
             })
         }
-        
-        const { data2 } = await axios.get(
+
+        const { data: data2 } = await axios.get(
             `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/individualteacher/${data.userID}/`,
             config
-        )
+          );
+          
+          if (data2) {
+            console.log(data2);
+          } else {
+            console.log('No data found');
+          }
+        
+        // const { data2 } = await axios.get(
+        //     `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/individualteacher/${data.userID}/`,
+        //     config
+        // ).then((e) => console.log(e));
 
-        console.log(data);    
-        console.log(data2);
+        // console.log(data);    
+        // console.log(data2);
+        
 
         const data3 = {
             ...data,
             ...data2
         }
+        console.log(data3[0]);
 
             dispatch({
                 type: USER_LOGIN_SUCCESS,
@@ -193,6 +213,45 @@ export const register = (userData, parentData) => async (dispatch) => {
     }catch(error){
         dispatch({
             type: USER_REGISTER_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+
+//UPDATE TEACHER
+//new user register
+export const update = (teacherDetails) => async (dispatch) => {
+    try{
+        dispatch({
+            type:USER_UPDATE_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+
+        console.log(teacherDetails.teacherID)
+        // 1) adding new user 
+        const { data } = await axios.put(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/update/teacher/${teacherDetails.teacherID}/`,
+            teacherDetails,
+            config
+        )
+
+        dispatch({
+            type: USER_UPDATE_SUCCESS,
+            payload: data
+        })
+
+    }catch(error){
+        dispatch({
+            type: USER_UPDATE_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { View, Alert, Image } from 'react-native';
+import { View, Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import {useDispatch, useSelector} from 'react-redux';

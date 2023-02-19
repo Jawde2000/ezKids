@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image } from 'react-native';
 import { Chip, Card, Text } from 'react-native-paper';
 
-const MyClasses = (teacherID) => {
+const MyClasses = ({navigation}) => {
     // Jamond ask to do that ranking thing here also, something about sort by good class etc
     // this component only using these variables, but treat as if everything there
     const [classes, setClasses] = React.useState([
@@ -15,7 +15,9 @@ const MyClasses = (teacherID) => {
 
     const handleMove = (session) => {
         // handle move here
-        console.log(session)
+        navigation.navigate('ClassDetails', {
+            session: session,
+          })
     }
 
     return classes.length > 3? (
