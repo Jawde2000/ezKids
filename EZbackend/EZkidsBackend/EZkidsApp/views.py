@@ -226,9 +226,9 @@ def getTeacher(reqeust):
 
 @api_view(['GET'])
 def getIndividualTeacher(reqeust, pk):
-    created_by = User.objects.get(userID=pk)
-    teachers = Teacher.objects.filter(created_by=created_by)
+    teachers = Teacher.objects.filter(created_by=pk)
     serializer = TeacherSerializer(teachers, many=False)
+
     return Response(serializer.data)
 
     # message = {'detail': 'Teacher Information failed to fetched'}
