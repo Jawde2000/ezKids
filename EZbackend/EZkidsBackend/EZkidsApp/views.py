@@ -225,7 +225,7 @@ def getTeacher(reqeust):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+# @permission_classes([IsAdminUser])
 def getIndividualTeacher(reqeust, pk):
 
     teachers = Teacher.objects.filter(created_by_id=pk)
@@ -313,7 +313,7 @@ def getClassByID(reqeust, pk):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+# @permission_classes([IsAdminUser])
 def getChildren(request):
     try:
         children = Children.objects.all()
