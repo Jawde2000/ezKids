@@ -248,10 +248,11 @@ def getParent(request):
 
 
 @api_view(['GET'])
-def getIndividualParent(reqeust, pk):
+def getIndividualTeacher(reqeust, pk):
 
-    parent = Parent.objects.get(created_by=pk)
-    serializer = ParentSerializer(parent, many=False)
+    teachers = Teacher.objects.filter(created_by_id=pk)
+    serializer = TeacherSerializer(teachers, many=True)
+
     return Response(serializer.data)
 
     # message = {'detail': 'Teacher Information failed to fetched'}
