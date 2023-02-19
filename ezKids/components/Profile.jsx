@@ -3,21 +3,18 @@ import { useForm } from 'react-hook-form';
 import { Alert, DevSettings, View, Image, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
-import { useDispatch } from 'react-redux';
-import { register } from '../redux/actions/userActions';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { USER_REGISTER_RESET } from '../redux/constants/userConstants';
 
 
-function Register() {
+function Profile() {
     const {control, setFocus, handleSubmit} = useForm({
         defaultValues: {
             firstName: '',
             lastName: '',
             email: '',
             contactNumber: '',
-            type: '',
+            bankAccountHolder: '',
+            bankAccountName: '',
+            bankAccount: '',
             dobYear: '',
             dobMonth: '',
             dobDay: '',
@@ -25,67 +22,6 @@ function Register() {
             userPassword: ''
         }
     })
-
-    const userRegister = useSelector(state => state.userRegister);
-    const {loading, data, e, error} = userRegister;
-
-    const dispatch = useDispatch();
-
-    //useEffect for registration status
-    useEffect(() => {
-        console.log(userRegister);
-        if(data){
-            Alert.alert("Success", "Resgistration have been completed successfully! Heading to login screen...");
-
-            //reset data
-            dispatch({type: USER_REGISTER_RESET});
-
-            //navigate to login page
-
-        } else if(error && e){
-            Alert.alert("Fail", "Fail to register! Try again with different Email or Username");
-            
-            //reloading page
-            DevSettings.reload();
-        }
-    }, [loading])
-
-    const handleRegister = (data) => {
-
-        const userData = {
-            'username' : data.userName,
-            'password' : data.userPassword,
-            'email' : data.email,
-            'is_staff': false,
-            'is_superuser' : false,
-            'is_active'  : true,
-            'is_teacher' : false,
-            'is_parent'  : true,
-        }
-
-        console.log(userData);
-
-        let dob = data.dobYear + "-" + data.dobMonth + "-" + data.dobDay;
-
-        const parentData = {
-            'parentsType': data.type ,
-            'parentsFirstName': data.firstName ,
-            'parentsLastName' : data.lastName,
-            'parentsContactphone': data.contactNumber,
-            'parentsEmail': data.email ,
-            'secondParentEmail': data.email + ".blank",
-            'parentsAddress': "",
-            'parentsDOB' : dob,
-        }
-
-        // console.log(userData);
-        // console.log(parentData);
-
-        dispatch(register(userData, parentData));
-    }
-
-
-
 
     return (
         <View style={{flex: 1, justifyContent: 'flex-start'}}>
@@ -155,31 +91,67 @@ function Register() {
                         },
                         {
                             type: 'select',
-                            name: 'type',
+                            name: 'bankAccountName',
 
                             rules: {
                                 required: {
                                     value: true,
-                                    message: 'Please enter the guardian type'
+                                    message: 'Please enter the bank account name'
                                 }
                             },
                             textInputProps: {
-                                label: 'Guardian Type'
+                                label: 'Bank'
                             },
                             options: [
                                 {
-                                    value: 'M',
-                                    label: 'Mother'
+                                    value: 'maybank',
+                                    label: 'Maybank'
                                 },
                                 {
-                                    value: 'F',
-                                    label: 'Father'
+                                    value: 'cimb',
+                                    label: 'CIMB'
                                 },
                                 {
-                                    value: 'G',
-                                    label: 'Guardian'
+                                    value: 'public',
+                                    label: 'Public Bank'
                                 },
+                                {
+                                    value: 'rhb',
+                                    label: 'RHB Bank'
+                                },
+                                {
+                                    value: 'bsn',
+                                    label: 'Bank Simpanan Nasional'
+                                }
                             ]
+                        },
+                        {
+                            type: 'text',
+                            name: 'bankAccountHolder',
+
+                            rules: {
+                                required: {
+                                    value: true,
+                                    message: 'Please enter your bank account holder'
+                                }
+                            },
+                            textInputProps: {
+                                label: 'Bank Account Holder'
+                            }
+                        },
+                        {
+                            type: 'text',
+                            name: 'bankAccount',
+
+                            rules: {
+                                required: {
+                                    value: true,
+                                    message: 'Please enter the bank account number'
+                                }
+                            },
+                            textInputProps: {
+                                label: 'Bank Account Number'
+                            }
                         },
                         {
                             type: 'text',
@@ -307,7 +279,7 @@ function Register() {
                         mode={'contained'}
                         onPress={handleSubmit((data) => {
                             console.log(data);
-                            handleRegister(data);
+                            // logic here
                     })}>
                         Submit
                     </Button>
@@ -316,4 +288,4 @@ function Register() {
     )
 }
 
-export default Register;
+export default Profile;

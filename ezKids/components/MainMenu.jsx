@@ -24,7 +24,7 @@ const MainMenu = () => {
                 <MenuChips isTeacher={false} />
             </View>
             <View style={{marginTop: 15}}>
-                {/* <Announcements /> */}
+                <Announcements />
             </View>
         </View>
     );

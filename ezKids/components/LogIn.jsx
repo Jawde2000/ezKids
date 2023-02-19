@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { View, Alert } from 'react-native';
+import { View, Alert, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { AsyncStorage } from 'react-native';
 
 
-function Register() {
+function LogIn() {
     const {control, setFocus, handleSubmit} = useForm({
         defaultValues: {
             email: '',
@@ -47,7 +47,7 @@ function Register() {
 
     return (
         <View style={{flex: 1, justifyContent: 'flex-start'}}>
-            <View style={{marginTop: 30}}>
+            <View style={{marginTop: 30, alignSelf: 'center'}}>
                 <Image source={require('../assets/logo.png')} style={{resizeMode: "center", width: 250, height: 100}} />
             </View>
             <FormBuilder 
@@ -66,7 +66,7 @@ function Register() {
                             pattern: {value:/^\S+@\S+$/i, message: 'please enter a valid email'},
                         },
                         textInputProps: {
-                            label: 'email'
+                            label: 'Email'
                         }
                     },
                     {
@@ -91,7 +91,7 @@ function Register() {
                         // console.log("Login Button Pressed");
                         // console.log(data);
                         handleLogin(data);
-                })}>
+                })} style={{marginBottom: 15}}>
                     Submit
                 </Button>
                 <Button
@@ -105,4 +105,4 @@ function Register() {
     )
 }
 
-export default Register;
+export default LogIn;

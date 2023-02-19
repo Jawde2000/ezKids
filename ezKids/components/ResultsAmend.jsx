@@ -1,9 +1,17 @@
 import React from 'react';
 import { ScrollView, View, Dimensions, Image, ToastAndroid } from 'react-native';
 import { useTheme, Card, Text, Portal, Modal, Button } from 'react-native-paper';
+import { FormBuilder } from 'react-native-paper-form-builder';
+import { useForm } from 'react-hook-form';
 
 const ResultAmend = (props) => {
     const theme = useTheme()
+
+    const {control, setFocus, handleSubmit} = useForm({
+        defaultValues: {
+            grade: ''
+        }
+    })
 
     const [subject, setSubject] = React.useState([
         { subjectID: "s1", subjectName: "Alphabets", existingResult: "70.2" },
@@ -24,13 +32,13 @@ const ResultAmend = (props) => {
     };
     const hideModal = () => setVisible(false);
 
-    const handleChangeResult = (result) => {
+    const handleLogin = (data) => {
         setFocusedSubject({
             subjectID: subject.subjectID,
             subjectName: subject.subjectName,
-            subjectGrade: result
+            subjectGrade: data.grade
         })
-        // set grade here, handle the refresh also
+
         ToastAndroid.show("Grade set!", ToastAndroid.SHORT)
         setVisible(false)
     }
@@ -46,17 +54,34 @@ const ResultAmend = (props) => {
                             <Card.Content>
                                 <Text variant="titleLarge" style={{marginBottom: 15}}>{focusedSubject.subjectName}</Text>
                                 <Text variant="labelMedium">Set grade for student</Text>
+                                <FormBuilder 
+                                    control={control} 
+                                    setFocus={setFocus}
+                                    formConfigArray={[
+                                        {
+                                            type: 'text',
+                                            name: 'grade',
+
+                                            rules: {
+                                                required: {
+                                                    value: true,
+                                                    message: 'Please enter a grade',
+                                                },
+                                            },
+                                            textInputProps: {
+                                                label: 'Grade'
+                                            }
+                                        }
+                                    ]} 
+                                />
                             </Card.Content>
                             <Card.Actions>
-                                <ScrollView horizontal>
-                                    <Button onPress={() => {handleChangeResult('A')}}>A</Button>
-                                    <Button onPress={() => {handleChangeResult('B')}}>B</Button>
-                                    <Button onPress={() => {handleChangeResult('C')}}>C</Button>
-                                    <Button onPress={() => {handleChangeResult('D')}}>D</Button>
-                                    <Button onPress={() => {handleChangeResult('E')}}>E</Button>
-                                    <Button onPress={() => {handleChangeResult('F')}}>F</Button>
-                                    <Button onPress={hideModal}>Cancel</Button>
-                                </ScrollView>
+                                <Button onPress={hideModal}>Cancel</Button>
+                                <Button onPress={handleSubmit((data) => {
+                                    // console.log("Login Button Pressed");
+                                    // console.log(data);
+                                    handleLogin(data);
+                                })}>Set</Button>
                             </Card.Actions>
                         </Card>
                     </Modal>
