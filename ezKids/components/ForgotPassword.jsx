@@ -7,9 +7,14 @@ import { FormBuilder } from 'react-native-paper-form-builder';
 function Register() {
     const {control, setFocus, handleSubmit} = useForm({
         defaultValues: {
-            userName: '',
+            email: '',
         }
     })
+
+
+    const handleForgot = (data) => {
+
+    }
 
     return (
         <View>
@@ -18,17 +23,18 @@ function Register() {
                 setFocus={setFocus}
                 formConfigArray={[
                     {
-                        type: 'text',
-                        name: 'userName',
+                        type: 'email',
+                        name: 'email',
 
                         rules: {
                             required: {
                                 value: true,
-                                message: 'Please enter a username'
-                            }
+                                message: 'Please enter a email'
+                            },
+                            pattern: {value:/^\S+@\S+$/i, message: 'please enter a valid email'},
                         },
                         textInputProps: {
-                            label: 'Username'
+                            label: 'email'
                         }
                     }
                 ]} 
@@ -38,6 +44,7 @@ function Register() {
                     onPress={handleSubmit((data) => {
                         console.log("Submit Button Pressed");
                         console.log(data);
+                        handleForgot(data);
                 })}>
                     Submit
                 </Button>

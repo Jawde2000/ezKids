@@ -14,16 +14,32 @@ import MenuChips from './components/widgets/MenuChips';
 import MyChildren from './components/MyChildren';
 import ClassDetail from './components/detail/Class';
 import HomeworkAmend from './components/HomeworkAmend';
+import store from './store';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 const theme = {
   ...MD3DarkTheme
 }
 
-export default function App() {
+const App = () => {
   return (
     <Provider theme={theme}>
+      {/* <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Menu" component={HomeScreen} />
+        </Stack.Navigator>
+
+      </NavigationContainer> */}
       {/* <ClassDetail class={{ classID: "k1", className: "Kindergarten A" }} /> */}
-      <MyClasses />
+      <ForgotPassword />
     </Provider>
   );
 }
+
+
+
+
+
+export default App;
