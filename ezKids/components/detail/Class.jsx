@@ -14,10 +14,10 @@ const SubjectRoute = () =>
     <SubjectRenderer />
 </View>;
 
-const HomeworkRoute = () => 
-<View>
-    <HomeworkRenderer />
-</View>;
+// const HomeworkRoute = () => 
+// <View>
+//     <HomeworkRenderer />
+// </View>;
 
 const ResultsRoute = () => 
 <View>
@@ -31,14 +31,14 @@ const ClassDetail = (session) => {
     const [routes] = React.useState([
       { key: 'student', title: 'Student', focusedIcon: 'account-child-circle', unfocusedIcon: 'account-child'},
       { key: 'subject', title: 'Subject', focusedIcon: 'book-settings', unfocusedIcon: 'book-settings-outline' },
-      { key: 'homework', title: 'Homework', focusedIcon: 'star-circle', unfocusedIcon: 'star' },
+//       { key: 'homework', title: 'Homework', focusedIcon: 'star-circle', unfocusedIcon: 'star' },
       { key: 'results', title: 'Results', focusedIcon: 'medal', unfocusedIcon: 'medal-outline' },
     ]);
 
     const renderScene = BottomNavigation.SceneMap({
         student: StudentRoute,
         subject: SubjectRoute,
-        homework: HomeworkRoute,
+//         homework: HomeworkRoute,
         results: ResultsRoute
     });
 
