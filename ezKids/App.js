@@ -7,7 +7,6 @@ import ForgotPassword from './components/ForgotPassword';
 import Register from './components/Register';
 import LogIn from './components/LogIn';
 import StudentAmend from './components/StudentAmend';
-import DEBUGWidget from './components/DEBUG';
 import MyClasses from './components/MyClasses';
 import Announcements from './components/widgets/Announcements';
 import MenuChips from './components/widgets/MenuChips';
@@ -18,7 +17,7 @@ import store from './store';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainMenu from './components/MainMenu';
-
+import ResultAmend from './components/ResultsAmend';
 
 const theme = {
   ...MD3LightTheme,
@@ -75,8 +74,9 @@ const App = () => {
         </Stack.Navigator>
 
       </NavigationContainer> */}
-      {/* <ClassDetail class={{ classID: "k1", className: "Kindergarten A" }} /> */}
-      <MainMenu />
+      {/* <HomeworkAmend /> */}
+      <ClassDetail class={{ classID: "k1", className: "Kindergarten A" }} />
+      {/* <ResultAmend student={{ studentID: "s1", studentFirstName: "Zhi Peng", studentLastName: "Chew", studentDOB: "2020-09-14", studentGender: "Male"}} /> */}
     </Provider>
   );
 }

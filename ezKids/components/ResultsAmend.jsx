@@ -6,11 +6,11 @@ const ResultAmend = (props) => {
     const theme = useTheme()
 
     const [subject, setSubject] = React.useState([
-        { subjectID: "s1", subjectName: "Alphabets", existingResult: "A+" },
-        { subjectID: "s2", subjectName: "Science", existingResult: "B" },
+        { subjectID: "s1", subjectName: "Alphabets", existingResult: "70.2" },
+        { subjectID: "s2", subjectName: "Science", existingResult: "69.99" },
         { subjectID: "s3", subjectName: "Writing", existingResult: "N/A" },
         { subjectID: "s4", subjectName: "Numbers", existingResult: "N/A" },
-        { subjectID: "s5", subjectName: "Discrete Structures", existingResult: "A+" }
+        { subjectID: "s5", subjectName: "Discrete Structures", existingResult: "100" }
     ])
 
     const [focusedSubject, setFocusedSubject] = React.useState()

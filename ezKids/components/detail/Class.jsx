@@ -101,98 +101,8 @@ const SubjectRenderer = () => {
         { subjectID: "s5", subjectName: "Discrete Structures" }
     ])
 
-    const {control, setFocus, handleSubmit} = useForm({
-        defaultValues: {
-            subjectName: '',
-        }
-    })
-
-    const [addVisible, setAddVisible] = React.useState(false);
-    const [editVisible, setEditVisible] = React.useState(false);
-
-    const showAddModal = () => {
-        setAddVisible(true)
-    };
-    const showEditModal = () => {
-        setEditVisible(true)
-    };
-    const hideAddModal = () => setAddVisible(false);
-    const hideEditModal = () => setEditVisible(false);
-
     return (
         <View style={{marginHorizontal: 15}}>
-            <Portal>
-                <Modal visible={addVisible} onDismiss={hideAddModal}>
-                    <Card>
-                        <Card.Content>
-                            <Text variant="titleLarge" style={{marginBottom: 15}}>Add new subject</Text>
-                            <FormBuilder 
-                                control={control} 
-                                setFocus={setFocus}
-                                formConfigArray={[
-                                    {
-                                        type: 'text',
-                                        name: 'subjectName',
-
-                                        rules: {
-                                            required: {
-                                                value: true,
-                                                message: 'Please enter a subject name'
-                                            }
-                                        },
-                                        textInputProps: {
-                                            label: 'Subject Name'
-                                        }
-                                    },
-                                ]} 
-                            />
-                        </Card.Content>
-                        <Card.Actions>
-                            <Button onPress={hideAddModal}>Cancel</Button>
-                            <Button onPress={handleSubmit((data) => {
-                                // handle add here
-                                console.log(data);
-                            })}>Add</Button>
-                        </Card.Actions>
-                    </Card>
-                </Modal>
-            </Portal>
-            <Portal>
-                <Modal visible={editVisible} onDismiss={hideEditModal}>
-                    <Card>
-                        <Card.Content>
-                            <Text variant="titleLarge" style={{marginBottom: 15}}>Edit subject</Text>
-                            <FormBuilder 
-                                control={control} 
-                                setFocus={setFocus}
-                                formConfigArray={[
-                                    {
-                                        type: 'text',
-                                        name: 'subjectName',
-
-                                        rules: {
-                                            required: {
-                                                value: true,
-                                                message: 'Please enter a subject name'
-                                            }
-                                        },
-                                        textInputProps: {
-                                            label: 'Subject Name'
-                                        }
-                                    },
-                                ]} 
-                            />
-                        </Card.Content>
-                        <Card.Actions>
-                            <Button onPress={hideEditModal}>Cancel</Button>
-                            <Button onPress={handleSubmit((data) => {
-                                // handle edit here
-                                console.log(data);
-                            })}>Edit</Button>
-                        </Card.Actions>
-                    </Card>
-                </Modal>
-            </Portal>
             <Card style={{marginTop: 30}}>
                 <Card.Cover source={require('../../assets/subject.png')} />
             </Card>
@@ -200,7 +110,7 @@ const SubjectRenderer = () => {
                 {subject.map((subject) => {
                         return (
                             <View style={{marginBottom: 15}} key={subject.subjectID}>
-                                <Card mode='contained' style={{backgroundColor: theme.colors.primaryContainer}} onPress={() => {showEditModal(subject)}}>
+                                <Card mode='contained' style={{backgroundColor: theme.colors.primaryContainer}}>
                                     <Card.Content>
                                         <Text variant="titleLarge">{subject.subjectName}</Text>
                                         <Text variant="labelMedium">ID: {subject.subjectID}</Text>
@@ -209,13 +119,6 @@ const SubjectRenderer = () => {
                             </View>
                         )
                 })}
-                <View style={{marginBottom: 15}}>
-                    <Card style={{backgroundColor: theme.colors.primaryContainer}} onPress={showAddModal}>
-                        <Card.Content>
-                            <Text variant="titleMedium">Add new subject</Text>
-                        </Card.Content>
-                    </Card>
-                </View>
             </ScrollView>
         </View>
     )
@@ -340,3 +243,4 @@ const ResultRenderer = () => {
     )
 }
 
+export default ClassDetail;
