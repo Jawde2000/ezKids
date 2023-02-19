@@ -228,7 +228,7 @@ def getTeacher(reqeust):
 # @permission_classes([IsAdminUser])
 def getIndividualTeacher(reqeust, pk):
 
-    teachers = Teacher.objects.filter(created_by_id=pk)
+    teachers = Teacher.objects.filter(created_by=pk)
     serializer = TeacherSerializer(teachers, many=True)
     return Response(serializer.data)
 

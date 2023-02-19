@@ -65,17 +65,26 @@ const theme = {
   }
 }
 
+
+const Stack = createNativeStackNavigator();
+
+
 const App = () => {
   return (
     <Provider theme={theme}>
-      {/* <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Menu" component={HomeScreen} />
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName='Login'>
+          <Stack.Screen name="Login" component={LogIn} /> 
+          <Stack.Screen name="Menu" component={MainMenu} />
+          <Stack.Screen name="Forget" component={ForgotPassword} />
+          <Stack.Screen name="Class" component={MyClasses} /> 
+          {/* <Stack.Screen name='MenuChip' component={MenuChips} />  */}
         </Stack.Navigator>
 
-      </NavigationContainer> */}
+      </NavigationContainer>
       {/* <HomeworkAmend /> */}
-      <ClassDetail class={{ classID: "k1", className: "Kindergarten A" }} />
+      {/* <ClassDetail class={{ classID: "k1", className: "Kindergarten A" }} /> */}
+      {/* <LogIn /> */}
       {/* <ResultAmend student={{ studentID: "s1", studentFirstName: "Zhi Peng", studentLastName: "Chew", studentDOB: "2020-09-14", studentGender: "Male"}} /> */}
     </Provider>
   );
