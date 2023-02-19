@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.urls import reverse
 import uuid
 
+
 def one_week_hence():
     return timezone.now() + timezone.timedelta(days=7)
 
@@ -206,7 +207,7 @@ class Class(models.Model):
 
     classID = models.CharField(
         default=generate_class_id, primary_key=True, unique=True, editable=False, max_length=8)
-    className = models.CharField(max_length=16, blank=True)
+    className = models.CharField(max_length=16, default="-")
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
 
 
@@ -297,7 +298,19 @@ class SubjectGrade(models.Model):
     grade = models.CharField(max_length=5, blank=True)
     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True)
-    subject = models.ForeignKey(Subject,  on_delete=models.SET_NULL, null=True)
+    subject = models.ForeignKey(Subject,  on_delete=models.CASCADE, null=True)
+
+
+class BankName(models.Model):
+    def generate_bank_id():
+        while True:
+            code = "A" + str(random.randint(10000, 99999)) + "BN"
+            if Attendance.objects.filter(attendanceID=code).count() == 0:
+                break
+        return code
+    bankID = models.CharField(default=generate_bank_id,
+        primary_key=True, unique=True, editable=False, max_length=8)
+    bankName = models.TextField(max_length=100)
 
 
 class Attendance(models.Model):
@@ -310,7 +323,6 @@ class Attendance(models.Model):
 
     attendanceID = models.CharField(
         default=generate_attendance_id, primary_key=True, unique=True, editable=False, max_length=8)
-    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True)
     children = models.ForeignKey(
         Children, on_delete=models.SET_NULL, null=True)
     attendance = models.BooleanField(default=False)
@@ -322,5 +334,4 @@ class Attendance(models.Model):
     created_date_only = models.DateField(auto_now_add=True)
 
     class Meta:
-        unique_together = (("created_date_only", "children",
-                           "subject", "teacher", "class_Belong"), )
+        unique_together = (("created_date_only", "children", "class_Belong"), )

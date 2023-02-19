@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
-from .models import Teacher, Children, Class, Parent, ToDoList, ToDoItem, Announcement, Subject, Homework, SubjectGrade, Attendance, Principal
-from .serializers import UserSerializer, UserSerializerWithToken, ParentSerializer, TeacherSerializer, ChildrenSerializer, ClassSerializer, PrincipalSerializer, AnnouncementSerializer, TodoListSerializer, ToDoItemSerializer, SubjectSerializer, HomeworkSerializer, SubjectGradeSerializer, AttendanceSerializer
+from .models import Teacher, Children, BankName, Class, Parent, ToDoList, ToDoItem, Announcement, Subject, Homework, SubjectGrade, Attendance, Principal
+from .serializers import UserSerializer, UserSerializerWithToken, ParentSerializer, BankNameSerializer, TeacherSerializer, ChildrenSerializer, ClassSerializer, PrincipalSerializer, AnnouncementSerializer, TodoListSerializer, ToDoItemSerializer, SubjectSerializer, HomeworkSerializer, SubjectGradeSerializer, AttendanceSerializer
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -214,7 +214,6 @@ def getClassesTotal(reqeust):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
 def getTeacher(reqeust):
     try:
         teachers = Teacher.objects.all()
@@ -249,7 +248,6 @@ def getParent(request):
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 @api_view(['GET'])
 def getIndividualParent(reqeust, pk):
 
@@ -259,7 +257,8 @@ def getIndividualParent(reqeust, pk):
 
     # message = {'detail': 'Teacher Information failed to fetched'}
     # return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 @api_view(['GET'])
 def getIndividualParentID(reqeust, pk):
     parent = Parent.objects.get(parentsID=pk)
@@ -290,7 +289,8 @@ def getClass(reqeust):
     except:
         message = {'detail': 'Class Information failed to fetched'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 @api_view(['GET'])
 def getClassName(reqeust, pk):
     try:
@@ -333,6 +333,7 @@ def getChildren(request):
 #         message = {'detail': 'Announcement Information failed to fetched'}
 #         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def getChildrenByParentID(request, pk):
     try:
@@ -347,7 +348,8 @@ def getChildrenByParentID(request, pk):
     except:
         message = {'detail': 'Failed to retrieve children information'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 @api_view(['GET'])
 def getIndividualChildren(request, pk):
     try:
@@ -401,7 +403,8 @@ def getSubjectGradeByChildID(request, pk):
         subject_grades = SubjectGrade.objects.filter(children=children)
         subject_data = []
         for subject_grade in subject_grades:
-            subject = Subject.objects.get(subjectID=subject_grade.subject.subjectID)
+            subject = Subject.objects.get(
+                subjectID=subject_grade.subject.subjectID)
             subject_data.append({
                 "subjectID": subject.subjectID,
                 "subject": subject.subject,
@@ -414,7 +417,6 @@ def getSubjectGradeByChildID(request, pk):
     except:
         message = {'detail': 'Failed to retrieve subject grade information'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @api_view(['GET'])
@@ -473,6 +475,7 @@ def createAttendanceList(request):
         message = {'detail': 'attendance  failed to created'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def getAnnouncement(request):
     try:
@@ -480,8 +483,9 @@ def getAnnouncement(request):
         current_time = timezone.now()
         announcement_announcement = []
         # Filter the announcements to exclude future announcements
-        announcements = Announcement.objects.filter(announcementSchedule__lte=current_time).order_by('-announcementSchedule')
-        
+        announcements = Announcement.objects.filter(
+            announcementSchedule__lte=current_time).order_by('-announcementSchedule')
+
         for announcement in announcements:
             if announcement.announcementSchedule < current_time:
                 announcement_announcement.append({
@@ -491,80 +495,79 @@ def getAnnouncement(request):
                     "announcementTime": announcement.announcementTime,
                     "announcementSchedule": announcement.announcementSchedule,
                 })
-                
+
         serializer = AnnouncementSerializer(announcements, many=True)
         return Response(serializer.data)
     except:
         message = {'detail': 'Announcement Information failed to fetched'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def getClassAverageComparison(request):
-    try:
-        classes = Class.objects.all()
-        subject_grades = SubjectGrade.objects.all()
-        class_average = []
-        child_ids = []
-        unique_class_info = []
-        for c in classes:
-            children = Children.objects.filter(class_belong=c)
-            grade_sum = 0
-            if children.count() > 0:
-                for child in children:
-                    subjectChild = subject_grades.filter(children=child)
-                    if subjectChild.count() > 0:
-                        if child.childID not in child_ids:
-                            child_ids.append(child.childID)
-                            if [c.classID, c.className] not in unique_class_info:
-                                unique_class_info.append(
-                                    [c.classID, c.className])
-                                for subject_grade in subjectChild:
-                                    grade_sum += float(subject_grade.grade)
+    # try:
+    classes = Class.objects.all()
+    subject_grades = SubjectGrade.objects.all()
+    class_average = []
 
-                                class_average.append({
-                                    'Class': c.className,
-                                    'class_id': c.classID,
-                                    'Average': round(grade_sum / subjectChild.count(), 2),
-                                })
-        class_average = sorted(
-            class_average, key=lambda x: x['Average'], reverse=True)
-        return Response(class_average)
-    except:
-        message = {
-            'detail': 'Class Average Comparison Information failed to fetched'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    for c in classes:
+        subjectTotal = 0
+        children = Children.objects.filter(class_belong=c)
+        grade_sum = 0
+        child_count = children.count()
+        if child_count > 0:
+            for child in children:
+                subjectChild = subject_grades.filter(children=child)
+                if subjectChild.count() > 0:
+                    for subject_grade in subjectChild:
+                        grade_sum += float(subject_grade.grade)
+                subjectTotal += subjectChild.count()
+            class_average.append({
+                'Class': c.className,
+                'class_id': c.classID,
+                'Average': round(grade_sum / subjectTotal, 2),
+                'subjectChild': subjectTotal,
+            })
+    class_average = sorted(
+        class_average, key=lambda x: x['Average'], reverse=True)
+    return Response(class_average)
+    # except:
+    #     message = {
+    #         'detail': 'Class Average Comparison Information failed to fetched'}
+    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 def getRanking(request):
-    try:
-        children = Children.objects.all()
-        subject_grades = SubjectGrade.objects.all()
-        ranking = []
-        child_ids = []
-        for child in children:
-            subjectChild = subject_grades.filter(children=child)
-            grade_sum = 0
-            if subjectChild.count() > 1:
-                if child.childID not in child_ids:
-                    child_ids.append(child.childID)
-                    for subject_grade in subjectChild:
-                        grade_sum += float(subject_grade.grade)
-                        grade_average = round(
-                            (grade_sum / subjectChild.count()), 2)
+    # try:
+    children = Children.objects.all()
+    subject_grades = SubjectGrade.objects.all()
+    ranking = []
+    child_ids = []
+    for child in children:
+        subjectChild = subject_grades.filter(children=child)
+        grade_sum = 0
+        if subjectChild.count() > 1:
+            if child.childID not in child_ids:
+                child_ids.append(child.childID)
+                for subject_grade in subjectChild:
+                    grade_sum += float(subject_grade.grade)
 
-                    ranking.append({
-                        'child_name': child.childFirstName + " " + child.childLastName,
-                        'class': child.class_belong.className,
-                        'subject_avg': grade_average,
-                        'childID': child.childID,
-                    })
+                grade_average = round(
+                    (grade_sum / subjectChild.count()), 2)
 
-        ranking = sorted(ranking, key=lambda x: x['subject_avg'], reverse=True)
-        return Response(ranking)
-    except:
-        message = {'detail': 'Global Ranking Information failed to fetched'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+                ranking.append({
+                    'child_name': child.childFirstName + " " + child.childLastName,
+                    'class': child.class_belong.className,
+                    'subject_avg': grade_average,
+                    'childID': child.childID,
+                })
+
+    ranking = sorted(ranking, key=lambda x: x['subject_avg'], reverse=True)
+    return Response(ranking)
+    # except:
+    #     message = {'detail': 'Global Ranking Information failed to fetched'}
+    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
@@ -584,12 +587,22 @@ def getClassRanking(request, pk):
                         grade_sum += float(subject_grade.grade)
                         grade_average = round(
                             (grade_sum / subjectChild.count()), 2)
-                    ranking.append({
-                        'child_name': child.childFirstName + " " + child.childLastName,
-                        'class': child.class_belong.className,
-                        'subject_avg': grade_average,
-                        'childID': child.childID,
-                    })
+                    classBelong = Class.objects.get(classID=child.class_belong)
+                    if child is not None and child.class_belong is not None:
+                        ranking.append({
+                            'child_name': child.childFirstName + " " + child.childLastName,
+                            'class': classBelong.className,
+                            'subject_avg': grade_average,
+                            'childID': child.childID,
+                        })
+                    else:
+                        ranking.append({
+                            'child_name': child.childFirstName + " " + child.childLastName,
+                            'class': "-",
+                            'subject_avg': grade_average,
+                            'childID': child.childID,
+                        })
+
         ranking = sorted(ranking, key=lambda x: x['subject_avg'], reverse=True)
         return Response(ranking)
     except:
@@ -625,7 +638,43 @@ def getChildrenGender(request):
         message = {'detail': 'demographic Information failed to fetched'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['PUT'])
+def newBankName(request):
+    data = request.data
+    try:
+        bank = BankName.objects.create(
+            bankName=data["bankName"],
+        )
+        
+        serializer = BankNameSerializer(bank, many=False)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'failed to create a new bank'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['DELETE'])
+def deleteBank(request):
+    try:
+        bank = BankName.objects.get(bankName="['Maybank', 'CIMB Bank', 'Public Bank', 'RHB Bank', 'Hong Leong Bank', 'AmBank', 'Bank Rakyat', 'OCBC Bank', 'HSBC Bank', 'Standard Chartered Bank', 'Alliance Bank', 'UOB Bank', 'Affin Bank', 'Bank Islam', 'Citibank', 'MBSB Bank']")
+        bank.delete()
+        return Response({"message": "bank with ID {} successfully deleted".format(pk)})
+    except:
+        message = {'detail': 'bank fail to delete'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def getBankName(request):
+    data = request.data
+    try:
+        bankname = BankName.objects.all()
+        serializer = BankNameSerializer(bankname, many=True)
+        return Response(serializer.data)
+    except:
+        message = {'detail': 'failed to get bank list'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
 @api_view(['GET'])
 def getAttendance(request):
     try:
@@ -683,18 +732,18 @@ def updateTeacher(request, pk):
 @permission_classes([IsAuthenticated])
 def updateUserProfile(request, pk):
     # try:
-        user = User.objects.get(userID=pk)
-        serializer = UserSerializerWithToken(user, many=False)
-        data = request.data
-        user.username = data['username']
-        user.email = data['email']
+    user = User.objects.get(userID=pk)
+    serializer = UserSerializerWithToken(user, many=False)
+    data = request.data
+    user.username = data['username']
+    user.email = data['email']
 
-        if data['password'] != '':
-            user.password = make_password(data['password'])
+    if data['password'] != '':
+        user.password = make_password(data['password'])
 
-        user.save()
+    user.save()
 
-        return Response(serializer.data)
+    return Response(serializer.data)
     # except:
     #     message = {'detail': 'update user fail'}
     #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
@@ -783,16 +832,14 @@ def newChildren(request):
 
 @api_view(['PUT'])
 def updateChildren(request, pk):
-    
+
     data = request.data
     children = Children.objects.get(childID=pk)
-    parent = Parent.objects.get(parentsID=data["parent"])
     class_belong = Class.objects.get(classID=data["class_belong"])
     children.childFirstName = data["childFirstName"]
     children.childLastName = data["childLastName"]
     children.childGender = data["childGender"]
     children.childDOB = data["childDOB"]
-    children.parent = parent
     children.class_belong = class_belong
     children.save()
     serializer = ChildrenSerializer(children, many=False)

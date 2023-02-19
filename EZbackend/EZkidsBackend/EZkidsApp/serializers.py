@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Teacher, Children, Class, Parent, ToDoList, ToDoItem, Announcement, Subject, Homework, SubjectGrade, Attendance, Principal
+from .models import User, Teacher, Children, BankName, Class, Parent, ToDoList, ToDoItem, Announcement, Subject, Homework, SubjectGrade, Attendance, Principal
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.views import Token
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -107,6 +107,11 @@ class SubjectGradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubjectGrade
         fields = ['subject_gradeID', 'subject', "grade", "parent", "teacher", "children"]
+        
+class BankNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BankName
+        fields = ['bankID', 'bankName']
 
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:

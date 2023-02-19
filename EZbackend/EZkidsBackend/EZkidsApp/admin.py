@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Teacher, Children, Class, Parent, ToDoList, ToDoItem, Announcement, Subject, Homework, SubjectGrade, Attendance, Principal
+from .models import User, Teacher, Children, BankName, Class, Parent, ToDoList, ToDoItem, Announcement, Subject, Homework, SubjectGrade, Attendance, Principal
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -45,6 +45,7 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 
+
 @admin.register(Teacher)
 class TeacherModel(admin.ModelAdmin):
     list_filter = ('teacherID', 'teacherContactphone')
@@ -74,7 +75,8 @@ class ParentModel(admin.ModelAdmin):
 @admin.register(Announcement)
 class AnnouncementModel(admin.ModelAdmin):
     list_filter = ('announcementID', 'announcementTime')
-    list_display = ('announcementID', 'announcementTime', 'announcementSchedule')
+    list_display = ('announcementID', 'announcementTime',
+                    'announcementSchedule')
 
 
 @admin.register(ToDoList)
@@ -111,7 +113,14 @@ class SubjectGradeModel(admin.ModelAdmin):
 class AttendanceModel(admin.ModelAdmin):
     list_filter = ('attendanceID', 'attendance')
     list_display = ('attendanceID', 'attendance', "created_date_only")
-    
+
+
+@admin.register(BankName)
+class BankNameModel(admin.ModelAdmin):
+    list_filter = ('bankID', 'bankName')
+    list_display = ('bankID', 'bankName')
+
+
 @admin.register(Principal)
 class PrincipalModel(admin.ModelAdmin):
     list_filter = ('principalID',)
