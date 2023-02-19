@@ -33,7 +33,7 @@ const App = () => {
 
       </NavigationContainer> */}
       {/* <ClassDetail class={{ classID: "k1", className: "Kindergarten A" }} /> */}
-      <LogIn />
+      <Announcements />
     </Provider>
   );
 }

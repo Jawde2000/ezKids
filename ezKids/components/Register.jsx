@@ -46,7 +46,7 @@ function Register() {
             Alert.alert("Fail", "Fail to register! Try again with different Email or Username");
             
             //reloading page
-            // DevSettings.reload();
+            DevSettings.reload();
         }
     }, [loading])
 

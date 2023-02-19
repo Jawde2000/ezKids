@@ -3,6 +3,7 @@ import thunk from 'redux-thunk'
 import {composeWithDevTools} from 'redux-devtools-extension'
 import { userLoginReducer, userForgetReducer, userRegisterReducer } from './redux/reducers/userReducers'
 import {AsyncStorage} from 'react-native';
+import { announcementReducer } from './redux/reducers/announcementReducer';
 
 
 
@@ -11,6 +12,8 @@ const reducer = combineReducers({
     userLogin: userLoginReducer,
     userForget: userForgetReducer,
     userRegister: userRegisterReducer,
+    announcementList: announcementReducer,
+    
 })
 
 // const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
