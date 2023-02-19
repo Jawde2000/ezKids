@@ -71,14 +71,14 @@ def getUsers(request):
 
 # checking if user is exist with email. For forget password.
 @api_view(['GET'])
-def getUserByID(request, pk):
-    try:
-        user = User.objects.get(userID=pk)
+def getUserByEmail(request, pk):
+    # try:
+        user = User.objects.get(email=pk)
         serializer = UserSerializer(user, many=False)
         return Response(serializer.data)
-    except:
-        message = {'detail': 'No record Found with given email'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    # except:
+    #     message = {'detail': 'No record Found with given email'}
+    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 # reset user password
 
@@ -92,7 +92,7 @@ def get_random_pass():
 
 @api_view(['GET'])
 def resetPassword(request, pk):
-    try:
+    # try:
         user = User.objects.get(email=pk)
         serializer = UserSerializer(user, many=False)
         pwd = get_random_pass()
@@ -101,15 +101,15 @@ def resetPassword(request, pk):
 
         subject = 'Reset Password'
         message = 'Dear customer, your password had been reseted to ' + pwd + \
-            '. Please login to your account and edit your password as soon as posible.'
+            '. You can login to your account now'
         recepient = str(pk)
         send_mail(subject, message, EMAIL_HOST_USER,
                   [recepient], fail_silently=False)
 
         return Response(serializer.data)
-    except:
-        message = {'detail': 'Fail to reset Password'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    # except:
+    #     message = {'detail': 'Fail to reset Password'}
+    #     return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -638,6 +638,7 @@ def getChildrenGender(request):
         message = {'detail': 'demographic Information failed to fetched'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['PUT'])
 def newBankName(request):
     data = request.data
@@ -645,7 +646,7 @@ def newBankName(request):
         bank = BankName.objects.create(
             bankName=data["bankName"],
         )
-        
+
         serializer = BankNameSerializer(bank, many=False)
         return Response(serializer.data)
     except:
@@ -656,7 +657,8 @@ def newBankName(request):
 @api_view(['DELETE'])
 def deleteBank(request):
     try:
-        bank = BankName.objects.get(bankName="['Maybank', 'CIMB Bank', 'Public Bank', 'RHB Bank', 'Hong Leong Bank', 'AmBank', 'Bank Rakyat', 'OCBC Bank', 'HSBC Bank', 'Standard Chartered Bank', 'Alliance Bank', 'UOB Bank', 'Affin Bank', 'Bank Islam', 'Citibank', 'MBSB Bank']")
+        bank = BankName.objects.get(
+            bankName="['Maybank', 'CIMB Bank', 'Public Bank', 'RHB Bank', 'Hong Leong Bank', 'AmBank', 'Bank Rakyat', 'OCBC Bank', 'HSBC Bank', 'Standard Chartered Bank', 'Alliance Bank', 'UOB Bank', 'Affin Bank', 'Bank Islam', 'Citibank', 'MBSB Bank']")
         bank.delete()
         return Response({"message": "bank with ID {} successfully deleted".format(pk)})
     except:
@@ -674,7 +676,8 @@ def getBankName(request):
     except:
         message = {'detail': 'failed to get bank list'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 @api_view(['GET'])
 def getAttendance(request):
     try:

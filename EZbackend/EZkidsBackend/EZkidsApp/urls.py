@@ -259,9 +259,9 @@ urlpatterns = [
     # api path to delete users
     path('api/user/delete/<str:pk>/', views.deleteUser, name='user-delete'),
 
-    # api path to check user exist or not with email
-    path('api/user/<str:pk>/',
-         views.getUserByID, name='user-detail-email'),
+     # api path to check user exist or not with email
+    path('api/user/validation/<str:pk>/',
+         views.getUserByEmail, name='user-detail-email'),
 
     # api path to reset password and send email to user
     path('api/user/resetpass/<str:pk>/',
