@@ -1,8 +1,11 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { forgot } from '../redux/actions/userActions';
 
 function Register() {
     const {control, setFocus, handleSubmit} = useForm({
@@ -11,10 +14,24 @@ function Register() {
         }
     })
 
+    const userForget = useSelector(state => state.userForget)
+    const {loading, data, error, e} = userForget
+
+    const dispatch = useDispatch();
 
     const handleForgot = (data) => {
-
+        dispatch(forgot(data));
     }
+
+    useEffect(() => {
+        console.log(error);
+        if(data){
+            Alert.alert("An Email have sent to your email containing the new password!");
+        } else if(error && e){
+            Alert.alert("No such user found! Please Try again");
+        }  
+    }, [dispatch, loading])
+
 
     return (
         <View>

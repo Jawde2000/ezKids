@@ -1,15 +1,15 @@
 import { createStore, combineReducers, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import {composeWithDevTools} from 'redux-devtools-extension'
-import { userLoginReducer } from './redux/reducers/userReducers'
+import { userLoginReducer, userForgetReducer } from './redux/reducers/userReducers'
 import {AsyncStorage} from 'react-native';
 
 
 
 
 const reducer = combineReducers({
-    userLogin: userLoginReducer
-
+    userLogin: userLoginReducer,
+    userForget: userForgetReducer,
 })
 
 // const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null

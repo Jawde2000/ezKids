@@ -4,6 +4,13 @@ import {
     USER_LOGIN_SUCCESS,
     USER_LOGIN_FAIL,
     USER_LOGOUT,
+
+
+    USER_FORGET_REQUEST, 
+    USER_FORGET_SUCCESS,
+    USER_FORGET_RESET,
+    USER_FORGET_FAIL,
+
 } from '../constants/userConstants'
 import { AsyncStorage } from 'react-native';
 
@@ -73,4 +80,39 @@ export const logout = () => (dispatch) => {
     // dispatch({type: USER_LIST_RESET})
     // dispatch({type: USER_DETAIL_RESET})
     // dispatch({type: HELP_LIST_RESET})
+}
+
+//Forgot password
+export const forgot = (email) => async (dispatch) => {
+
+    try{
+        dispatch({
+            type:USER_FORGET_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+        const { data } = await axios.get(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/user/resetpass/${email}/`,
+            config
+        )
+
+        dispatch({
+            type: USER_FORGET_SUCCESS,
+            payload: data
+        })
+
+    }catch(error){
+        dispatch({
+            type: USER_FORGET_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }    
+
 }
