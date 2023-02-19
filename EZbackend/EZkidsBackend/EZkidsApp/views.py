@@ -225,10 +225,9 @@ def getTeacher(reqeust):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
 def getIndividualTeacher(reqeust, pk):
-
-    teachers = Teacher.objects.filter(created_by_id=pk)
+    created_by = User.objects.get(userID=pk)
+    teachers = Teacher.objects.filter(created_by=created_by)
     serializer = TeacherSerializer(teachers, many=True)
     return Response(serializer.data)
 
