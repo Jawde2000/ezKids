@@ -49,6 +49,20 @@ export const login = (email, password) => async (dispatch) => {
         //     })
         // }
 
+        if(data.is_teacher){
+            const { data2 } = await axios.get(
+                `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/individualteacher/${data.userID}/`,
+                config
+            )
+            
+            console.log(data2);
+
+            data = {
+                ...data,
+                ...data2
+            }
+        }
+
         dispatch({
             type: USER_LOGIN_SUCCESS,
             payload: data
@@ -59,9 +73,7 @@ export const login = (email, password) => async (dispatch) => {
 
        
 
-        // if(data.is_parent){
-            
-        // }
+       
 
 
     }catch(error){
