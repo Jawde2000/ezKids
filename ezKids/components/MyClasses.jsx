@@ -20,6 +20,9 @@ const MyClasses = (teacherID) => {
 
     return classes.length > 3? (
         <View style={{marginHorizontal: 15}}>
+            <Card style={{marginTop: 30, marginBottom: 15}}>
+                <Card.Cover source={require('../assets/children.jpg')} />
+            </Card>
             <View style={{marginBottom: 15}}>
                 <Card onPress={() => {handleMove(classes[0])}} key={classes[0].classID}>
                     <Card.Content>
@@ -56,15 +59,20 @@ const MyClasses = (teacherID) => {
         </View>
     ) : (
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly', flexWrap: 'wrap'}}>
-            {classes.map((session) => {
-                return (
-                    <Card onPress={() => {handleMove(session)}} style={{marginBottom: 15}} key={session.classID}>
-                        <Card.Content>
-                            <Text variant="titleLarge">{session.className}</Text>
-                        </Card.Content>
-                    </Card>
-                )
-            })}
+            <Card style={{marginTop: 30, marginBottom: 15}}>
+                <Card.Cover source={require('../assets/children.jpg')} />
+            </Card>
+            <View style={{flexDirection: 'row', justifyContent: 'space-evenly', flexWrap: 'wrap'}}>
+                {classes.slice.map((session) => {
+                    return (
+                        <Card onPress={() => {handleMove(session)}} style={{marginBottom: 15}} key={session.classID}>
+                            <Card.Content>
+                                <Text variant="titleLarge">{session.className}</Text>
+                            </Card.Content>
+                        </Card>
+                    )
+                })}
+            </View>
         </View>
     )
 

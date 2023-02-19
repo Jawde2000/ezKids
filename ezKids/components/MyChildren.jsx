@@ -20,8 +20,8 @@ const MyChildren = (parentID) => {
 
     return (
         <View style={{marginHorizontal: 15}}>
-            <Card>
-                <Card.Cover source={require('../assets/homework.jpg')} />
+            <Card style={{marginTop: 30, marginBottom: 15}}>
+                <Image source={require('../assets/homework.jpg')} />
             </Card>
             <ScrollView>
                 {children.map((child) => {

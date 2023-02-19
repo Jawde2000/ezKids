@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
-import { Button, Card, Modal, Portal } from 'react-native-paper';
+import { Button, Card, Modal, Portal, Image } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 
 const StudentAmend = (props) => {
@@ -37,7 +37,10 @@ const StudentAmend = (props) => {
     })
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, justifyContent: 'flex-start'}}>
+            <Card style={{marginTop: 30, marginBottom: 15}}>
+                <Card.Cover source={require('../assets/children.jpg')} />
+            </Card>
             <FormBuilder 
                 control={control} 
                 setFocus={setFocus}

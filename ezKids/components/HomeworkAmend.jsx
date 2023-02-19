@@ -21,6 +21,13 @@ const HomeworkAmend = (props) => {
         { value: "k4", label: "Kindergarten D" },
         { value: "k5", label: "Kindergarten E" }
     ])
+    const [subject, setSubject] = React.useState([
+        { value: "s1", label: "Alphabets" },
+        { value: "s2", label: "Science" },
+        { value: "s3", label: "Writing" },
+        { value: "s4", label: "Numbers" },
+        { value: "s5", label: "Discrete Structures" }
+    ])
 
     // If homeworkID exists, it means that the user is editing/deleting
     const {control, setFocus, handleSubmit} = useForm({
@@ -33,7 +40,10 @@ const HomeworkAmend = (props) => {
     })
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, justifyContent: 'flex-start'}}>
+            <Card style={{marginTop: 30, marginBottom: 15}}>
+                <Card.Cover source={require('../assets/homework.jpg')} />
+            </Card>
             <FormBuilder 
                 control={control} 
                 setFocus={setFocus}
@@ -54,12 +64,12 @@ const HomeworkAmend = (props) => {
                     },
                     {
                         type: 'text',
-                        name: 'lastName',
+                        name: 'desc',
 
                         rules: {
                             required: {
                                 value: true,
-                                message: "Please enter the child's last name"
+                                message: "Please enter the homework description"
                             }
                         },
                         textInputProps: {
@@ -73,22 +83,13 @@ const HomeworkAmend = (props) => {
                         rules: {
                             required: {
                                 value: true,
-                                message: "Please enter child's gender"
+                                message: "Please enter the homework's subject"
                             }
                         },
                         textInputProps: {
-                            label: 'Gender'
+                            label: 'Subject'
                         },
-                        options: [
-                            {
-                                value: 'male',
-                                label: 'Male'
-                            },
-                            {
-                                value: 'female',
-                                label: 'Female'
-                            },
-                        ]
+                        options: subject
                     },
                     {
                         type: 'select',
@@ -97,105 +98,13 @@ const HomeworkAmend = (props) => {
                         rules: {
                             required: {
                                 value: true,
-                                message: "Please enter the child's class"
+                                message: "Please enter the homework's class"
                             }
                         },
                         textInputProps: {
                             label: 'Class'
                         },
                         options: classes
-                    },
-                    {
-                        type: 'text',
-                        name: 'dobDay',
-
-                        rules: {
-                            required: {
-                                value: true,
-                                message: "Please enter the day of the child's birth"
-                            }
-                        },
-                        textInputProps: {
-                            label: 'Day'
-                        }
-                    },
-                    {
-                        type: 'select',
-                        name: 'dobMonth',
-
-                        rules: {
-                            required: {
-                                value: true,
-                                message: "Please enter the month of the child's birth"
-                            }
-                        },
-                        textInputProps: {
-                            label: 'Month'
-                        },
-                        options: [
-                            {
-                                value: 1,
-                                label: 'January'
-                            },
-                            {
-                                value: 2,
-                                label: 'February'
-                            },
-                            {
-                                value: 3,
-                                label: 'March'
-                            },
-                            {
-                                value: 4,
-                                label: 'April'
-                            },
-                            {
-                                value: 5,
-                                label: 'May'
-                            },
-                            {
-                                value: 6,
-                                label: 'June'
-                            },
-                            {
-                                value: 7,
-                                label: 'July'
-                            },
-                            {
-                                value: 8,
-                                label: 'August'
-                            },
-                            {
-                                value: 9,
-                                label: 'September'
-                            },
-                            {
-                                value: 10,
-                                label: 'October'
-                            },
-                            {
-                                value: 11,
-                                label: 'November'
-                            },
-                            {
-                                value: 12,
-                                label: 'December'
-                            }
-                        ]
-                    },
-                    {
-                        type: 'text',
-                        name: 'dobYear',
-
-                        rules: {
-                            required: {
-                                value: true,
-                                message: "Please enter the year of the child's birth"
-                            }
-                        },
-                        textInputProps: {
-                            label: 'Year'
-                        }
                     },
                 ]} 
             />
@@ -232,7 +141,7 @@ const HomeworkAmend = (props) => {
             <Portal>
                 <Modal visible={visible} onDismiss={hideModal}>
                     <Card>
-                        <Card.Title title="Are you sure you want to delete this child?" subtitle="This action is irreversible" />
+                        <Card.Title title="Are you sure you want to delete this homework?" subtitle="This action is irreversible" />
                         <Card.Actions>
                             <Button onPress={hideModal}>Cancel</Button>
                             <Button onPress={() => {

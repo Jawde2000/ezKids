@@ -46,7 +46,10 @@ function Register() {
     
 
     return (
-        <View>
+        <View style={{flex: 1, justifyContent: 'flex-start'}}>
+            <View style={{marginTop: 30}}>
+                <Image source={require('../assets/logo.png')} style={{resizeMode: "center", width: 250, height: 100}} />
+            </View>
             <FormBuilder 
                 control={control} 
                 setFocus={setFocus}
