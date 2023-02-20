@@ -266,6 +266,12 @@ urlpatterns = [
     # api path to reset password and send email to user
     path('api/user/resetpass/<str:pk>/',
          views.resetPassword, name='user-reset-pass'),
+    
+    # get children attendance information list
+    path('api/attendances/<str:childID>/',
+         views.getChildAttendance, name='class-classlist'),
 
-
+    # create attendance information list
+    path('api/attendancelist/attendance/',
+         views.createAttendanceList, name='attendance-createAttendancelist'),
 ]
