@@ -1111,7 +1111,55 @@ def deleteClass(request, pk):
         message = {'detail': 'Class does not exist'}
         return Response(message, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['GET'])
+def getChildAttendance(request, childID):
+    try:
+        # Get the child object based on the provided ID
+        child = Children.objects.get(childID=childID)
 
+        # Get the total number of classes for the child
+        total_classes = Attendance.objects.filter(children=child).count()
+
+        # Get the number of classes attended by the child
+        attended_classes = Attendance.objects.filter(
+            children=child, attendance=True).count()
+
+        # Calculate the attendance percentage
+        attendance_percentage = (attended_classes / total_classes) * 100
+
+        # Format the attendance as a string in the format of 'x/y' where x is the number of attended classes and y is the total number of classes
+        attendance_number = str(attended_classes) + '/' + str(total_classes)
+
+        # Return the attendance percentage and number as a JSON response
+        return Response({'attendance_percentage': attendance_percentage, 'attendance_number': attendance_number}, status=status.HTTP_200_OK)
+
+    except Children.DoesNotExist:
+        message = {'detail': 'Child not found'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
+
+    except ZeroDivisionError:
+        message = {'detail': 'This child has not attended any classes yet'}
+        return Response(message, status=status.HTTP_200_OK)
+
+@api_view(['PUT'])
+def createAttendanceList(request):
+    try:
+        data = request.data
+        children = Children.objects.get(childID=data["childID"])
+        teacher = Teacher.objects.get(teacherID=data["teacher"])
+        Attendance.objects.create(
+            children=children,
+            attendance=True,
+            teacher=teacher,
+            class_Belong=children.class_belong,
+            parent=children.parent,
+        )
+
+        return Response({'detail': "Attendance for student " + children.childFirstName + " " + children.childLastName +" has been created"}, status=status.HTTP_200_OK)
+    except:
+        message = {'detail': 'attendance  already taken for this student'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
 class ParentViewSet(viewsets.ModelViewSet):
     queryset = Parent.objects.all()
     serializer_class = ParentSerializer
