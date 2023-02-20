@@ -1142,7 +1142,7 @@ def getChildAttendance(request, childID):
         message = {'detail': 'This child has not attended any classes yet'}
         return Response(message, status=status.HTTP_200_OK) 
 
-@api_view(['GET'])
+@apiview(['GET'])
 def getAttendanceList(request):
     try:
         data = request.data
