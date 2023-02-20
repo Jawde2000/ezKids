@@ -1110,58 +1110,7 @@ def deleteClass(request, pk):
     except:
         message = {'detail': 'Class does not exist'}
         return Response(message, status=status.HTTP_404_NOT_FOUND)
-    
-    
-@api_view(['GET'])
-def getChildAttendance(request, childID):
-    try:
-        # Get the child object based on the provided ID
-        child = Children.objects.get(childID=childID)
 
-        # Get the total number of classes for the child
-        total_classes = Attendance.objects.filter(children=child).count()
-
-        # Get the number of classes attended by the child
-        attended_classes = Attendance.objects.filter(
-            children=child, attendance=True).count()
-
-        # Calculate the attendance percentage
-        attendance_percentage = (attended_classes / total_classes) * 100
-
-        # Format the attendance as a string in the format of 'x/y' where x is the number of attended classes and y is the total number of classes
-        attendance_number = str(attended_classes) + '/' + str(total_classes)
-
-        # Return the attendance percentage and number as a JSON response
-        return Response({'attendance_percentage': attendance_percentage, 'attendance_number': attendance_number}, status=status.HTTP_200_OK)
-
-    except Children.DoesNotExist:
-        message = {'detail': 'Child not found'}
-        return Response(message, status=status.HTTP_404_NOT_FOUND)
-
-    except ZeroDivisionError:
-        message = {'detail': 'This child has not attended any classes yet'}
-        return Response(message, status=status.HTTP_200_OK) 
-
-@apiview(['GET'])
-def getAttendanceList(request):
-    try:
-        data = request.data
-        teacher = Teacher.objects.get(teacherID=data["teacher"])
-        class = Class.objects.filter(teacher=teacher)
-        subject = Subject.objects.get(subjectID=data["subject"])
-        attendance = Attendance.objects.filter(classBelong=class)
-        attendance = Attendance.objects.filter(subject=subject)
-        attendance = Attendance.objects.filter(teacher=teacher)
-        attendance = Attendance.objects.filter(
-            created_date_only=data["created_date"])  # YYYY-MM-DD format
-        serializer = AttendanceSerializer(attendance, many=True)
-        return Response(serializer.data)
-    except Teacher.DoesNotExist:
-        message = {'detail': 'Attendance with ID {} does not exist'.format(pk)}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
-    except:
-        message = {'detail': 'Failed to retrieve Attendance information'}
-        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 class ParentViewSet(viewsets.ModelViewSet):
     queryset = Parent.objects.all()
