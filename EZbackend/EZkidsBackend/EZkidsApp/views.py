@@ -1147,9 +1147,9 @@ def getAttendanceList(request):
     try:
         data = request.data
         teacher = Teacher.objects.get(teacherID=data["teacher"])
-        class = Class.objects.filter(teacher=teacher)
+        classs = Class.objects.filter(teacher=teacher)
         subject = Subject.objects.get(subjectID=data["subject"])
-        attendance = Attendance.objects.filter(classBelong=class)
+        attendance = Attendance.objects.filter(classBelong=classs)
         attendance = Attendance.objects.filter(subject=subject)
         attendance = Attendance.objects.filter(teacher=teacher)
         attendance = Attendance.objects.filter(
