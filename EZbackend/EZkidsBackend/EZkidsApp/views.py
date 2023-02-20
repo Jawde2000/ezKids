@@ -267,7 +267,12 @@ def getIndividualParentID(reqeust, pk):
 
     # message = {'detail': 'Teacher Information failed to fetched'}
     # return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
+    
+def getIndividualParent(reqeust, pk):
+    parent = Parent.objects.get(created_by=pk)
+    serializer = ParentSerializer(parent, many=False)
+    
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def getHomework(request):
