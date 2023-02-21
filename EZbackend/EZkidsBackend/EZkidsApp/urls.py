@@ -270,6 +270,10 @@ urlpatterns = [
     # get children attendance information list
     path('api/attendances/<str:childID>/',
          views.getChildAttendance, name='class-classlist'),
+    
+    # api path to get class by teacherID
+    path('api/class/teacher/<str:pk>/',
+         views.getTeacherClass, name='teacher-class'),
 
     # create attendance information list
     path('api/attendancelist/attendance/',
