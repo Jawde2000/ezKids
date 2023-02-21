@@ -1165,6 +1165,24 @@ def createAttendanceList(request):
         message = {'detail': 'attendance  already taken for this student'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     
+@api_view(['GET'])
+def getTeacherClass(request, pk):
+    try:
+        classesTeacher = []
+        teacher = Teacher.objects.get(teacherID=pk)
+        teacher_class = Class.objects.filter(teacher=teacher)
+
+        for Classes in teacher_class:
+            classesTeacher.append({
+                "className": Classes.className,
+                "classID": Classes.classID,
+            })
+
+        return Response(classesTeacher)
+    except:
+        message = {'detail': 'failed to get class list'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    
 class ParentViewSet(viewsets.ModelViewSet):
     queryset = Parent.objects.all()
     serializer_class = ParentSerializer
