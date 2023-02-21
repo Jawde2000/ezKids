@@ -304,8 +304,8 @@ class SubjectGrade(models.Model):
 class BankName(models.Model):
     def generate_bank_id():
         while True:
-            code = "A" + str(random.randint(10000, 99999)) + "BN"
-            if Attendance.objects.filter(attendanceID=code).count() == 0:
+            code = "B" + str(random.randint(10000, 99999)) + "BN"
+            if BankName.objects.filter(bankID=code).count() == 0:
                 break
         return code
     bankID = models.CharField(default=generate_bank_id,
