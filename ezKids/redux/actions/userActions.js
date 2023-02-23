@@ -21,6 +21,17 @@ import {
     USER_UPDATE_RESET,
     USER_UPDATE_FAIL,
 
+    SCANNER_REQUEST, 
+    SCANNER_SUCCESS, 
+    SCANNER_FAIL, 
+    SCANNER_RESET,
+    LOGOUT_REQUEST,
+    LOGOUT_SUCCESS,
+
+    NEW_ATTENDANCE_REQUEST, 
+    NEW_ATTENDANCE_SUCCESS, 
+    NEW_ATTENDANCE_FAIL
+
 } from '../constants/userConstants'
 
 import { ANNOUNCEMENT_RESET } from '../constants/announcementConstants';
@@ -110,11 +121,11 @@ export const login = (email, password) => async (dispatch) => {
     }
 }
 
-export const logout = () => (dispatch) => {
-    console.log("hello");
+export const Logout = () => (dispatch) => {
+    dispatch({type: LOGOUT_REQUEST})
     AsyncStorage.clear()
-    dispatch({type: USER_LOGOUT})
-    dispatch({type: ANNOUNCEMENT_RESET})
+    dispatch*{type: ANNOUNCEMENT_RESET}
+    dispatch({type: LOGOUT_SUCCESS})
     // dispatch({type: USER_LIST_RESET})
     // dispatch({type: USER_DETAIL_RESET})
     // dispatch({type: HELP_LIST_RESET})
@@ -155,7 +166,6 @@ export const forgot = (email) => async (dispatch) => {
     }    
 
 }
-
 
 //new user register
 export const register = (userData, parentData) => async (dispatch) => {
@@ -252,6 +262,44 @@ export const update = (teacherDetails) => async (dispatch) => {
     }catch(error){
         dispatch({
             type: USER_UPDATE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+//new attendance
+export const newAttendance = (info) => async (dispatch) => {
+    try{
+        console.log(info)
+        console.log("enter new attendance")
+        dispatch({
+            type:NEW_ATTENDANCE_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+        console.log(info)
+        // 1) adding new user 
+        const { data } = await axios.put(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/attendancelist/attendance/`,
+            info,
+            config
+        )
+
+        dispatch({
+            type: NEW_ATTENDANCE_SUCCESS,
+            payload: data.detail
+        })
+
+    }catch(error){
+        dispatch({
+            type: NEW_ATTENDANCE_FAIL,
             payload: error.response && error.response.data.detail
                 ? error.response.data.detail
                 : error.message,

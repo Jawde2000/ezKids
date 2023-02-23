@@ -9,6 +9,7 @@ import { AsyncStorage } from 'react-native';
 import MenuChips from './widgets/MenuChips';
 import Announcements from './widgets/Announcements';
 import { logout } from '../redux/actions/userActions';
+import { useNavigation } from '@react-navigation/native';
 
 
 const MainMenu = ({navigation}) => {
@@ -17,7 +18,7 @@ const MainMenu = ({navigation}) => {
     const [name, setName] = React.useState("Name")
 
     const [userData, setUserData] = React.useState({})
-
+    const navigate = useNavigation();
 
     useEffect(() => {
         async function getUserInfo() {
@@ -29,10 +30,10 @@ const MainMenu = ({navigation}) => {
     }, [])
 
     useEffect(() => {
-        console.log(userData);
+        if (!userData) {
+            navigate.navigate("Login")
+        }
     }, [userData])
-
-    
 
     return (
         <View style={{backgroundColor: theme.colors.background, flexDirection: "column", alignItems: "center", height: '100%'}}>
@@ -40,13 +41,13 @@ const MainMenu = ({navigation}) => {
                 <Image source={require('../assets/logo.png')} style={{resizeMode: "center", width: 250, height: 100}} />
             </View>
             <View>
-                <Text style={{fontSize: 20, color: theme.colors.secondary}}>Welcome, {userData? userData.username : "Loading"}</Text>
+                <Text style={{fontSize: 20, color: theme.colors.secondary}}>Welcome, {userData? userData.username : "Loading..."}</Text>
             </View>
-            <View style={{marginTop: 15, height: 35}}>
+            <View style={{marginTop: 15, height: 105}}>
                 {/* REMEMBER TO SET isTeacher */}
                 <MenuChips isTeacher={userData? userData.is_teacher: false} />
             </View>
-            <View style={{marginTop: 15}}>
+            <View style={{marginTop: 35}}>
                 <Announcements />
             </View>
         </View>

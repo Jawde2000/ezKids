@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { View, ScrollView} from 'react-native';
 import { Button, Card, Modal, Portal, Image } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 
@@ -37,6 +37,7 @@ const StudentAmend = (props) => {
     })
 
     return (
+        <ScrollView>
         <View style={{flex: 1, justifyContent: 'flex-start'}}>
             <Card style={{marginTop: 30, marginBottom: 15}}>
                 <Card.Cover source={require('../assets/children.jpg')} />
@@ -250,6 +251,7 @@ const StudentAmend = (props) => {
                 </Modal>
             </Portal>
         </View>
+        </ScrollView>
     )
 }
 

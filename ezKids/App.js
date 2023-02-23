@@ -19,6 +19,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainMenu from './components/MainMenu';
 import ResultAmend from './components/ResultsAmend';
 import Profile from './components/Profile';
+import QRScanner from './components/QRScanner';
 
 const theme = {
   ...MD3LightTheme,
@@ -76,11 +77,12 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Login'>
           <Stack.Screen name="Login" component={LogIn} /> 
-          <Stack.Screen name="Menu" component={MainMenu} />
+          <Stack.Screen options={{headerShown: false}} name="Menu" component={MainMenu} />
           <Stack.Screen name="Forget" component={ForgotPassword} />
           <Stack.Screen name="Class" component={MyClasses} /> 
           <Stack.Screen name="Profile" component={Profile} /> 
           <Stack.Screen name="ClassDetails" component={ClassDetail} /> 
+          <Stack.Screen name="QRscanner" component={QRScanner} />
           {/* <Stack.Screen name='MenuChip' component={MenuChips} />  */}
         </Stack.Navigator>
 

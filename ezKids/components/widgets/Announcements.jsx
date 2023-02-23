@@ -1,61 +1,78 @@
 import React from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, StyleSheet } from 'react-native';
 import { Portal, Card, Text, Modal, ActivityIndicator } from 'react-native-paper';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { announcementAction } from '../../redux/actions/announcementAction';
+import PushNotification from 'react-native-push-notification';
 
 
-// const announcements = [
-//     {
-//       id: "announcement_1",
-//       title: "Parent-Teacher Conference",
-//       content: "Our first parent-teacher conference of the year will be held on Friday, March 4th. Please check your email for more information and sign up for a time slot as soon as possible.",
-//       datetime: "2023-03-04 09:00:00"
-//     },
-//     {
-//       id: "announcement_2",
-//       title: "Field Trip to the Zoo",
-//       content: "We're excited to announce that our class will be going on a field trip to the zoo next Wednesday! Please ensure that your child has appropriate clothing and footwear for the weather.",
-//       datetime: "2023-03-08 10:30:00"
-//     },
-//     {
-//       id: "announcement_3",
-//       title: "Classroom Supplies",
-//       content: "We're running low on tissue boxes and baby wipes in the classroom. If you're able to donate any, we would greatly appreciate it!",
-//       datetime: "2023-03-10 14:00:00"
-//     },
-//     {
-//       id: "announcement_4",
-//       title: "Reading Challenge",
-//       content: "Our class is participating in a reading challenge this month! Encourage your child to read as many books as they can, and help them keep track of their progress on the reading log we sent home last week.",
-//       datetime: "2023-03-15 13:00:00"
-//     },
-//     {
-//       id: "announcement_5",
-//       title: "Show and Tell",
-//       content: "This Friday, we'll be having show and tell in class. Your child is encouraged to bring in an item that is special to them to share with the class.",
-//       datetime: "2023-03-18 10:00:00"
-//     },
-//     {
-//       id: "announcement_6",
-//       title: "Spirit Week",
-//       content: "Next week is spirit week! Monday is pajama day, Tuesday is crazy hair day, Wednesday is favorite color day, Thursday is hat day, and Friday is school spirit day. We can't wait to see everyone's fun outfits!",
-//       datetime: "2023-03-21 08:30:00"
-//     },
-//     {
-//       id: "announcement_7",
-//       title: "Easter Egg Hunt",
-//       content: "We'll be having an Easter egg hunt on the school playground on Thursday, April 6th. Your child is welcome to bring their own basket, but we will have some extras on hand as well.",
-//       datetime: "2023-04-06 11:00:00"
-//     },
-//     {
-//       id: "announcement_8",
-//       title: "Teacher Appreciation Week",
-//       content: "May 2nd through May 6th is Teacher Appreciation Week! We would love for students to bring in a small token of appreciation for their teacher during this time.",
-//       datetime: "2023-05-02 09:00:00"
-//     }
-//   ];
+const styles = StyleSheet.create({
+    cardContent: {
+      backgroundColor: '#f9f9f9',
+      borderRadius: 10,
+      padding: 18,
+      marginBottom: 16,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginBottom: 8,
+    },
+    timestamp: {
+      color: 'gray',
+      fontStyle: 'italic',
+    },
+    card: {
+        backgroundColor: "#FFF",
+        borderRadius: 12,
+        padding: 16,
+        margin: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+      },
+      title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 8,
+      },
+      divider: {
+        height: 1,
+        backgroundColor: "#E0E0E0",
+        marginVertical: 16,
+      },
+      content: {
+        fontSize: 16,
+        lineHeight: 24,
+        marginBottom: 16,
+      },
+      info: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+      },
+      infoText: {
+        color: "#999",
+        fontSize: 14,
+      },
+      close: {
+        marginTop: 16,
+        alignSelf: "center",
+      },
+      closeText: {
+        color: "#999",
+        fontSize: 14,
+      },
+  });
+  
   
 
 const Announcements = () => {
@@ -70,6 +87,8 @@ const Announcements = () => {
 
     const announcementList = useSelector(state => state.announcementList);
     const {loading, data:announcementss, error, e} = announcementList;
+    const userLogin = useSelector(state => state.userLogin)
+    const {loading: loadingUser, error: loadingError, userInfo, loggedIn} = userLogin
 
     const dispatch = useDispatch();
 
@@ -78,6 +97,7 @@ const Announcements = () => {
       // console.log("INSIDE USEeFFECT")
       dispatch(announcementAction());
     }, [])
+      
 
     useEffect(() => {
       console.log(announcementss);
@@ -89,6 +109,15 @@ const Announcements = () => {
     // useEffect(() => {
     //   console.log(announcements);
     // }, [announcements])
+
+    const convertTime = (message) => {
+        var timeString = message // input string
+        var timeString2 = timeString.replace("T", " "); 
+        var arr = timeString2.split(":"); // splitting the string by colon
+        var suffix = parseInt(arr[0]) >= 12 ? " PM":" AM"
+        var t = arr[0] + ":" + arr[1] + suffix
+        return t;
+    }
 
     const showModal = (id, title, content, datetime) => {
         setID(id)
@@ -108,10 +137,10 @@ const Announcements = () => {
                       <Card style={{marginBottom: 10}} onPress={() => {
                           showModal(announcement.announcementID, announcement.announcementTitle, announcement.announcementDesc, announcement.announcementTime)
                       }}>
-                          <Card.Content>
-                              <Text variant="titleLarge" >{announcement.announcementTitle}</Text>
-                              <Text variant="labelMedium" >{announcement.announcementTime}</Text>
-                          </Card.Content>
+                        <Card.Content style={styles.cardContent}>
+                            <Text style={styles.title}>{announcement.announcementTitle}</Text>
+                            <Text style={styles.timestamp}>{convertTime(announcement.announcementTime)}</Text>
+                        </Card.Content>
                       </Card>
                   )
               })
@@ -120,7 +149,6 @@ const Announcements = () => {
               <View style={{flex: 1, justifyContent: 'center', alignItems:'center'}}>
                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
                   <ActivityIndicator size={'large'} color='black' /> 
-
                 </View>
               </View>
               
@@ -128,14 +156,20 @@ const Announcements = () => {
             }
             <Portal>
                 <Modal visible={visible} onDismiss={hideModal}>
-                    <Card>
-                        <Card.Content>
-                            <Text variant="titleLarge" style={{marginBottom: 15}}>{title}</Text>
-                            <Text variant="bodyLarge" style={{marginBottom: 10}}>{content}</Text>
-                            <Text variant="labelMedium" >ID: {id} | Posted: {datetime}</Text>
-                            <Text variant="labelMedium" >Tap on the shadowed area to dismiss</Text>
-                        </Card.Content>
-                    </Card>
+                <Card style={styles.card}>
+                    <Card.Content>
+                        <Text style={styles.title}>{title}</Text>
+                        <View style={styles.divider} />
+                        <Text style={styles.content}>{content}</Text>
+                        <View style={styles.info}>
+                        <Text style={styles.infoText}>ID: {id}</Text>
+                        <Text style={styles.infoText}>Posted on: {convertTime(datetime)}</Text>
+                        </View>
+                        <View style={styles.close}>
+                        <Text style={styles.closeText}>Tap to dismiss</Text>
+                        </View>
+                    </Card.Content>
+                </Card>
                 </Modal>
             </Portal>
         </ScrollView>

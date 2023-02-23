@@ -19,6 +19,16 @@ import {
     USER_UPDATE_RESET,
     USER_UPDATE_FAIL,
 
+    LOGOUT_REQUEST, 
+    LOGOUT_SUCCESS, 
+    LOGOUT_FAIL, 
+    LOGOUT_RESET,
+
+    NEW_ATTENDANCE_REQUEST,
+    NEW_ATTENDANCE_SUCCESS,
+    NEW_ATTENDANCE_FAIL,
+    NEW_ATTENDANCE_RESET,
+
 } from '../constants/userConstants'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -30,7 +40,7 @@ export const userLoginReducer = (state = {}, action) => {
            return {loading: false, userInfo: action.payload, loggedIn: true}
         
         case USER_LOGIN_FAIL:
-           return {loading: false, error: action.payload}
+           return {loading: false, error: action.payload, loggedIn: false}
 
         case USER_LOGOUT:
            return {}
@@ -84,10 +94,10 @@ export const userUpdateReducer = (state = {}, action) => {
             return {loading: true}
         
         case USER_UPDATE_SUCCESS:
-           return {loading: false, data: action.payload, e:false}
+           return {loading: false, data: action.payload, success:true}
         
         case USER_UPDATE_FAIL:
-           return {loading: false, error: action.payload, e:true}
+           return {loading: false, error: action.payload, success:false}
 
         case USER_UPDATE_RESET:
            return {}
@@ -96,4 +106,43 @@ export const userUpdateReducer = (state = {}, action) => {
             return state
     }
 }
+
+export const logoutReducer = (state = {}, action) => {
+    switch(action.type){
+        case LOGOUT_REQUEST:
+            return {loading: true}
+        
+        case LOGOUT_SUCCESS:
+           return {loading: false, success:true}
+        
+        case LOGOUT_FAIL:
+           return {loading: false, error: action.payload, success:false}
+
+        case LOGOUT_RESET:
+           return {}
+
+        default:
+            return state
+    }
+}
+
+export const newAttendanceReducer = (state = {}, action) => {
+    switch(action.type){
+        case NEW_ATTENDANCE_REQUEST:
+            return {loading: true}
+        
+        case NEW_ATTENDANCE_SUCCESS:
+           return {loading: false, success:true, data: action.payload}
+        
+        case NEW_ATTENDANCE_FAIL:
+           return {loading: false, error: action.payload, success:false}
+
+        case NEW_ATTENDANCE_FAIL:
+           return {}
+
+        default:
+            return state
+    }
+}
+
 

@@ -1,13 +1,17 @@
-import React from 'react';
-import { View, ScrollView } from 'react-native';
-import { BottomNavigation, Text, Card, Portal, Modal, Button, FAB, useTheme } from 'react-native-paper';
+import React, {useContext, createContext, useState, useEffect} from 'react';
+import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { BottomNavigation, Text, Card, Portal, Modal, Button, useTheme, Avatar, ProgressBar  } from 'react-native-paper';
 import { useForm } from 'react-hook-form';
 import { FormBuilder } from 'react-native-paper-form-builder';
+import { useDispatch, useSelector } from 'react-redux';
+import { classStudentAction } from '../../redux/actions/classActions';
 
-const StudentRoute = () => 
-<View>
-    <StudentRenderer />
-</View>;
+export const SessionContext = createContext(null);
+
+const StudentRoute = ({session}) => {
+    return <StudentRenderer session={session} />;
+}
+  
 
 const SubjectRoute = () => 
 <View>
@@ -24,10 +28,58 @@ const ResultsRoute = () =>
     <ResultRenderer />
 </View>
 
+const styles = StyleSheet.create({
+    cardContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#FFFFFF',
+      borderRadius: 10,
+      elevation: 3,
+      padding: 10,
+      shadowColor: '#000000',
+      shadowOpacity: 0.1,
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      shadowRadius: 5,
+    },
+    avatarContainer: {
+      marginRight: 15,
+    },
+    infoContainer: {
+      flexDirection: 'column',
+    },
+    attendanceContainer: {
+        flexDirection: 'column',
+        paddingLeft: 60,
+    },
+    nameText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    idText: {
+      fontSize: 16,
+      color: '#999999',
+    },
+    percentageText: {
+        fontSize: 10,
+        fontWeight: 'bold',
+      },
+    attendanceText: {
+        fontSize: 16,
+        color: '#999999',
+    },
+    progressBar: {
+        width: '100%',
+        height: 10,
+        borderRadius: 10,
+        backgroundColor: '#D8D8D8',
+    },
+});
+  
 // session is Class
 const ClassDetail = ({route, navigation}) => {
-
-
     const { session } = route.params;
 
     const [index, setIndex] = React.useState(0);
@@ -39,7 +91,7 @@ const ClassDetail = ({route, navigation}) => {
     ]);
 
     const renderScene = BottomNavigation.SceneMap({
-        student: StudentRoute,
+        student: () => <StudentRoute session={session} />,
         subject: SubjectRoute,
 //         homework: HomeworkRoute,
         results: ResultsRoute
@@ -54,16 +106,37 @@ const ClassDetail = ({route, navigation}) => {
     );
 };
 
-const StudentRenderer = () => {
+const StudentRenderer = ({session}) => {
     const theme = useTheme()
 
+    const [studentList, setStudentList] = useState([])
+
+    const classStudent = useSelector(state => state.classStudent);
+    const {data, loading, success} = classStudent;
+
+    const dispatch = useDispatch();
+
     const [children, setChildren] = React.useState([
-        { childID: "c1", childDOB: "2018-09-04", childName: "Ali bin Abu" },
-        { childID: "c2", childDOB: "2020-03-04", childName: "Jamond Chew" },
-        { childID: "c3", childDOB: "2020-09-07", childName: "Ho Ko Ee" },
-        { childID: "c4", childDOB: "2020-02-04", childName: "Matthew John" },
-        { childID: "c5", childDOB: "2019-07-01", childName: "Sinclair Adams" }
+        { childID: "c1", childName: "Ali bin Abu" },
+        { childID: "c2", childName: "Jamond Chew" },
+        { childID: "c3", childName: "Ho Ko Ee" },
+        { childID: "c4", childName: "Matthew John" },
+        { childID: "c5", childName: "Sinclair Adams" }
     ])
+
+    useEffect(() => {
+        console.log(35)
+        if(session) {
+            console.log(session.classID);
+            dispatch(classStudentAction(session.classID));
+        }
+    }, [session])
+
+    useEffect(() => {
+        if(data) {
+            setStudentList(data);
+        }
+    }, [data])
 
     const handleMove = (child) => {
         // handle move here
@@ -71,25 +144,30 @@ const StudentRenderer = () => {
     }
 
     return (
+        <ScrollView>
         <View style={{marginHorizontal: 15}}>
             <Card style={{marginTop: 30}}>
                 <Card.Cover source={require('../../assets/children.jpg')} />
             </Card>
             <ScrollView style={{marginTop: 15}}>
-                {children.map((child) => {
-                        return (
-                            <View style={{marginBottom: 15}} key={child.childID}>
-                                <Card mode='contained' style={{backgroundColor: theme.colors.primaryContainer}} onPress={() => {handleMove(child)}}>
-                                    <Card.Content>
-                                        <Text variant="titleLarge">{child.childName}</Text>
-                                        <Text variant="labelMedium">DOB: {child.childDOB}</Text>
-                                    </Card.Content>
-                                </Card>
-                            </View>
-                        )
+                {studentList.map((child) => {
+                    return (
+                        <View style={{marginBottom: 15}} key={child.childID}>
+                            <TouchableOpacity style={styles.cardContainer} onPress={() => {handleMove(child)}}>
+                                <View style={styles.infoContainer}>
+                                    <Text style={styles.idText}>{child.childID}</Text>
+                                    <Text style={styles.nameText}>{child.childFirstName} {child.childLastName}</Text>
+                                </View>
+                                <View style={styles.attendanceContainer}>
+                                    <Text style={styles.attendanceText}>Attendance Taken {child.attendanceData.attendance_number}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    )
                 })}
             </ScrollView>
         </View>
+        </ScrollView>
     )
 }
 
@@ -105,6 +183,7 @@ const SubjectRenderer = () => {
     ])
 
     return (
+        <ScrollView>
         <View style={{marginHorizontal: 15}}>
             <Card style={{marginTop: 30}}>
                 <Card.Cover source={require('../../assets/subject.png')} />
@@ -124,6 +203,7 @@ const SubjectRenderer = () => {
                 })}
             </ScrollView>
         </View>
+        </ScrollView>
     )
 }
 
@@ -224,6 +304,7 @@ const ResultRenderer = () => {
     }
 
     return (
+        <ScrollView>
         <View style={{marginHorizontal: 15}}>
             <Card style={{marginTop: 30}}>
                 <Card.Cover source={require('../../assets/results.jpg')} />
@@ -243,6 +324,7 @@ const ResultRenderer = () => {
                 })}
             </ScrollView>
         </View>
+        </ScrollView>
     )
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, View } from 'react-native';
+import { Alert, View, Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import { useEffect } from 'react';
@@ -38,7 +38,10 @@ function Register({ navigation }) {
 
 
     return (
-        <View>
+        <View style={{flex: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f2f2f2'}}>
+            <View style={{marginTop: 30, alignSelf: 'center'}}>
+                <Text>Forgot Password</Text>
+            </View>
             <FormBuilder 
                 control={control} 
                 setFocus={setFocus}
@@ -55,13 +58,15 @@ function Register({ navigation }) {
                             pattern: {value:/^\S+@\S+$/i, message: 'please enter a valid email'},
                         },
                         textInputProps: {
-                            label: 'email'
+                            label: 'email',
+                            style: { width: 300 }
                         }
                     }
                 ]} 
                 />
                 <Button
                     mode={'contained'}
+                    style={{marginTop: 20, width: 250}}
                     onPress={handleSubmit((data) => {
                         console.log("Submit Button Pressed");
                         console.log(data);

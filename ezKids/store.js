@@ -1,19 +1,21 @@
 import { createStore, combineReducers, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import {composeWithDevTools} from 'redux-devtools-extension'
-import { userLoginReducer, userForgetReducer, userRegisterReducer,userUpdateReducer } from './redux/reducers/userReducers'
+import { userLoginReducer, userForgetReducer, userRegisterReducer,userUpdateReducer, logoutReducer, newAttendanceReducer, } from './redux/reducers/userReducers'
 import {AsyncStorage} from 'react-native';
 import { announcementReducer } from './redux/reducers/announcementReducer';
-
-
-
+import { classesReducer, classStudentReducer } from './redux/reducers/classReducers';
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
     userForget: userForgetReducer,
     userRegister: userRegisterReducer,
     announcementList: announcementReducer,
-    userUpdate: userUpdateReducer
+    userUpdate: userUpdateReducer,
+    logout: logoutReducer,
+    newAttendances: newAttendanceReducer, 
+    classList: classesReducer,
+    classStudent: classStudentReducer,
 })
 
 // const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
