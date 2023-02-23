@@ -4,7 +4,9 @@ import {composeWithDevTools} from 'redux-devtools-extension'
 import { userLoginReducer, userForgetReducer, userRegisterReducer,userUpdateReducer, logoutReducer, newAttendanceReducer, } from './redux/reducers/userReducers'
 import {AsyncStorage} from 'react-native';
 import { announcementReducer } from './redux/reducers/announcementReducer';
-import { classesReducer, classStudentReducer } from './redux/reducers/classReducers';
+import { classesReducer, classStudentReducer, classRankingntReducer, updateChildrenReducer, parentReducer, 
+    subjectGradeReducer,    newGradeReducer, updateGradeReducer, deleteGradeReducer
+ } from './redux/reducers/classReducers';
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -16,6 +18,13 @@ const reducer = combineReducers({
     newAttendances: newAttendanceReducer, 
     classList: classesReducer,
     classStudent: classStudentReducer,
+    classRanking: classRankingntReducer,
+    updateChildren: updateChildrenReducer,
+    getParent: parentReducer,
+    getSubjectGrade: subjectGradeReducer,
+    newGrade: newGradeReducer,
+    updategrade: updateGradeReducer,
+    deleteGrade: deleteGradeReducer,
 })
 
 // const userInfoFromStorage = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null

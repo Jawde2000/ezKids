@@ -5,6 +5,7 @@ import { Button } from 'react-native-paper';
 import { newAttendance } from '../redux/actions/userActions';
 import {useDispatch, useSelector} from 'react-redux';
 import { NEW_ATTENDANCE_RESET } from '../redux/constants/userConstants';
+
 const QRScanner = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -84,8 +85,8 @@ const QRScanner = ({navigation}) => {
     <View style={styles.container} keyboardShouldPersistTaps="handled">
     <BarCodeScanner
       onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-      style={StyleSheet.absoluteFillObject}
-      ratio={'3:4'} // or '3:4'
+      style={[StyleSheet.absoluteFillObject, { transform: [{ rotate: '270deg' }] }]}
+      ratio={'4:3'} // or '3:4'
     />
     {scanned && newAttendanceSuccess &&
       <Button

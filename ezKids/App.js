@@ -20,6 +20,8 @@ import MainMenu from './components/MainMenu';
 import ResultAmend from './components/ResultsAmend';
 import Profile from './components/Profile';
 import QRScanner from './components/QRScanner';
+import GlobalRanking from './components/GlobalRanking';
+import ClassRanking from './components/ClassRanking';
 
 const theme = {
   ...MD3LightTheme,
@@ -83,6 +85,9 @@ const App = () => {
           <Stack.Screen name="Profile" component={Profile} /> 
           <Stack.Screen name="ClassDetails" component={ClassDetail} /> 
           <Stack.Screen name="QRscanner" component={QRScanner} />
+          <Stack.Screen name="StudentAmend" component={StudentAmend} />
+          <Stack.Screen name="GlobalRanking" component={GlobalRanking} />
+          <Stack.Screen name="ClassRanking" component={ClassRanking} />
           {/* <Stack.Screen name='MenuChip' component={MenuChips} />  */}
         </Stack.Navigator>
 

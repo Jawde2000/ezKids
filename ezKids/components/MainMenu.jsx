@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 const MainMenu = ({navigation}) => {
     const theme = useTheme();
 
-    const [name, setName] = React.useState("Name")
+    const [name, setName] = React.useState("...")
 
     const [userData, setUserData] = React.useState({})
     const navigate = useNavigation();
@@ -25,12 +25,14 @@ const MainMenu = ({navigation}) => {
             const userDatas = await AsyncStorage.getItem('userInfo');
             const de_userDatas =  JSON.parse(userDatas);
             setUserData(de_userDatas);
+            setName(de_userDatas[0].teacherFirstName + " " + de_userDatas[0].teacherLastName)
+            
         }
         getUserInfo();
     }, [])
 
     useEffect(() => {
-        if (!userData) {
+        if (!Object.keys(userData).length === 0) {
             navigate.navigate("Login")
         }
     }, [userData])
@@ -41,7 +43,7 @@ const MainMenu = ({navigation}) => {
                 <Image source={require('../assets/logo.png')} style={{resizeMode: "center", width: 250, height: 100}} />
             </View>
             <View>
-                <Text style={{fontSize: 20, color: theme.colors.secondary}}>Welcome, {userData? userData.username : "Loading..."}</Text>
+                <Text style={{fontSize: 20, color: theme.colors.secondary}}>Welcome, {name}</Text>
             </View>
             <View style={{marginTop: 15, height: 105}}>
                 {/* REMEMBER TO SET isTeacher */}

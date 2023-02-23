@@ -21,19 +21,22 @@ import {
     USER_UPDATE_RESET,
     USER_UPDATE_FAIL,
 
-    SCANNER_REQUEST, 
-    SCANNER_SUCCESS, 
-    SCANNER_FAIL, 
-    SCANNER_RESET,
     LOGOUT_REQUEST,
     LOGOUT_SUCCESS,
 
     NEW_ATTENDANCE_REQUEST, 
     NEW_ATTENDANCE_SUCCESS, 
-    NEW_ATTENDANCE_FAIL
+    NEW_ATTENDANCE_FAIL,
 
 } from '../constants/userConstants'
-
+import {
+    GLOBAL_RANKING_RESET,
+    SUBJECT_RESET, 
+    GET_CLASS_RESET, 
+    CLASS_RANKING_RESET, 
+    SUBJECT_GRADE_RESET, 
+    GET_CHILDREN_RESET,
+} from '../constants/classConstants'
 import { ANNOUNCEMENT_RESET } from '../constants/announcementConstants';
 import { AsyncStorage } from 'react-native';
 
@@ -49,7 +52,7 @@ export const login = (email, password) => async (dispatch) => {
             }
         }
 
-        console.log("hello");
+        console.log("enter log in");
 
         const { data } = await axios.post(
             'http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/users/login/',
@@ -121,11 +124,19 @@ export const login = (email, password) => async (dispatch) => {
     }
 }
 
-export const Logout = () => (dispatch) => {
-    dispatch({type: LOGOUT_REQUEST})
-    AsyncStorage.clear()
-    dispatch*{type: ANNOUNCEMENT_RESET}
-    dispatch({type: LOGOUT_SUCCESS})
+export const Logout = () => async (dispatch) => {
+    dispatch({type: LOGOUT_REQUEST});
+    dispatch({type: ANNOUNCEMENT_RESET});
+    dispatch({type: USER_LOGOUT});
+    dispatch({type: GLOBAL_RANKING_RESET});
+    dispatch({type: SUBJECT_RESET});
+    dispatch({type: GET_CLASS_RESET});
+    dispatch({type: CLASS_RANKING_RESET});
+    dispatch({type: SUBJECT_GRADE_RESET});
+    dispatch({type: GET_CHILDREN_RESET});
+    await AsyncStorage.clear();
+    dispatch({type: LOGOUT_SUCCESS});
+
     // dispatch({type: USER_LIST_RESET})
     // dispatch({type: USER_DETAIL_RESET})
     // dispatch({type: HELP_LIST_RESET})

@@ -3,6 +3,8 @@ import { View, Image, AsyncStorage, ScrollView, StyleSheet, FlatList, TouchableO
 import { Card, Title, Text, Avatar } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { classAction } from '../redux/actions/classActions';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const styles = StyleSheet.create({
     container: {
@@ -24,17 +26,35 @@ const styles = StyleSheet.create({
       fontSize: 16,
       color: '#808080',
     },
+    cardContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 10,
+        elevation: 3,
+        padding: 10,
+        shadowColor: '#000000',
+        shadowOpacity: 0.1,
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowRadius: 5,
+    },
 });
 
 const MyClasses = ({navigation}) => {
     // Jamond ask to do that ranking thing here also, something about sort by good class etc
     // this component only using these variables, but treat as if everything there
     const [classes, setClasses] = useState([])
+    const classColors = ['#6200EE', '#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA'
+                            , '#FFC6FF', '#B0B8B3', '#B2B2B2', '#808080'];
 
     const classList = useSelector(state => state.classList);
     const {data, loading, success} = classList;
 
     const dispatch = useDispatch();
+    const navigate = useNavigation();
     const [teacherID, setTeacherID] = useState("");
 
     useEffect(() => {
@@ -68,19 +88,41 @@ const MyClasses = ({navigation}) => {
           })
     }
 
+    function navigateGlobal() {
+        navigate.navigate("GlobalRanking");
+    }
+
+    function navigateClass() {
+        navigate.navigate("ClassRanking");
+    }
+
     return (
         <View>
             <View>
-                <Card style={{marginTop: 30, marginBottom: 15, marginLeft: 15, marginRight: 15}}>
+            </View>
+            <View>
+                <Card style={{marginTop: 35, marginBottom: 15, marginLeft: 15, marginRight: 15}}>
                 <Card.Cover source={require('../assets/children.jpg')} />
                 </Card>
             </View>
             <ScrollView style={{marginHorizontal: 15}}>
+                <Card style={styles.container} onPress={navigateGlobal}>
+                    <View flexDirection="row">
+                    <Avatar.Icon size={40} icon="earth" style={{ backgroundColor: "#0000A5", marginRight: 15}} />
+                    <Title style={styles.title}>Global Ranking</Title>
+                    </View>
+                </Card>
+                <Card style={styles.container} onPress={navigateClass}>
+                    <View flexDirection="row">
+                    <Avatar.Icon size={40} icon="google-classroom" style={{ backgroundColor: "gold", marginRight: 15}} />
+                    <Title style={styles.title}>Class Ranking</Title>
+                    </View>
+                </Card>
             {classes?
-                classes.map(classItem => (
+                classes.map((classItem, index) => (
                     <Card key={classItem.classID} onPress={() => handleMove(classItem)} style={styles.container}>
                       <View flexDirection="row">
-                        <Avatar.Icon size={40} icon="school" style={{ backgroundColor: '#6200EE', marginRight: 15}} />
+                        <Avatar.Icon size={40} icon="school" style={{ backgroundColor: classColors[index % classColors.length], marginRight: 15}} />
                         <Title style={styles.title}>Class: {classItem.className}</Title>
                       </View>
                       <View style={{ margin: 10 }}>

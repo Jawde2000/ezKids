@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { View, Alert, TextInput } from 'react-native';
+import { View, TextInput } from 'react-native';
 import { Button } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import {useDispatch, useSelector} from 'react-redux';
@@ -8,7 +8,7 @@ import { login, Logout } from '../redux/actions/userActions';
 import { useEffect, useState } from 'react';
 import { AsyncStorage, Image, TouchableOpacity, Text, ToastAndroid} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { USER_LOGOUT } from '../redux/constants/userConstants';
+import { LOGOUT_RESET, USER_LOGOUT } from '../redux/constants/userConstants';
 import { DevSettings } from 'react-native';
 
 
@@ -27,61 +27,60 @@ function LogIn() {
     const dispatch = useDispatch()
 
     useEffect(() => {
+        dispatch({type: LOGOUT_RESET});
         async function getUserInfo() {
             const userDatas = await AsyncStorage.getItem('userInfo');
             const de_userDatas =  JSON.parse(userDatas);
             setUserData(de_userDatas);
         }
         getUserInfo();
-    }, [])
+    }, [userInfo])
 
     const handleLogin = (data) => {
+        console.log(39);
         console.log(data);
         dispatch(login(data.email, data.userPassword));
     }
 
-    console.log("hello haha");
-
     useEffect(() => {
-        if(loggedIn) {
+        if(userInfo) {
             reset({
                 email: '',
                 userPassword: '',
             });
-
             // dispatch({type: USER_LOGOUT});
         }
-    }, [loggedIn])
+    }, [userInfo])
 
-    useEffect(() => {
-        if(userInfo == null || loggedIn == false){
-            const focusHandler = navigation.addListener('focus', () => {
-                dispatch(Logout());
-                ToastAndroid.showWithGravity(
-                    'Log out success',
-                    ToastAndroid.SHORT,
-                    ToastAndroid.CENTER,
-                  );
-            });
-            return focusHandler;
-        } 
+    // useEffect(() => {
+    //     if(userInfo == null && loggedIn === false){
+    //         const focusHandler = navigation.addListener('focus', () => {
+    //             dispatch(Logout());
+    //             ToastAndroid.showWithGravity(
+    //                 'Log out success',
+    //                 ToastAndroid.SHORT,
+    //                 ToastAndroid.CENTER,
+    //               );
+    //         });
+    //         return focusHandler;
+    //     } 
         
-    }, [userInfo]);
+    // }, [userInfo]);
     
 
-    useEffect( () => {
+    useEffect(() => {
         console.log(userInfo)
         console.log("74")
         console.log(userData)
         if(userInfo){
             console.log(78)
-            console.log(userData)
+            console.log(userData);
             ToastAndroid.showWithGravity(
-                    "Successfully Logged In, " + userData.username + "!",
-                    ToastAndroid.SHORT,
-                    ToastAndroid.CENTER,
+                "Successfully Logged In",
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
             );
-            navigation.navigate('Menu')
+            navigation.navigate('Menu');
         } else if (error){
             ToastAndroid.showWithGravity(
                 "Authentication Failed",
@@ -162,14 +161,30 @@ function LogIn() {
                     </View>
                     )}
                 />
+                {/* <Button
+                    mode={'contained'}
+                    onPress={handleSubmit((data) => {
+                        handleLogin(data);
+                    })} 
+                    style={{marginTop: 20, width: 250, Color: "black"}}
+                >
+                    Login
+                </Button> */}
                 <Button
                     mode={'contained'}
                     onPress={handleSubmit((data) => {
-                    handleLogin(data);
+                        handleLogin(data);
                     })} 
-                    style={{marginTop: 20, width: 250,Color: "FD9346"}}
+                    style={{
+                        marginTop: 20, 
+                        width: 200, 
+                        height: 40, 
+                        backgroundColor: "#FFA500", 
+                        borderRadius: 20,
+                        alignSelf: "center"
+                    }}
                 >
-                    Login
+                    <Text style={{fontSize: 16, fontWeight: "bold", color: "white"}}>Login</Text>
                 </Button>
                 <TouchableOpacity onPress={() => navigation.navigate('Forget')}>
                     <Text style={{marginTop: 10, color: 'blue'}}>Forgot Password?</Text>

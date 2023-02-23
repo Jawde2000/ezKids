@@ -9,13 +9,86 @@ import {
     GET_CHILDREN_FAIL, 
     GET_CHILDREN_RESET,
 
-    GET_ATTENDANCE_REQUEST, 
-    GET_ATTENDANCE_SUCCESS, 
-    GET_ATTENDANCE_FAIL, 
-    GET_ATTENDANCE_RESET,
+    CLASS_RANKING_REQUEST, 
+    CLASS_RANKING_SUCCESS,
+    CLASS_RANKING_FAIL, 
+    CLASS_RANKING_RESET,
+
+    UPDATE_CHILDREN_REQUEST,
+    UPDATE_CHILDREN_SUCCESS,
+    UPDATE_CHILDREN_FAIL,
+    UPDATE_CHILDREN_RESET,
+
+    GET_PARENT_REQUEST,
+    GET_PARENT_SUCCESS,
+    GET_PARENT_FAIL,
+    GET_PARENT_RESET,
+
+    SUBJECT_GRADE_REQUEST,
+    SUBJECT_GRADE_SUCCESS,
+    SUBJECT_GRADE_FAIL,
+    SUBJECT_GRADE_RESET,
+
+    NEW_SUBJECT_GRADE_REQUEST,
+    NEW_SUBJECT_GRADE_SUCCESS,
+    NEW_SUBJECT_GRADE_FAIL,
+    NEW_SUBJECT_GRADE_RESET,
+
+    UPDATE_SUBJECT_GRADE_REQUEST,
+    UPDATE_SUBJECT_GRADE_SUCCESS,
+    UPDATE_SUBJECT_GRADE_FAIL,
+    UPDATE_SUBJECT_GRADE_RESET,
+
+    DELETE_SUBJECT_GRADE_REQUEST,
+    DELETE_SUBJECT_GRADE_SUCCESS,
+    DELETE_SUBJECT_GRADE_FAIL,
+    DELETE_SUBJECT_GRADE_RESET,
 
 } from '../constants/classConstants';
 import axios from 'axios'
+
+//GET RANKING LIST OF Class
+export const classRankingAction = (classID) => async (dispatch) => {
+
+    try{
+        console.log("inside class rankingaction");
+        dispatch({
+            type: CLASS_RANKING_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+        // console.log("hello");
+        console.log("this is class ID " + classID)
+
+
+        const { data } = await axios.get(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/class/ranking/${classID}/`,
+            config
+        )
+        
+        console.log(data);
+
+        dispatch({
+            type: CLASS_RANKING_SUCCESS,
+            payload: data
+        })
+       
+
+    }catch(error){
+        dispatch({
+            type: CLASS_RANKING_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }    
+
+}
 
 //GET STUDENT LIST BY CLASSID
 export const classStudentAction = (ClassID) => async (dispatch) => {

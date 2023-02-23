@@ -92,12 +92,13 @@ const Announcements = () => {
 
     const dispatch = useDispatch();
 
-
     useEffect(() => {
-      // console.log("INSIDE USEeFFECT")
-      dispatch(announcementAction());
-    }, [])
-      
+      if (announcementList) {
+        setAnnouncements(announcementss);
+      } else {
+        dispatch(announcementAction());
+      }
+    }, [announcementList])
 
     useEffect(() => {
       console.log(announcementss);
@@ -145,14 +146,20 @@ const Announcements = () => {
                   )
               })
               :
+              <Card style={{marginBottom: 10}}>
+                <Card.Content style={styles.cardContent}>
+                    <Text style={styles.title}>There is no announcement yet</Text>
+                </Card.Content>
+              </Card>
+            }
+            {
+              loading?
               //loading things, please help make it center of the page, idkkk how haha
               <View style={{flex: 1, justifyContent: 'center', alignItems:'center'}}>
                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
                   <ActivityIndicator size={'large'} color='black' /> 
                 </View>
-              </View>
-              
-              
+              </View>:null
             }
             <Portal>
                 <Modal visible={visible} onDismiss={hideModal}>

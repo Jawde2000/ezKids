@@ -44,7 +44,7 @@ const MenuChips = (props) => {
       <ScrollView contentContainerStyle={{padding: 10, maxWidth: 400}}>
         <View style={{flexDirection: "row", justifyContent: 'space-around', marginBottom: 10}}>
           <Chip style={{marginRight: 10, width: '45%'}} mode='outlined' icon='google-classroom' onPress={() => navigation.navigate('Class')}>Classes</Chip>
-          <Chip style={{marginRight: 10, width: '45%'}} mode='outlined' icon='qrcode-scan' onPress={() => navigation.navigate("QRscanner")}>Scan</Chip>
+          <Chip style={{marginRight: 10, width: '45%'}} mode='outlined' icon='qrcode-scan' onPress={() => navigation.navigate("QRscanner")}>Scan Attendance</Chip>
         </View> 
         <View style={{flexDirection: "row", justifyContent: 'space-around'}}>
           <Chip style={{marginRight: 10, width: '45%'}} mode='outlined' icon='account-settings' onPress={() => navigation.navigate('Profile')}>Settings</Chip>

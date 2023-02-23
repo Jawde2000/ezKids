@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, View, Text } from 'react-native';
+import { Alert, View, Text, ToastAndroid } from 'react-native';
 import { Button } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import { useEffect } from 'react';
@@ -27,12 +27,20 @@ function Register({ navigation }) {
     useEffect(() => {
         console.log(error);
         if(data){
-            Alert.alert("An Email have sent to your email containing the new password!");
+            ToastAndroid.showWithGravity(
+                "An email have sent to your email included the new password!",
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            );
             dispatch({type: USER_FORGET_RESET});
             navigation.goBack();
             
         } else if(error && e){
-            Alert.alert("No such user found! Please Try again");
+            ToastAndroid.showWithGravity(
+                "No user found! Please try valid email",
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            );
         }  
     }, [dispatch, loading])
 
@@ -40,7 +48,7 @@ function Register({ navigation }) {
     return (
         <View style={{flex: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f2f2f2'}}>
             <View style={{marginTop: 30, alignSelf: 'center'}}>
-                <Text>Forgot Password</Text>
+                <Text style={{fontSize: 24, fontWeight: 'bold', color: '#333'}}>Reset Your Password</Text>
             </View>
             <FormBuilder 
                 control={control} 
@@ -59,16 +67,17 @@ function Register({ navigation }) {
                         },
                         textInputProps: {
                             label: 'email',
-                            style: { width: 300 }
+                            style: {
+                                width: 300 ,
+                            },
                         }
                     }
                 ]} 
                 />
                 <Button
                     mode={'contained'}
-                    style={{marginTop: 20, width: 250}}
+                    style={{marginTop: 20, width: 250, backgroundColor: "#FFA500",}}
                     onPress={handleSubmit((data) => {
-                        console.log("Submit Button Pressed");
                         console.log(data);
                         handleForgot(data.email);
                 })}>
