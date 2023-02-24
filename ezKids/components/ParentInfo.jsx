@@ -27,10 +27,9 @@ const styles = StyleSheet.create({
     },
 });
 
-const StudentAmend = () => {
+const ParentInfo = () => {
     const [visible, setVisible] = useState(false);
     const route = useRoute();
-    const dispatch = useDispatch();
     const child = route.params.data;
 
     const showModal = () => setVisible(true);
@@ -42,93 +41,60 @@ const StudentAmend = () => {
     const individualChild = useSelector(state => state.individualChild);
     const {loading:childrenLoading , data: childrenData, error: childrenError, success: childrenSuccess} = individualChild;
     const [children, setChildren] = useState({});
-    const [updateChild, setUpdateChild] = useState({});
+    const [Parent, setParent] = useState({});
     const updateChildren = useSelector(state => state.updateChildren);
     const {loading:updateLoading , success: updateSuccess} = updateChildren;
     const [gender, setGender] = useState("");
 
     // If childID exists, it means that the user is editing/deleting
-    const {control, setFocus, handleSubmit, setValue} = useForm({
+    const {control, setFocus, setValue} = useForm({
         defaultValues: {
-            childID: child.childID,
+            parentsID: '',
             firstName: '',
             lastName: '',
-            gender: '',
-            class: '',
+            contact: '',
+            email: '',
+            secondParentEmail: '',
+            address: '',
+            dob: '',
+            type: '',
         }
     })
-
-    const handleUpdate = (data) => {
-        console.log(62)
-        console.log(data)
-        console.log(child)
-        console.log(child.class_belong)
-        console.log(child.childDOB)
-        setUpdateChild({
-            class_belong: child.class_belong,
-            childFirstName: data.firstName,
-            childLastName: data.lastName,
-            childGender: gender,
-            childDOB: child.childDOB
-        })
-        console.log(71)
-        console.log(updateChild);
-        console.log(child.childID);
-        dispatch(updateChildrenAction(updateChild, child.childID));
-    }
     
 
     //for fetching class list
     const fetchData = () => {
-        async function fetchClassName() {
-            const response = await fetch(`http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/classname/${child.class_belong}/`);
-            const data = await response.json();
+        async function fetchParent() {
+            const response = await fetch(`http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/individualParentID/${child.parent}/`);
+            const parent = await response.json();
             console.log(44)
-            console.log(data.className)
             console.log(46)
-            setValue('class', data.className);
+            setParent(parent);
+            setValue("parentsID", parent.parentsID);
+            setValue("firstName", parent.parentsFirstName);
+            setValue("lastName", parent.parentsLastName);
+            setValue("contact", parent.parentsContactphone);
+            setValue("email", parent.parentsEmail);
+            setValue("secondParentEmail", parent.secondParentEmail);
+            setValue("address", parent.parentsAddress);
+            setValue("dob", parent.parentsDOB);
+            setValue("type", parent.parentsType);
         }
-        fetchClassName();
+        fetchParent();
     }
     
     useEffect(() => {
         fetchData();
     },[])
 
-
-
-    useEffect(() => {
-        if (childrenData) {
-            setChildren(childrenData); // set to the first child object in the array
-            setValue('firstName', children.childFirstName);
-            setValue('lastName', children.childLastName);
-            setValue('gender', children.childGender);
-        } else {    
-            dispatch(individualChildAction(child.childID));
-        }
-    }, [childrenData]);
-
-    useEffect(() => {
-        if (updateSuccess) {
-            setChildren({});
-            ToastAndroid.showWithGravity(
-                'Children Info update success',
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
-            );
-        } 
-    }, [updateSuccess])
-
-    const handleGenderChange = (g) => {
-        console.log(g)
-        setGender(g);
-    }    
-
     return (
         <ScrollView>
         <View style={{flex: 1, justifyContent: 'flex-start'}}>
             <View style={{marginTop: 30, alignSelf: 'center'}}>
-                <Image source={child.childGender === "M"?require('../assets/boy.png'):require('../assets/girl.png')} style={{resizeMode: "center", width: 250, height: 100}} />
+                <Image 
+                    source={Parent.parentsType === "M"?require('../assets/mother.png'):Parent.parentsType === "F"?require('../assets/father.png'):require('../assets/guardian.png')} 
+                    style={{resizeMode: "center", width: 250, height: 100}} 
+                />
             </View>
             <View style={{flex: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f2f2f2'}}> 
             <FormBuilder 
@@ -137,9 +103,9 @@ const StudentAmend = () => {
                 formConfigArray={[
                     {
                         type: 'text',
-                        name: 'childID',
+                        name: 'parentsID',
                         textInputProps: {
-                            label: 'childID',
+                            label: 'ParentsID',
                             style: { width: 300 },
                             editable: false,
                         }
@@ -151,7 +117,6 @@ const StudentAmend = () => {
                         rules: {
                             required: {
                                 value: true,
-                                message: "Please enter the child's first name"
                             }
                         },
                         textInputProps: {
@@ -166,44 +131,46 @@ const StudentAmend = () => {
                         rules: {
                             required: {
                                 value: true,
-                                message: "Please enter the child's last name"
                             }
                         },
                         textInputProps: {
                             label: 'Last Name',
                             style: { width: 300 },
+                            editable: false,
                         }
                     },
                     {
                         type: 'select',
-                        name: 'gender',
+                        name: 'type',
                     
                         rules: {
                             required: {
                                 value: true,
-                                message: "Please enter child's gender"
                             }
                         },
                         textInputProps: {
-                            label: 'Gender',
+                            label: 'Parent Type',
                             style: { width: 300 },
-                            onChangeText: (text) => handleGenderChange(text),
-                            defaultValue: gender,
+                            editable: false,
                         },
                         options: [
                             {
                                 value: 'M',
-                                label: 'Male'
+                                label: 'Mother'
                             },
                             {
                                 value: 'F',
-                                label: 'Female'
+                                label: 'Father'
+                            },
+                            {
+                                value: 'G',
+                                label: 'Guardian'
                             },
                         ]
                     },
                     {
                         type: 'text',
-                        name: 'class',
+                        name: 'contact',
 
                         rules: {
                             required: {
@@ -211,26 +178,62 @@ const StudentAmend = () => {
                             }
                         },
                         textInputProps: {
-                            label: 'Class',
+                            label: 'Contact Number',
+                            style: { width: 300 },
+                            editable: false,
+                        },
+                    },
+                    {
+                        type: 'text',
+                        name: 'email',
+
+                        rules: {
+                            required: {
+                                value: true,
+                            }
+                        },
+                        textInputProps: {
+                            label: 'Email',
+                            style: { width: 300 },
+                            editable: false,
+                        },
+                    },
+                    {
+                        type: 'text',
+                        name: 'secondParentEmail',
+
+                        rules: {
+                            required: {
+                                value: true,
+                            }
+                        },
+                        textInputProps: {
+                            label: 'Second Parent Email',
+                            style: { width: 300 },
+                            editable: false,
+                        },
+                    },
+                    {
+                        type: 'text',
+                        name: 'dob',
+
+                        rules: {
+                            required: {
+                                value: true,
+                            }
+                        },
+                        textInputProps: {
+                            label: 'Date of Birth',
                             style: { width: 300 },
                             editable: false,
                         },
                     },
                 ]} 
             />
-            <TouchableOpacity 
-                onPress={handleSubmit((data) => {
-                    console.log(data);
-                    // logic here
-                    handleUpdate(data);
-                })} style={styles.button}
-            >
-                <Text style={styles.buttonText}>Update</Text>
-            </TouchableOpacity>
             </View>
         </View>
         </ScrollView>
     )
 }
 
-export default StudentAmend;
+export default ParentInfo;

@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { update } from '../redux/actions/userActions';
 import { USER_UPDATE_RESET } from '../redux/constants/userConstants'
 import KindergartenLoading from './widgets/KindergartenLoading';
+import { ANNOUNCEMENT_REQUEST, ANNOUNCEMENT_RESET } from '../redux/constants/announcementConstants';
 
 // import { DevSettings } from 'react-native';
 
@@ -130,6 +131,8 @@ function Profile() {
             const de_userDatas =  JSON.parse(userDatas);
             setUserData(de_userDatas);
             console.log(userDatas)
+            dispatch({type: ANNOUNCEMENT_RESET});
+            dispatch({type: ANNOUNCEMENT_REQUEST});
             console.log("110")
 
             setValue('firstName', de_userDatas[0].teacherFirstName);

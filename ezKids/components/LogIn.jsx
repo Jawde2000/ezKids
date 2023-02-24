@@ -88,7 +88,7 @@ function LogIn() {
                 ToastAndroid.CENTER,
               );
         }
-    }, [userInfo])
+    }, [userInfo, userData])
 
     
 

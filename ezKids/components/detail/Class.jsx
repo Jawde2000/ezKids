@@ -1,13 +1,14 @@
 import React, {useContext, createContext, useState, useEffect} from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity, FlatList, Image, AsyncStorage} from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, FlatList, Image, AsyncStorage, ToastAndroid} from 'react-native';
 import { BottomNavigation, Text, Card, Portal, Modal, Button, useTheme, Avatar, ProgressBar } from 'react-native-paper';
 import { useForm } from 'react-hook-form';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import { useDispatch, useSelector } from 'react-redux';
-import { classStudentAction, classRankingAction } from '../../redux/actions/classActions';
+import { classStudentAction, classRankingAction, childrenGradeAction } from '../../redux/actions/classActions';
 import PercentageCircle from 'react-native-percentage-circle';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KindergartenLoading from '../widgets/KindergartenLoading';
+import { useNavigation } from '@react-navigation/native';
 
 const StudentRoute = ({session}) => {
     return <StudentRenderer session={session} />;
@@ -80,73 +81,95 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 15,
         borderRadius: 10,
-      },
-      subjectIdContainer: {
-        backgroundColor: 'white',
-        borderRadius: 100,
-        width: 50,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginHorizontal: 15,
-      },
-      subjectIdText: {
-        fontWeight: 'bold',
-        fontSize: 18,
-        color: 'black',
-      },
-      subjectDetailsContainer: {
-        flex: 1,
-        paddingVertical: 20,
-      },
-      subjectName: {
-        fontWeight: 'bold',
-        fontSize: 20,
-        marginBottom: 5,
-      },
-      subjectId: {
-        fontSize: 14,
-        color: 'white',
-      },
-      headerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#FFF',
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-      },
-      headerImage: {
-        height: 50,
-        width: 50,
-        marginRight: 10,
-      },
-      headerTextContainer: {
-        justifyContent: 'center',
-        flexDirection: 'row',
-        borderBottomWidth: 0.5,
-      },
-      headerTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-      },
-      headerSubtitle1: {
-        fontSize: 16,
-        marginTop: 5,
-        marginLeft: 40,
-        marginRight: 20,
-      },
-      headerSubtitle2: {
-        fontSize: 16,
-        marginTop: 5,
-        marginLeft: 0,
-        marginRight: 45,
-      },
-      headerSubtitle3: {
-        fontSize: 16,
-        marginTop: 5,
-        marginLeft: 105,
-        marginRight: 20,
-      },
+    },
+    subjectIdContainer: {
+    backgroundColor: 'white',
+    borderRadius: 100,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 15,
+    },
+    subjectIdText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: 'black',
+    },
+    subjectDetailsContainer: {
+    flex: 1,
+    paddingVertical: 20,
+    },
+    subjectName: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginBottom: 5,
+    },
+    subjectId: {
+    fontSize: 14,
+    color: 'white',
+    },
+    headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    },
+    headerImage: {
+    height: 50,
+    width: 50,
+    marginRight: 10,
+    },
+    headerTextContainer: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderBottomWidth: 0.5,
+    },
+    headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    },
+    headerSubtitle1: {
+    fontSize: 16,
+    marginTop: 5,
+    marginLeft: 40,
+    marginRight: 20,
+    },
+    headerSubtitle2: {
+    fontSize: 16,
+    marginTop: 5,
+    marginLeft: 0,
+    marginRight: 45,
+    },
+    headerSubtitle3: {
+    fontSize: 16,
+    marginTop: 5,
+    marginLeft: 105,
+    marginRight: 20,
+    },
+    close: {
+    marginTop: 16,
+    alignSelf: "center",
+    },
+    closeText: {
+    color: "#999",
+    fontSize: 14,
+    },
+    card: {
+        backgroundColor: "#FFF",
+        borderRadius: 12,
+        padding: 16,
+        margin: 8,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
 });
   
 // session is Class
@@ -189,6 +212,7 @@ const StudentRenderer = ({session}) => {
     const [Tlast, setTlast] = useState("");
     const [TID, setTID] = useState("");
     const dispatch = useDispatch();
+    const navigation = useNavigation();
 
     useEffect(() => {
         console.log(35);
@@ -203,7 +227,12 @@ const StudentRenderer = ({session}) => {
               setTID(de_userDatas[0].teacherID)
             })
             .catch((error) => {
-              console.error('Error getting user data:', error);
+                ToastAndroid.showWithGravity(
+                    "Fail to get user information",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                );
+                console.error('Error getting user data:', error);
             });
         }
     }, [session]);
@@ -224,7 +253,9 @@ const StudentRenderer = ({session}) => {
 
     const handleMove = (child) => {
         // handle move here
+        console.log(256)
         console.log(child)
+        navigation.navigate('MenuList', { child }); 
     }
 
     return (
@@ -429,24 +460,34 @@ const CircularChart = ({ percentage, color }) => {
 const ResultRenderer = ({session}) => {
     const theme = useTheme()
 
-    const [children, setChildren] = React.useState([
-        { childID: "c1", childDOB: "2018-09-04", childName: "Ali bin Abu" },
-        { childID: "c2", childDOB: "2020-03-04", childName: "Jamond Chew" },
-        { childID: "c3", childDOB: "2020-09-07", childName: "Ho Ko Ee" },
-        { childID: "c4", childDOB: "2020-02-04", childName: "Matthew John" },
-        { childID: "c5", childDOB: "2019-07-01", childName: "Sinclair Adams" }
-    ])
-
     const handleMove = (child) => {
-        // handle move here
-        console.log(child)
-    }
+        dispatch(childrenGradeAction(child.childID));
+        setVisible(true);
+    };
 
     const [ranking, setRanking] = useState([]);
     const classRanking = useSelector(state => state.classRanking);
     const {data, loading, success} = classRanking;
 
     const dispatch = useDispatch();
+    const [results, setResults] = useState([]);
+    const [visible, setVisible] = useState(false);
+    const getSubjectGrade = useSelector(state => state.getSubjectGrade);
+    const {loading: loadingGrade, data: subjectData, success: subjectSuccess} = getSubjectGrade;
+    
+    useEffect(() => {
+        if (getSubjectGrade) {
+          setResults(subjectData);
+        } 
+    }, [getSubjectGrade])
+
+    const renderItem = ({ item }) => (
+        <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+            <Text style={{ flex: 1 }}>{item.subjectID}</Text>
+            <Text style={{ flex: 2, paddingLeft: 40, }}>{item.subject}</Text>
+            <Text style={{ flex: 1, paddingLeft: 10, }}>{item.grade}</Text>
+        </View>
+    );
 
     useEffect(() => {
         console.log(330)
@@ -455,6 +496,8 @@ const ResultRenderer = ({session}) => {
             dispatch(classRankingAction(session.classID));
         }
     }, [session])
+
+    const hideModal = () => setVisible(false);
 
     useEffect(() => {
         if(data) {
@@ -480,6 +523,33 @@ const ResultRenderer = ({session}) => {
                 <Text style={styles.headerSubtitle3}>Average Score</Text>      
             </View>
             <ScrollView style={{marginTop: 15}}>
+            <Portal>
+              <Modal visible={visible} onDismiss={hideModal}>
+                  {
+                    !loadingGrade?<Card style={styles.card}>
+                        <Card.Content>
+                            <FlatList
+                            data={results}
+                            renderItem={renderItem}
+                            ListHeaderComponent={
+                              <View style={{ flexDirection: 'row', marginBottom: 10 }}>
+                                <Text style={{ flex: 1, fontWeight: 'bold' }}>Subject ID</Text>
+                                <Text style={{ flex: 2, fontWeight: 'bold', paddingLeft: 40 }}>Subject Name</Text>
+                                <Text style={{ flex: 1, fontWeight: 'bold', paddingLeft: 10 }}>Grade</Text>
+                              </View>
+                            }
+                            keyExtractor={item => item.id}
+                            />
+                            <View style={styles.close}>
+                                <Text style={styles.closeText}>Tap to dismiss</Text>
+                            </View>
+                        </Card.Content>
+                    </Card>
+                    :
+                    null
+                  }
+              </Modal>
+            </Portal>
             {ranking?
                 ranking.map((child, index) => {
                     const backgroundColors = index % 2 === 0 ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)';
@@ -490,7 +560,7 @@ const ResultRenderer = ({session}) => {
                         ? 'silver'
                         : index === 2
                         ? 'brown'
-                        : 'transparent';
+                        : '#999999';
                     const borderRadius = index < 3 ? 20 : 0;
                     let icon = null;
 

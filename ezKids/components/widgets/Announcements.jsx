@@ -1,10 +1,12 @@
 import React from 'react';
 import { ScrollView, View, StyleSheet } from 'react-native';
-import { Portal, Card, Text, Modal, ActivityIndicator } from 'react-native-paper';
+import { Portal, Card, Text, Modal } from 'react-native-paper';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { announcementAction } from '../../redux/actions/announcementAction';
 import PushNotification from 'react-native-push-notification';
+import KindergartenLoading from './KindergartenLoading';
+import { ANNOUNCEMENT_REQUEST, ANNOUNCEMENT_RESET } from '../../redux/constants/announcementConstants';
 
 
 const styles = StyleSheet.create({
@@ -83,30 +85,21 @@ const Announcements = () => {
     const [title, setTitle] = React.useState("Title");
     const [content, setContent] = React.useState("Content");
     const [datetime, setDatetime] = React.useState("Date/Time");
-    const [announcements, setAnnouncements] = React.useState({});
+    const [announcements, setAnnouncements] = React.useState([]);
+    const [schedule, setSchedule] = React.useState("Date/Time");
 
     const announcementList = useSelector(state => state.announcementList);
     const {loading, data:announcementss, error, e} = announcementList;
-    const userLogin = useSelector(state => state.userLogin)
-    const {loading: loadingUser, error: loadingError, userInfo, loggedIn} = userLogin
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-      if (announcementList) {
-        setAnnouncements(announcementss);
-      } else {
+      if (!announcements) {
         dispatch(announcementAction());
+      } else {
+        setAnnouncements(announcementss)
       }
-    }, [announcementList])
-
-    useEffect(() => {
-      console.log(announcementss);
-      // if(announcementss){
-      //   setAnnouncements(announcementss);
-      // }
-    }, [loading])
-    
+    }, [announcements]);
     // useEffect(() => {
     //   console.log(announcements);
     // }, [announcements])
@@ -120,11 +113,12 @@ const Announcements = () => {
         return t;
     }
 
-    const showModal = (id, title, content, datetime) => {
+    const showModal = (id, title, content, datetime, schedule) => {
         setID(id)
         setTitle(title)
         setContent(content)
         setDatetime(datetime)
+        setSchedule(schedule)
         setVisible(true)
     };
     const hideModal = () => setVisible(false);
@@ -132,15 +126,16 @@ const Announcements = () => {
     return (
         <ScrollView>
             {
-              announcementss ? 
+              announcementss? 
                 announcementss.map((announcement) => {
                   return (
                       <Card style={{marginBottom: 10}} onPress={() => {
-                          showModal(announcement.announcementID, announcement.announcementTitle, announcement.announcementDesc, announcement.announcementTime)
+                          showModal(announcement.announcementID, announcement.announcementTitle, 
+                            announcement.announcementDesc, announcement.announcementTime, announcement.announcementSchedule)
                       }}>
                         <Card.Content style={styles.cardContent}>
                             <Text style={styles.title}>{announcement.announcementTitle}</Text>
-                            <Text style={styles.timestamp}>{convertTime(announcement.announcementTime)}</Text>
+                            <Text style={styles.timestamp}>{convertTime(announcement.announcementSchedule)}</Text>
                         </Card.Content>
                       </Card>
                   )
@@ -153,13 +148,7 @@ const Announcements = () => {
               </Card>
             }
             {
-              loading?
-              //loading things, please help make it center of the page, idkkk how haha
-              <View style={{flex: 1, justifyContent: 'center', alignItems:'center'}}>
-                <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                  <ActivityIndicator size={'large'} color='black' /> 
-                </View>
-              </View>:null
+              loading?<KindergartenLoading />:null
             }
             <Portal>
                 <Modal visible={visible} onDismiss={hideModal}>
@@ -170,7 +159,7 @@ const Announcements = () => {
                         <Text style={styles.content}>{content}</Text>
                         <View style={styles.info}>
                         <Text style={styles.infoText}>ID: {id}</Text>
-                        <Text style={styles.infoText}>Posted on: {convertTime(datetime)}</Text>
+                        <Text style={styles.infoText}>Posted on: {convertTime(schedule)}</Text>
                         </View>
                         <View style={styles.close}>
                         <Text style={styles.closeText}>Tap to dismiss</Text>

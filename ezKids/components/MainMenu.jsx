@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ScrollView, View, Dimensions, Image } from 'react-native';
 import { useTheme, Chip, Text } from 'react-native-paper';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { AsyncStorage } from 'react-native';
 
 import MenuChips from './widgets/MenuChips';
 import Announcements from './widgets/Announcements';
 import { logout } from '../redux/actions/userActions';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { NEW_ATTENDANCE_RESET } from '../redux/constants/userConstants';
+import { ANNOUNCEMENT_REQUEST } from '../redux/constants/announcementConstants';
+import { announcementAction } from '../redux/actions/announcementAction';
 
 
 const MainMenu = ({navigation}) => {
@@ -19,9 +22,11 @@ const MainMenu = ({navigation}) => {
 
     const [userData, setUserData] = React.useState({})
     const navigate = useNavigation();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         async function getUserInfo() {
+            dispatch({type: NEW_ATTENDANCE_RESET});
             const userDatas = await AsyncStorage.getItem('userInfo');
             const de_userDatas =  JSON.parse(userDatas);
             setUserData(de_userDatas);
@@ -31,11 +36,11 @@ const MainMenu = ({navigation}) => {
         getUserInfo();
     }, [])
 
-    useEffect(() => {
-        if (!Object.keys(userData).length === 0) {
-            navigate.navigate("Login")
-        }
-    }, [userData])
+    useFocusEffect(
+        useCallback(() => {
+          dispatch(announcementAction());
+        }, [])
+      );
 
     return (
         <View style={{backgroundColor: theme.colors.background, flexDirection: "column", alignItems: "center", height: '100%'}}>

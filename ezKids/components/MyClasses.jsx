@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { classAction } from '../redux/actions/classActions';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { ANNOUNCEMENT_REQUEST, ANNOUNCEMENT_RESET } from '../redux/constants/announcementConstants';
 
 const styles = StyleSheet.create({
     container: {

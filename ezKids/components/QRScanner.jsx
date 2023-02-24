@@ -5,6 +5,7 @@ import { Button } from 'react-native-paper';
 import { newAttendance } from '../redux/actions/userActions';
 import {useDispatch, useSelector} from 'react-redux';
 import { NEW_ATTENDANCE_RESET } from '../redux/constants/userConstants';
+import { ANNOUNCEMENT_REQUEST, ANNOUNCEMENT_RESET } from '../redux/constants/announcementConstants';
 
 const QRScanner = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -22,6 +23,8 @@ const QRScanner = ({navigation}) => {
         const userDatas = await AsyncStorage.getItem('userInfo');
         const de_userDatas =  JSON.parse(userDatas);
         setTeacherID(de_userDatas[0].teacherID);
+        dispatch({type: ANNOUNCEMENT_RESET});
+        dispatch({type: ANNOUNCEMENT_REQUEST});
         console.log(teacherID);
         console.log(childID)
       }
@@ -49,7 +52,7 @@ const QRScanner = ({navigation}) => {
       setInfo({});
       setChildID("");
       setScanned(false);
-      dispatch({type: NEW_ATTENDANCE_RESET})
+      dispatch({type: NEW_ATTENDANCE_RESET});
     }
   }, [newAttendanceSuccess, newAttendanceError, scanned])
 

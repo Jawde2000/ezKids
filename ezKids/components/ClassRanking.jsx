@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PercentageCircle from 'react-native-percentage-circle';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KindergartenLoading from './widgets/KindergartenLoading';
+import ResultTable from './ResultTable';
 
 const styles = StyleSheet.create({
     cardContainer: {
@@ -200,7 +201,7 @@ const ClassRanking = () => {
                         ? 'silver'
                         : index === 2
                         ? 'brown'
-                        : 'transparent';
+                        : '#999999';
                     const borderRadius = index < 3 ? 20 : 0;
                     let icon = null;
 

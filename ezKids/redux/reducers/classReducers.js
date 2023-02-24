@@ -44,7 +44,31 @@ import {
     DELETE_SUBJECT_GRADE_FAIL,
     DELETE_SUBJECT_GRADE_RESET,
 
+    INDIVIDUAL_CHILDREN_REQUEST,
+    INDIVIDUAL_CHILDREN_SUCCESS, 
+    INDIVIDUAL_CHILDREN_FAIL,
+    INDIVIDUAL_CHILDREN_RESET,
+
 } from '../constants/classConstants';
+
+export const individualChildReducer = (state = {}, action) => {
+    switch(action.type){
+        case INDIVIDUAL_CHILDREN_REQUEST:
+            return {loading: true}
+        
+        case INDIVIDUAL_CHILDREN_SUCCESS:
+           return {loading: false, success:true, data: action.payload}
+        
+        case INDIVIDUAL_CHILDREN_FAIL:
+           return {loading: false, success:false, error: action.payload}
+
+        case INDIVIDUAL_CHILDREN_RESET:
+           return {}
+
+        default:
+            return state
+    }
+}
 
 export const deleteGradeReducer = (state = {}, action) => {
     switch(action.type){

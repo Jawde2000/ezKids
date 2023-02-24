@@ -19,6 +19,11 @@ import {
     UPDATE_CHILDREN_FAIL,
     UPDATE_CHILDREN_RESET,
 
+    INDIVIDUAL_CHILDREN_REQUEST, 
+    INDIVIDUAL_CHILDREN_SUCCESS, 
+    INDIVIDUAL_CHILDREN_FAIL, 
+    INDIVIDUAL_CHILDREN_RESET,
+
     GET_PARENT_REQUEST,
     GET_PARENT_SUCCESS,
     GET_PARENT_FAIL,
@@ -46,6 +51,168 @@ import {
 
 } from '../constants/classConstants';
 import axios from 'axios'
+
+//ADD NEW GRADE FOR CHILD
+export const newGradeAction = (childGrade) => async (dispatch) => {
+    try{
+        console.log("inside new grade action");
+        dispatch({
+            type: NEW_SUBJECT_GRADE_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+        // console.log("hello");
+        console.log(childGrade)
+
+
+        const { data } = await axios.put(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/new/grade/${childID}/`,
+            childGrade,
+            config
+        )
+        
+        console.log(data);
+
+        dispatch({
+            type: NEW_SUBJECT_GRADE_SUCCESS,
+        })
+       
+
+    }catch(error){
+        dispatch({
+            type: NEW_SUBJECT_GRADE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }    
+}
+
+//GET INDIVIDUAL CHILD OF Class
+export const individualChildAction = (childID) => async (dispatch) => {
+    try{
+        console.log("inside  individual child action");
+        dispatch({
+            type: INDIVIDUAL_CHILDREN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+        // console.log("hello");
+        console.log("this is child ID " + childID)
+
+
+        const { data } = await axios.get(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/individualChildren/${childID}/`,
+            config
+        )
+        
+        console.log(data);
+
+        dispatch({
+            type: INDIVIDUAL_CHILDREN_SUCCESS,
+            payload: data
+        })
+       
+
+    }catch(error){
+        dispatch({
+            type: INDIVIDUAL_CHILDREN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }    
+}
+
+export const updateChildrenAction = (children, childID) => async (dispatch) => {
+    try{
+        console.log("inside  update children action");
+        dispatch({
+            type: UPDATE_CHILDREN_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+        // console.log("hello");
+        console.log("this is Children ID " + childID)
+        console.log(children)
+
+
+        await axios.put(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/update/children/${childID}/`,
+            children,
+            config
+        )
+        
+        dispatch({
+            type: UPDATE_CHILDREN_SUCCESS,
+        })
+       
+
+    }catch(error){
+        dispatch({
+            type: UPDATE_CHILDREN_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }    
+}
+
+//GET INDIVIDUAL RANKING OF Class
+export const childrenGradeAction = (gradeID) => async (dispatch) => {
+    try{
+        console.log("inside  grade action");
+        dispatch({
+            type: SUBJECT_GRADE_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+        // console.log("hello");
+        console.log("this is grade ID " + gradeID)
+
+
+        const { data } = await axios.get(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/grade/children/${gradeID}/`,
+            config
+        )
+        
+        console.log(data);
+
+        dispatch({
+            type: SUBJECT_GRADE_SUCCESS,
+            payload: data
+        })
+       
+
+    }catch(error){
+        dispatch({
+            type: SUBJECT_GRADE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }    
+}
 
 //GET RANKING LIST OF Class
 export const classRankingAction = (classID) => async (dispatch) => {
