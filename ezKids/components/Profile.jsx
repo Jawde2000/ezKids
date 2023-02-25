@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { useForm } from 'react-hook-form';
 import { Text, View, Image, ScrollView, ToastAndroid, TouchableOpacity, StyleSheet, AsyncStorage } from 'react-native';
-import { Button } from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 import { FormBuilder } from 'react-native-paper-form-builder';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -290,8 +290,8 @@ function Profile() {
                     ]} 
                     />
                     {
-                        loading?<KindergartenLoading />:null
-                    }
+                        loading?<ActivityIndicator color={"#FFA500"}/>:
+                
                     <TouchableOpacity 
                         onPress={handleSubmit((data) => {
                             console.log(data);
@@ -300,7 +300,7 @@ function Profile() {
                         })} style={styles.button}
                     >
                         <Text style={styles.buttonText}>Update</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>}
             </View>
         </ScrollView>
     )

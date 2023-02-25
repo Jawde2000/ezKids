@@ -6,6 +6,8 @@ import { FormBuilder } from 'react-native-paper-form-builder';
 import { useRoute } from '@react-navigation/native';
 import { individualChildAction, updateChildrenAction } from '../redux/actions/classActions';
 import { useSelector, useDispatch } from 'react-redux';
+import { GET_CHILDREN_RESET, INDIVIDUAL_CHILDREN_RESET } from '../redux/constants/classConstants';
+import KindergartenLoading from './widgets/KindergartenLoading';
 
 const styles = StyleSheet.create({
     button: {
@@ -42,7 +44,6 @@ const StudentAmend = () => {
     const individualChild = useSelector(state => state.individualChild);
     const {loading:childrenLoading , data: childrenData, error: childrenError, success: childrenSuccess} = individualChild;
     const [children, setChildren] = useState({});
-    const [updateChild, setUpdateChild] = useState({});
     const updateChildren = useSelector(state => state.updateChildren);
     const {loading:updateLoading , success: updateSuccess} = updateChildren;
     const [gender, setGender] = useState("");
@@ -64,27 +65,31 @@ const StudentAmend = () => {
         console.log(child)
         console.log(child.class_belong)
         console.log(child.childDOB)
-        setUpdateChild({
+        console.log(data.gender)
+        const blabla = {
             class_belong: child.class_belong,
             childFirstName: data.firstName,
             childLastName: data.lastName,
-            childGender: gender,
+            childGender: data.gender,
             childDOB: child.childDOB
-        })
+        }
         console.log(71)
-        console.log(updateChild);
+        console.log(blabla);
         console.log(child.childID);
-        dispatch(updateChildrenAction(updateChild, child.childID));
+        dispatch(updateChildrenAction(blabla, child.childID));
     }
     
 
     //for fetching class list
     const fetchData = () => {
+        dispatch({type: INDIVIDUAL_CHILDREN_RESET})
+        setChildren({})
+
         async function fetchClassName() {
             const response = await fetch(`http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/classname/${child.class_belong}/`);
             const data = await response.json();
             console.log(44)
-            console.log(data.className)
+            console.log(data)
             console.log(46)
             setValue('class', data.className);
         }
@@ -96,17 +101,18 @@ const StudentAmend = () => {
     },[])
 
 
-
     useEffect(() => {
         if (childrenData) {
             setChildren(childrenData); // set to the first child object in the array
-            setValue('firstName', children.childFirstName);
-            setValue('lastName', children.childLastName);
-            setValue('gender', children.childGender);
+            
+            setValue('firstName', children[0]?.childFirstName);
+            setValue('lastName', children[0]?.childLastName);
+            setValue('gender', children[0]?.childGender);
+
         } else {    
             dispatch(individualChildAction(child.childID));
         }
-    }, [childrenData]);
+    }, [childrenData, children]);
 
     useEffect(() => {
         if (updateSuccess) {
@@ -116,6 +122,10 @@ const StudentAmend = () => {
                 ToastAndroid.SHORT,
                 ToastAndroid.CENTER,
             );
+            dispatch(individualChildAction(child.childID));
+            setValue('firstName', children[0]?.childFirstName);
+            setValue('lastName', children[0]?.childLastName);
+            setValue('gender', children[0]?.childGender);
         } 
     }, [updateSuccess])
 
@@ -127,6 +137,7 @@ const StudentAmend = () => {
     return (
         <ScrollView>
         <View style={{flex: 1, justifyContent: 'flex-start'}}>
+            {childrenLoading?<KindergartenLoading />:null}
             <View style={{marginTop: 30, alignSelf: 'center'}}>
                 <Image source={child.childGender === "M"?require('../assets/boy.png'):require('../assets/girl.png')} style={{resizeMode: "center", width: 250, height: 100}} />
             </View>

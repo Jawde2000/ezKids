@@ -103,7 +103,7 @@ const MyClasses = ({navigation}) => {
             </View>
             <View>
                 <Card style={{marginTop: 35, marginBottom: 15, marginLeft: 15, marginRight: 15}}>
-                <Card.Cover source={require('../assets/children.jpg')} />
+                <Card.Cover source={require('../assets/classroom.jpg')} />
                 </Card>
             </View>
             <ScrollView style={{marginHorizontal: 15}}>

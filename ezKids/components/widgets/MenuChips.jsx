@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect } from 'react';
-import { ScrollView, View, Dimensions, ToastAndroid } from 'react-native';
+import { ScrollView, View, Dimensions, ToastAndroid, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import { Chip } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -19,6 +19,15 @@ const textStyle = {
   color: '#333333',
   fontSize: 14,
   fontWeight: 'bold',
+};
+
+const ChipButton = ({ onPress, icon, text, backgroundColor }) => {
+  return (
+    <TouchableOpacity style={[styles.chip, { backgroundColor }]} onPress={onPress}>
+      <Icon name={icon} size={20} color='#fff' style={{ marginRight: 10 }} />
+      <Text style={styles.text}>{text}</Text>
+    </TouchableOpacity>
+  );
 };
 
 const MenuChips = (props) => {
@@ -40,20 +49,66 @@ const MenuChips = (props) => {
   }
 
   return (
-    <View style={{flex: 1}}>
-      <ScrollView contentContainerStyle={{padding: 10, maxWidth: 400}}>
-        <View style={{flexDirection: "row", justifyContent: 'space-around', marginBottom: 10}}>
-          <Chip style={{marginRight: 10, width: '45%'}} mode='outlined' icon='google-classroom' onPress={() => navigation.navigate('Class')}>Classes</Chip>
-          <Chip style={{marginRight: 10, width: '45%'}} mode='outlined' icon='qrcode-scan' onPress={() => navigation.navigate("QRscanner")}>Scan Attendance</Chip>
-        </View> 
-        <View style={{flexDirection: "row", justifyContent: 'space-around'}}>
-          <Chip style={{marginRight: 10, width: '45%'}} mode='outlined' icon='account-settings' onPress={() => navigation.navigate('Profile')}>Settings</Chip>
-          <Chip style={{marginRight: 10, width: '45%'}} mode='outlined' icon='logout' onPress={logoutnow}>Logout</Chip>
+    <View style={styles.container}>
+        <View style={styles.row}>
+        <ChipButton
+            onPress={() => navigation.navigate('Class')}
+            icon='google-classroom'
+            text='Classes'
+            backgroundColor='#FFA500'
+          />
+          <ChipButton
+            onPress={() => navigation.navigate('QRscanner')}
+            icon='qrcode-scan'
+            text='Attendance'
+            backgroundColor='#FFBD44'
+          />
         </View>
-      </ScrollView>
+        <View style={styles.row}>
+          <ChipButton
+            onPress={() => navigation.navigate('Profile')}
+            icon='account-settings'
+            text='Settings'
+            backgroundColor='#B6D5F0'
+          />
+          <ChipButton
+            onPress={logoutnow}
+            icon='logout'
+            text='Logout'
+            backgroundColor='#578ACB'
+          />
+        </View>
     </View>
-
   );
 };
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+    },
+    scrollView: {
+      padding: 10,
+      maxWidth: 400,
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      marginBottom: 10,
+    },
+    chip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 10,
+      paddingHorizontal: 30,
+      width: "45%",
+      borderRadius: 20,
+      elevation: 5,
+    },
+    text: {
+      color: '#fff',
+      fontSize: 16,
+    },
+});
 
 export default MenuChips;

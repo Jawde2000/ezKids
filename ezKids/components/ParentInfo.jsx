@@ -6,6 +6,7 @@ import { FormBuilder } from 'react-native-paper-form-builder';
 import { useRoute } from '@react-navigation/native';
 import { individualChildAction, updateChildrenAction } from '../redux/actions/classActions';
 import { useSelector, useDispatch } from 'react-redux';
+import KindergartenLoading from './widgets/KindergartenLoading';
 
 const styles = StyleSheet.create({
     button: {
@@ -89,7 +90,7 @@ const ParentInfo = () => {
 
     return (
         <ScrollView>
-        <View style={{flex: 1, justifyContent: 'flex-start'}}>
+        <View pointerEvents="none" style={{flex: 1, justifyContent: 'flex-start'}}>
             <View style={{marginTop: 30, alignSelf: 'center'}}>
                 <Image 
                     source={Parent.parentsType === "M"?require('../assets/mother.png'):Parent.parentsType === "F"?require('../assets/father.png'):require('../assets/guardian.png')} 

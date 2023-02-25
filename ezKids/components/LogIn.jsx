@@ -72,22 +72,36 @@ function LogIn() {
         console.log(userInfo)
         console.log("74")
         console.log(userData)
-        if(userInfo){
-            console.log(78)
-            console.log(userData);
-            ToastAndroid.showWithGravity(
-                "Successfully Logged In",
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
-            );
-            navigation.navigate('Menu');
-        } else if (error){
-            ToastAndroid.showWithGravity(
-                "Authentication Failed",
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER,
-              );
-        }
+
+        if (userInfo && typeof userInfo.then === 'function') {
+            userInfo.then((val) => {
+                if(val){
+                    ToastAndroid.showWithGravity(
+                        "Successfully Logged In",
+                        ToastAndroid.SHORT,
+                        ToastAndroid.CENTER,
+                    );
+                    navigation.navigate('Menu');
+                } else if (error){
+                    ToastAndroid.showWithGravity(
+                        "Authentication Failed",
+                        ToastAndroid.SHORT,
+                        ToastAndroid.CENTER,
+                      );
+                }
+            })
+          } else {
+            if(userInfo){
+                ToastAndroid.showWithGravity(
+                    "Successfully Logged In",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                );
+                navigation.navigate('Menu');
+            }
+          }
+        
+        
     }, [userInfo, userData])
 
     
@@ -95,8 +109,11 @@ function LogIn() {
     return (
         <View style={{flex: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f2f2f2', marginHorizontal: 20, marginVertical: 50}}>
             <View style={{marginTop: 30, alignSelf: 'center'}}>
-                <Image source={require('../assets/logo.png')} style={{resizeMode: "center", width: 250, height: 100}} />
+                <Image source={require('../assets/logo.png')} style={{resizeMode: "center", width: 350, height: 100}} />
             </View>
+            <Text style={{fontSize: 9, fontWeight: 'bold', textAlign: 'center', marginBottom: 20,}}>
+                "Empowering data-driven student insights"
+            </Text>
                 <Controller
                     control={control}
                     name="email"
@@ -113,7 +130,6 @@ function LogIn() {
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                     <View style={{ marginBottom: 20 }}>
-                        <Text style={{ marginBottom: 5, fontWeight: 'bold' }}>Email</Text>
                         <TextInput
                         style={{
                             height: 40,
@@ -142,7 +158,6 @@ function LogIn() {
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                     <View style={{ marginBottom: 20 }}>
-                        <Text style={{ marginBottom: 5, fontWeight: 'bold' }}>Password</Text>
                         <TextInput
                         style={{
                             height: 40,
@@ -175,19 +190,12 @@ function LogIn() {
                     onPress={handleSubmit((data) => {
                         handleLogin(data);
                     })} 
-                    style={{
-                        marginTop: 20, 
-                        width: 200, 
-                        height: 40, 
-                        backgroundColor: "#FFA500", 
-                        borderRadius: 20,
-                        alignSelf: "center"
-                    }}
+                    style={{marginTop: 20, width: 250, backgroundColor: "#FFA500",}}
                 >
                     <Text style={{fontSize: 16, fontWeight: "bold", color: "white"}}>Login</Text>
                 </Button>
                 <TouchableOpacity onPress={() => navigation.navigate('Forget')}>
-                    <Text style={{marginTop: 10, color: 'blue'}}>Forgot Password?</Text>
+                    <Text style={{marginTop: 10, color: '#578acb'}}>Forgot Password?</Text>
                 </TouchableOpacity>
         </View>
     )

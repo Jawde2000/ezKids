@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, LogBox } from 'react-native';
 import { Provider, MD3LightTheme } from 'react-native-paper';
 
 // debug imports
@@ -25,6 +25,10 @@ import ClassRanking from './components/ClassRanking';
 import MenuList from './components/MenuList';
 import ParentInfo from './components/ParentInfo';
 import GradeScreen from './components/GradeScreen';
+
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const theme = {
   ...MD3LightTheme,
@@ -72,6 +76,7 @@ const theme = {
   }
 }
 
+console.disableYellowBox = true;
 
 const Stack = createNativeStackNavigator();
 
@@ -81,19 +86,19 @@ const App = () => {
     <Provider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName='Login'>
-          <Stack.Screen name="Login" component={LogIn} /> 
+          <Stack.Screen name="Login" component={LogIn} options={{ headerTitle: '' }}/> 
           <Stack.Screen options={{headerShown: false}} name="Menu" component={MainMenu} />
-          <Stack.Screen name="Forget" component={ForgotPassword} />
-          <Stack.Screen name="Class" component={MyClasses} /> 
-          <Stack.Screen name="Profile" component={Profile} /> 
+          <Stack.Screen name="Forget" component={ForgotPassword} options={{ headerTitle: '' }}/>
+          <Stack.Screen name="Class" component={MyClasses} options={{ headerTitle: 'Classroom' }}/> 
+          <Stack.Screen name="Profile" component={Profile} options={{ headerTitle: 'Settings' }}/> 
           <Stack.Screen name="ClassDetails" component={ClassDetail} /> 
-          <Stack.Screen name="QRscanner" component={QRScanner} />
-          <Stack.Screen name="StudentAmend" component={StudentAmend} />
-          <Stack.Screen name="GlobalRanking" component={GlobalRanking} />
-          <Stack.Screen name="ClassRanking" component={ClassRanking} />
-          <Stack.Screen name="MenuList" component={MenuList} />
-          <Stack.Screen name="ParentInfo" component={ParentInfo} />
-          <Stack.Screen name="Grade" component={GradeScreen} />
+          <Stack.Screen name="QRscanner" component={QRScanner} options={{ headerTitle: 'Attendance Scanner' }}/>
+          <Stack.Screen name="StudentAmend" component={StudentAmend} options={{ headerTitle: 'Student Information' }}/>
+          <Stack.Screen name="GlobalRanking" component={GlobalRanking} options={{ headerTitle: 'Global Ranking' }}/>
+          <Stack.Screen name="ClassRanking" component={ClassRanking} options={{ headerTitle: 'Class Ranking' }}/>
+          <Stack.Screen name="MenuList" component={MenuList} options={{ headerTitle: 'Option' }}/>
+          <Stack.Screen name="ParentInfo" component={ParentInfo} options={{ headerTitle: 'Parent Information' }}/>
+          <Stack.Screen name="Grade" component={GradeScreen} options={{ headerTitle: 'Grade' }}/>
           {/* <Stack.Screen name='MenuChip' component={MenuChips} />  */}
         </Stack.Navigator>
 

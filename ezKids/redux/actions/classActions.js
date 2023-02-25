@@ -52,6 +52,88 @@ import {
 } from '../constants/classConstants';
 import axios from 'axios'
 
+//delete GRADE FOR CHILD
+export const deleteGradeAction = (gradeID) => async (dispatch) => {
+    try{
+        console.log("inside delete grade action");
+        dispatch({
+            type: DELETE_SUBJECT_GRADE_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+        // console.log("hello");
+        console.log(gradeID)
+
+
+        const { data } = await axios.delete(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/delete/grade/${gradeID}/`,
+            config
+        )
+
+        console.log(data);
+
+        dispatch({
+            type: DELETE_SUBJECT_GRADE_SUCCESS,
+        })
+
+
+    }catch(error){
+        dispatch({
+            type: DELETE_SUBJECT_GRADE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
+
+export const updateGradeAction = (childGrade, gradeID) => async (dispatch) => {
+    try{
+        console.log("inside update grade action");
+        dispatch({
+            type: UPDATE_SUBJECT_GRADE_REQUEST
+        })
+
+        const config = {
+            headers: {
+                'Content-type' : 'application/json'
+            }
+        }
+
+        // console.log("hello");
+        console.log(gradeID)
+        console.log(childGrade)
+
+
+        const { data } = await axios.put(
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/update/grade/${gradeID}/`,
+            childGrade,
+            config
+        )
+
+        console.log(data);
+
+        dispatch({
+            type: UPDATE_SUBJECT_GRADE_SUCCESS,
+        })
+
+
+    }catch(error){
+        dispatch({
+            type: UPDATE_SUBJECT_GRADE_FAIL,
+            payload: error.response && error.response.data.detail
+                ? error.response.data.detail
+                : error.message,
+        })
+    }
+}
+
 //ADD NEW GRADE FOR CHILD
 export const newGradeAction = (childGrade) => async (dispatch) => {
     try{
@@ -71,7 +153,7 @@ export const newGradeAction = (childGrade) => async (dispatch) => {
 
 
         const { data } = await axios.put(
-            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/new/grade/${childID}/`,
+            `http://ezkids-backend-dev.ap-southeast-1.elasticbeanstalk.com/api/new/grade/`,
             childGrade,
             config
         )
@@ -147,7 +229,7 @@ export const updateChildrenAction = (children, childID) => async (dispatch) => {
             }
         }
 
-        // console.log("hello");
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         console.log("this is Children ID " + childID)
         console.log(children)
 

@@ -263,7 +263,7 @@ const GlobalRanking = () => {
             }
         <View style={{marginHorizontal: 15}}>
             <Card style={{marginTop: 30}}>
-                <Card.Cover source={require('../assets/results.jpg')} />
+                <Card.Cover source={require('../assets/globalRanking.jpg')} />
             </Card>
             <View>
                 <Text style={styles.headerTitle}>Global Ranking Board</Text>

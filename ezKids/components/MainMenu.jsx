@@ -26,7 +26,6 @@ const MainMenu = ({navigation}) => {
 
     useEffect(() => {
         async function getUserInfo() {
-            dispatch({type: NEW_ATTENDANCE_RESET});
             const userDatas = await AsyncStorage.getItem('userInfo');
             const de_userDatas =  JSON.parse(userDatas);
             setUserData(de_userDatas);
@@ -34,11 +33,12 @@ const MainMenu = ({navigation}) => {
             
         }
         getUserInfo();
-    }, [])
+    }, [userData])
 
     useFocusEffect(
         useCallback(() => {
-          dispatch(announcementAction());
+            dispatch({type: NEW_ATTENDANCE_RESET});
+            dispatch(announcementAction());
         }, [])
       );
 
@@ -48,7 +48,7 @@ const MainMenu = ({navigation}) => {
                 <Image source={require('../assets/logo.png')} style={{resizeMode: "center", width: 250, height: 100}} />
             </View>
             <View>
-                <Text style={{fontSize: 20, color: theme.colors.secondary}}>Welcome, {name}</Text>
+                <Text style={{fontSize: 20, color: "black"}}>Welcome, {name}</Text>
             </View>
             <View style={{marginTop: 15, height: 105}}>
                 {/* REMEMBER TO SET isTeacher */}

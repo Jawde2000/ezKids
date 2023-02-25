@@ -180,7 +180,7 @@ const ClassRanking = () => {
             }
         <View style={{marginHorizontal: 15}}>
             <Card style={{marginTop: 30}}>
-                <Card.Cover source={require('../assets/results.jpg')} />
+                <Card.Cover source={require('../assets/teamwork.jpg')} />
             </Card>
             <View>
                 <Text style={styles.headerTitle}>Class Ranking Board</Text>

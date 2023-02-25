@@ -9,6 +9,10 @@ import PercentageCircle from 'react-native-percentage-circle';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KindergartenLoading from '../widgets/KindergartenLoading';
 import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons';
+import IonicIcon from 'react-native-vector-icons/Ionicons';
+
+
 
 const StudentRoute = ({session}) => {
     return <StudentRenderer session={session} />;
@@ -51,8 +55,8 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
     },
     attendanceContainer: {
-        flexDirection: 'column',
-        paddingLeft: 60,
+        flex: 1,
+        flexDirection: 'row-reverse'
     },
     nameText: {
       fontSize: 16,
@@ -175,30 +179,56 @@ const styles = StyleSheet.create({
 // session is Class
 const ClassDetail = ({route, navigation}) => {
     const { session } = route.params;
-
+  
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
-      { key: 'student', title: 'Student', focusedIcon: 'account-child-circle', unfocusedIcon: 'account-child'},
-      { key: 'subject', title: 'Subject', focusedIcon: 'book-settings', unfocusedIcon: 'book-settings-outline' },
-//       { key: 'homework', title: 'Homework', focusedIcon: 'star-circle', unfocusedIcon: 'star' },
-      { key: 'results', title: 'Ranking', focusedIcon: 'medal', unfocusedIcon: 'medal-outline' },
+      { key: 'student', title: 'Students', icon: 'people' },
+      { key: 'subject', title: 'Subjects', icon: 'book' },
+      { key: 'results', title: 'Ranking', icon: 'stars' },
     ]);
-
+  
     const renderScene = BottomNavigation.SceneMap({
-        student: () => <StudentRoute session={session} />,
-        subject: () => <SubjectRoute session={session} />,
-//         homework: HomeworkRoute,
-        results: () => <ResultRoute session={session} />,
+      student: () => <StudentRoute session={session} />,
+      subject: () => <SubjectRoute session={session} />,
+      results: () => <ResultRoute session={session} />,
     });
-
+  
+    const renderIcon = ({ route, focused, color }) => {
+      let iconName;
+  
+      switch (route.icon) {
+        case 'people':
+          iconName = focused ? 'people-sharp' : 'people-outline';
+          break;
+        case 'book':
+          iconName = focused ? 'book-open-variant' : 'book-outline';
+          break;
+        case 'stars':
+          iconName = focused ? 'medal' : 'medal-outline';
+          break;
+        default:
+          iconName = focused ? 'circle' : 'circle-outline';
+          break;
+      }
+  
+      return (
+            route.icon === 'people'?<IonicIcon name={iconName}  size={24} color={color} />
+            :route.icon === 'book'?<Icon name={iconName} size={24} color={color} />:<Icon name={iconName} size={24} color={color} />
+      );
+    };
+  
     return (
-        <BottomNavigation
-            navigationState={{ index, routes }}
-            onIndexChange={setIndex}
-            renderScene={renderScene}
-        />
+      <BottomNavigation
+        navigationState={{ index, routes }}
+        onIndexChange={setIndex}
+        renderScene={renderScene}
+        renderIcon={renderIcon}
+        barStyle={{ backgroundColor: '#fff' }}
+        activeColor="#FFA500"
+        inactiveColor="#666"
+      />
     );
-};
+  };
 
 const StudentRenderer = ({session}) => {
     const theme = useTheme()
@@ -287,8 +317,10 @@ const StudentRenderer = ({session}) => {
                                         <Text style={styles.idText}>{child.childID}</Text>
                                         <Text style={styles.nameText}>{child.childFirstName} {child.childLastName}</Text>
                                     </View>
-                                    <View style={styles.attendanceContainer}>
-                                        <Text style={{fontSize: 16, color: '#999999', paddingLeft: 30,}}>{child.attendanceData.detail !== "This child has not attended any classes yet"?"Attendance Taken " + child.attendanceData.attendance_number: "No attendance yet"}</Text>
+                                    <View style={[styles.attendanceContainer, {
+                                        alignItems: 'flex-end'
+                                    }]}>
+                                        <Text style={{fontSize: 16, color: '#999999'}}>{child.attendanceData.detail !== "This child has not attended any classes yet"?"Attendance Taken " + child.attendanceData.attendance_number: "No attendance yet"}</Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -582,7 +614,7 @@ const ResultRenderer = ({session}) => {
                         } else if (index === 2) {
                             return (
                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                    <Icon name="bronze-medal" size={25} color="#CD7F32" />
+                                    <Icon name="medal" size={25} color="#CD7F32" />
                                     <Text style={{color: '#999999', fontSize: 15, fontWeight: 'bold'}}>{index + 1}</Text>
                                 </View>
                             )

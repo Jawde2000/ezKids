@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
-import { SUBJECT_GRADE_RESET, UPDATE_CHILDREN_RESET } from '../redux/constants/classConstants';
+import { SUBJECT_GRADE_RESET, UPDATE_CHILDREN_RESET, GET_PARENT_RESET, INDIVIDUAL_CHILDREN_RESET, NEW_SUBJECT_GRADE_RESET, UPDATE_SUBJECT_GRADE_RESET, DELETE_SUBJECT_GRADE_RESET } from '../redux/constants/classConstants';
 
 const MenuList = () => {
     const route = useRoute();
@@ -11,101 +11,84 @@ const MenuList = () => {
     const child = route.params.child;
     const dispatch = useDispatch();
 
-    dispatch({type: UPDATE_CHILDREN_RESET});
-    dispatch({type: SUBJECT_GRADE_RESET});
-
     const handleChildren = (data) => {
         console.log(12)
         console.log(child)
+        dispatch({type: UPDATE_CHILDREN_RESET});
+        dispatch({type: INDIVIDUAL_CHILDREN_RESET})
+        
         navigation.navigate("StudentAmend", {data});
     };
 
     const handleParent = (data) => {
+        dispatch({type: GET_PARENT_RESET})
         navigation.navigate("ParentInfo", {data});
     };
 
     const handleGrade = (data) => {
+        dispatch({type: NEW_SUBJECT_GRADE_RESET})
+        dispatch({type: SUBJECT_GRADE_RESET})
+        dispatch({type: UPDATE_SUBJECT_GRADE_RESET})
+        dispatch({type: DELETE_SUBJECT_GRADE_RESET})
         navigation.navigate("Grade", {data});
     };
 
+    const renderSeparator = () => <View style={styles.separator} />;
+
+    const renderTab = ({ icon, label, onPress }) => (
+      <TouchableOpacity style={styles.tab} onPress={onPress}>
+        <MaterialIcons name={icon} size={24} color="#444"/>
+        <Text style={styles.tabText}>{label}</Text>
+      </TouchableOpacity>
+    );
+
     return (
-        <View>
-        <TouchableOpacity
-            style={[styles.tab]}
-            onPress={() => handleChildren(child)}
-        >
-            <Ionicons name="ios-people" size={28} color={'#777'} />
-            <Text style={[styles.tabText]}>Children Details</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-            style={[styles.tab]}
-            onPress={() => handleParent(child)}
-        >
-            <Ionicons name="ios-person" size={28} color={'#777'} />
-            <Text style={[styles.tabText]}>Parent Details</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-            style={[styles.tab]}
-            onPress={() => handleGrade(child)}
-        >
-            <Ionicons name="ios-star" size={28} color={'#777'} />
-            <Text style={[styles.tabText]}>Grade Details</Text>
-        </TouchableOpacity>
-        </View>
+        <View style={styles.container}>
+        {renderTab({
+          icon: 'people',
+          label: 'Children Details',
+          onPress: () => handleChildren(child),
+        })}
+        {renderSeparator()}
+        {renderTab({
+          icon: 'person',
+          label: 'Parent Details',
+          onPress: () => handleParent(child),
+        })}
+        {renderSeparator()}
+        {renderTab({
+          icon: 'star',
+          label: 'Grade Details',
+          onPress: () => handleGrade(child),
+        })}
+      </View>
     );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 20,
-    shadowColor: '#000',
-    margin: 20,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-
-    elevation: 3,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginTop: 20,
+    overflow: 'hidden',
+  },
+  separator: {
+    backgroundColor: '#eee',
+    height: 1,
+    marginHorizontal: 10,
   },
   tab: {
-    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 15,
-    borderRadius: 5,
     backgroundColor: '#fff',
-    marginBottom: 20,
-    width: '100%',
-    paddingHorizontal: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-
-    elevation: 3,
-  },
-  activeTab: {
-    backgroundColor: '#007aff',
+    flexDirection: 'row',
+    paddingVertical: 15,
+    paddingLeft: 20,
   },
   tabText: {
+    color: '#444',
+    fontSize: 16,
     marginLeft: 20,
-    fontSize: 18,
-    color: '#777',
-  },
-  activeTabText: {
-    color: '#fff',
   },
 });
 
